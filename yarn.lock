@@ -3952,10 +3952,10 @@ three-solid@^0.0.3:
   resolved "https://registry.npm.taobao.org/three-solid/download/three-solid-0.0.3.tgz#67ada3d51fdbc5fdc25ce668d67b5b8374de0574"
   integrity sha1-Z62j1R/bxf3CXOZo1ntbg3TeBXQ=
 
-three@*, three@^0.109.0:
-  version "0.109.0"
-  resolved "https://registry.npm.taobao.org/three/download/three-0.109.0.tgz?cache=0&sync_timestamp=1569868713686&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fthree%2Fdownload%2Fthree-0.109.0.tgz#611c9ef860d10bd107695cead6c6abcd2422e5fd"
-  integrity sha1-YRye+GDRC9EHaVzq1sarzSQi5f0=
+three@*, three@^0.125.0:
+  version "0.125.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.125.0.tgz#19e922b9dc51ad0b706893aeee888de68e99850a"
+  integrity sha512-qL36qUGsPQ/Ofo/RZdXwHwM7A8wzUSAIyawtjIebJSPvounUQeneSqxI0aBY2iwKpseGy+RUtj3C5f/z4poyXw==
 
 through2@^2.0.0:
   version "2.0.5"
