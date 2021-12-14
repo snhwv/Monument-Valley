@@ -18,6 +18,8 @@
     "quotes": "off",
     "space-before-function-paren": "off",
     "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "no-unused-vars": "off",
     "comma-dangle": "off",
     "semi": "off"
   }

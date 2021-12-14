@@ -8,6 +8,8 @@ export default {
   },
   alias: {
     "@env": resolve(__dirname, "src/env"), //把src改为@
+    "@components": resolve(__dirname, "src/components"), //把src改为@
+    "@constants": resolve(__dirname, "src/constants"), //把src改为@
   },
   plugins: [
     vitePluginString(),

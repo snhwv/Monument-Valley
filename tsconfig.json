@@ -14,8 +14,11 @@
     "noImplicitReturns": true,
     "baseUrl": ".",
     "paths": {
+      "@constants": ["src/constants"],
       "@env": ["src/env"],
       "@env/*": ["src/env/*"],
+      "@components": ["src/components"],
+      "@components/*": ["src/components/*"],
     }
   },
   "include": ["./src"]

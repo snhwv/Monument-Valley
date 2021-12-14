@@ -1,5 +1,7 @@
+import { unitWidth } from "@constants";
 import debounce from "lodash.debounce";
 import * as THREE from "three";
+import { Group } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const canvas = document.querySelector("[data-canvas]") as HTMLCanvasElement;
@@ -19,28 +21,34 @@ export const getGlobalEnv = () => {
 
 export const scene = new THREE.Scene();
 
-export const camera = new THREE.PerspectiveCamera(
-  75,
-  sizes.width / sizes.height,
-  0.1,
-  1000
+export const camera = new THREE.OrthographicCamera(
+  sizes.width / -2,
+  sizes.width / 2,
+  sizes.height / 2,
+  sizes.height / -2,
+  1,
+  10000
 );
-camera.position.set(100, 100, 100);
+camera.position.set(400, 400, 400);
 scene.add(camera);
 
 const onResize = () => {
   sizes.height = window.innerHeight;
   sizes.width = window.innerWidth;
 
-  camera.aspect = sizes.width / sizes.height;
+  camera.left = sizes.width / -2;
+  camera.right = sizes.width / 2;
+  camera.top = sizes.height / 2;
+  camera.bottom = sizes.height / -2;
+
   camera.updateProjectionMatrix();
 
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(window.devicePixelRatio);
 };
 
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
+export const orbitControls = new OrbitControls(camera, canvas);
+orbitControls.enableDamping = true;
 
 export const renderer = new THREE.WebGLRenderer({
   canvas,
@@ -50,8 +58,18 @@ export const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(window.devicePixelRatio);
 
+const floorGeometry = new THREE.BoxGeometry(300, 2, 300);
+const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xfaebd7 });
+
+export const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+
+floor.position.set(0, -1 - unitWidth / 2, 0);
+export const mainGroup = new Group();
+
+scene.add(floor);
+scene.add(mainGroup);
 export const tick = () => {
-  controls.update();
+  orbitControls.update();
   renderer.render(scene, camera);
   window.requestAnimationFrame(tick);
 };
