@@ -1,0 +1,39 @@
+{
+  "name": "vite-threejs-ts",
+  "description": "A vite Three JS starter with linting and ts",
+  "author": {
+    "name": "Gian F. Olivieri",
+    "email": "gian.olivieri@gmail.com",
+    "url": "https://giank.us"
+  },
+  "version": "0.0.1",
+  "scripts": {
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview",
+    "lint": "eslint ./src/**.ts --fix"
+  },
+  "license": "Unlicense",
+  "devDependencies": {
+    "@ehutch79/vite-eslint": "^0.0.1",
+    "@types/dat.gui": "^0.7.7",
+    "@types/lodash.debounce": "^4.0.6",
+    "@types/three": "^0.135.0",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
+    "eslint": "^8.4.1",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "typescript": "^4.3.2",
+    "vite": "^2.4.2",
+    "vite-plugin-string": "^1.0.1"
+  },
+  "dependencies": {
+    "dat.gui": "^0.7.7",
+    "lodash.debounce": "^4.0.8",
+    "normalize.css": "^8.0.1",
+    "three": "^0.135.0"
+  }
+}

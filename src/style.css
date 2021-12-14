@@ -1,0 +1,8 @@
+@import "normalize.css";
+body {
+  overflow: hidden;
+  margin: 0;
+}
+canvas {
+    background: #f9e99e;
+}
