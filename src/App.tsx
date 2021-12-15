@@ -1,24 +1,20 @@
 import "./App.css";
-// import Cube from "@components/cube";
-// import { scene, transformControls ,tick, init } from "@env";
-import { useEffect } from "react";
+import Cube from "@components/cube";
+import { scene, transformControls, tick, init } from "@env";
+import React, { useEffect } from "react";
 import("./event");
-// const cube = new Cube();
-
-// transformControls.attach(cube);
+const cube = new Cube();
 
 function App() {
   useEffect(() => {
-    import("@env").then((re) => {
-      console.log(re);
-      // init();
-      // tick();
-    });
+    init();
+    tick();
+    transformControls.attach(cube);
   }, []);
   return (
-    <>
+    <div>
       <canvas data-canvas className="canvas"></canvas>
-    </>
+    </div>
   );
 }
 

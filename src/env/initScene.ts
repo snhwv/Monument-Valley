@@ -51,7 +51,7 @@ export let orbitControls!: OrbitControls;
 
 export let renderer!: WebGLRenderer;
 
-export const init = () => {
+export const sceneInit = () => {
   const canvas = document.querySelector("[data-canvas]") as HTMLCanvasElement;
   orbitControls = new OrbitControls(camera, canvas);
   orbitControls.enableDamping = true;
