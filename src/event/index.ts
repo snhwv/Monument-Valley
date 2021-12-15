@@ -2,6 +2,7 @@ import Cube from "@components/cube";
 import { unitWidth } from "@constants";
 import {
   camera,
+  flatedComponents,
   floor,
   mainGroup,
   scene,
@@ -10,13 +11,14 @@ import {
 } from "@env";
 import {
   BoxGeometry,
+  Intersection,
   Mesh,
   MeshBasicMaterial,
+  Object3D,
   Raycaster,
   Vector2,
 } from "three";
 document.addEventListener("pointerdown", onPointerDown);
-document.addEventListener("pointerdown", setTransformControl);
 document.addEventListener("keydown", onDocumentKeyDown);
 document.addEventListener("keyup", onDocumentKeyUp);
 
@@ -25,6 +27,47 @@ const raycaster = new Raycaster();
 
 let isShiftDown = false;
 let isCtrlDown = false;
+
+type IpinterdownHander = (event: {
+  mainGroupIntersect: Intersection<Mesh>[];
+  next: () => void;
+  raycaster: Raycaster;
+}) => void | undefined;
+
+const crudComponents: IpinterdownHander = ({ mainGroupIntersect, next }) => {
+  const intersect = mainGroupIntersect?.[0];
+  if (!(intersect && (isShiftDown || isCtrlDown))) {
+    next();
+    return;
+  }
+  if (isShiftDown) {
+    intersect.object.parent?.remove(intersect.object);
+  } else if (isCtrlDown) {
+    const cube = new Cube();
+    cube.position.copy(rollOverMesh.position);
+  }
+};
+const setTransformControl: IpinterdownHander = ({
+  mainGroupIntersect,
+  next,
+}) => {
+  if (transformControls.dragging) {
+    next();
+    return;
+  }
+  if (mainGroupIntersect.length > 0) {
+    const intersect = mainGroupIntersect[0];
+    if (intersect.object !== transformControls.object) {
+      transformControls.detach();
+      transformControls.attach(intersect.object);
+    }
+  }
+  next();
+};
+const pointerdownHandlerArr: IpinterdownHander[] = [
+  crudComponents,
+  setTransformControl,
+];
 
 const rollOverGeo = new BoxGeometry(unitWidth, unitWidth, unitWidth);
 const rollOverMaterial = new MeshBasicMaterial({
@@ -70,61 +113,21 @@ function onPointerDown(event: any) {
   );
 
   raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(flatedComponents, false);
 
-  const intersects = raycaster.intersectObject(mainGroup, true);
-
-  if (intersects.length > 0) {
-    const intersect = intersects[0];
-
-    // delete cube
-
-    if (isShiftDown) {
-      if (transformControls.object === intersect.object) {
-        return;
-      }
-      if (intersect.object !== floor) {
-        intersect.object.parent?.remove(intersect.object);
-      }
-      // create cube
-    } else {
-      if (!isCtrlDown) {
-        return;
-      }
-      const cube = new Cube();
-      cube.position.copy(rollOverMesh.position);
-    }
-  }
-}
-function setTransformControl(event: any) {
-  pointer.set(
-    (event.clientX / window.innerWidth) * 2 - 1,
-    -(event.clientY / window.innerHeight) * 2 + 1
-  );
-
-  raycaster.setFromCamera(pointer, camera);
-
-  const intersects = raycaster.intersectObject(mainGroup, true);
-
-  if (intersects.length > 0) {
-    const intersect = intersects[0];
-
-    // delete cube
-
-    if (isShiftDown) {
-      if (transformControls.object === intersect.object) {
-        return;
-      }
-      if (intersect.object !== floor) {
-        intersect.object.parent?.remove(intersect.object);
-      }
-      // create cube
-    } else {
-      if (!isCtrlDown) {
-        return;
-      }
-      const cube = new Cube();
-      cube.position.copy(rollOverMesh.position);
-    }
+  let next: any = pointerdownHandlerArr[0];
+  let i = 0;
+  while (next) {
+    i++;
+    const handler = next;
+    next = null;
+    handler({
+      mainGroupIntersect: intersects,
+      next: () => {
+        next = pointerdownHandlerArr[i];
+      },
+      raycaster,
+    });
   }
 }
 
@@ -133,7 +136,6 @@ const saveScene = () => {
 };
 
 function onDocumentKeyDown(event: any) {
-  event.preventDefault();
   switch (event.keyCode) {
     // shift
     case 16:
@@ -149,6 +151,7 @@ function onDocumentKeyDown(event: any) {
     // s
     case 83:
       if (event.ctrlKey) {
+        event.preventDefault();
         saveScene();
         return;
       }
