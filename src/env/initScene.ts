@@ -1,10 +1,10 @@
 import { unitWidth } from "@constants";
 import debounce from "lodash.debounce";
 import * as THREE from "three";
-import { Group } from "three";
+import { Group, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-const canvas = document.querySelector("[data-canvas]") as HTMLCanvasElement;
+// const canvas = document.querySelector("[data-canvas]") as HTMLCanvasElement;
 
 const sizes = {
   width: window.innerWidth,
@@ -47,16 +47,23 @@ const onResize = () => {
   renderer.setPixelRatio(window.devicePixelRatio);
 };
 
-export const orbitControls = new OrbitControls(camera, canvas);
-orbitControls.enableDamping = true;
+export let orbitControls!: OrbitControls;
 
-export const renderer = new THREE.WebGLRenderer({
-  canvas,
-  antialias: true,
-  alpha: true,
-});
-renderer.setSize(sizes.width, sizes.height);
-renderer.setPixelRatio(window.devicePixelRatio);
+export let renderer!: WebGLRenderer;
+
+export const init = () => {
+  const canvas = document.querySelector("[data-canvas]") as HTMLCanvasElement;
+  orbitControls = new OrbitControls(camera, canvas);
+  orbitControls.enableDamping = true;
+
+  renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true,
+  });
+  renderer.setSize(sizes.width, sizes.height);
+  renderer.setPixelRatio(window.devicePixelRatio);
+};
 
 const floorGeometry = new THREE.BoxGeometry(300, 2, 300);
 const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xfaebd7 });
