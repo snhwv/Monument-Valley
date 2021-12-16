@@ -1,21 +1,8 @@
-import "./App.css";
-import Cube from "@components/cube";
-import { scene, transformControls, tick, init } from "@env";
-import React, { useEffect } from "react";
-import("./event");
-const cube = new Cube();
+import "./App.module.scss";
+import Layout from "./layout";
 
 function App() {
-  useEffect(() => {
-    init();
-    tick();
-    transformControls.attach(cube);
-  }, []);
-  return (
-    <div>
-      <canvas data-canvas className="canvas"></canvas>
-    </div>
-  );
+  return <Layout></Layout>;
 }
 
 export default App;

@@ -15,21 +15,25 @@
   },
   "license": "Unlicense",
   "devDependencies": {
-    "@types/react": "^17.0.33",
-    "@types/react-dom": "^17.0.10",
     "@types/dat.gui": "^0.7.7",
     "@types/lodash.debounce": "^4.0.6",
+    "@types/react": "^17.0.33",
+    "@types/react-dom": "^17.0.10",
     "@types/three": "^0.135.0",
     "@vitejs/plugin-react": "^1.0.7",
+    "sass": "^1.45.0",
     "typescript": "^4.3.2",
-    "vite": "^2.4.2"
+    "vite": "^2.4.2",
+    "vite-react-jsx": "^1.1.2"
   },
   "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "antd": "^4.17.3",
+    "classnames": "^2.3.1",
     "dat.gui": "^0.7.7",
     "lodash.debounce": "^4.0.8",
     "normalize.css": "^8.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "three": "^0.135.0"
   }
 }

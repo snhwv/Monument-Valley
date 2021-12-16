@@ -3,7 +3,6 @@ import { unitWidth } from "@constants";
 import {
   camera,
   flatedComponents,
-  floor,
   mainGroup,
   scene,
   setMode,
@@ -14,13 +13,15 @@ import {
   Intersection,
   Mesh,
   MeshBasicMaterial,
-  Object3D,
   Raycaster,
   Vector2,
 } from "three";
-document.addEventListener("pointerdown", onPointerDown);
-document.addEventListener("keydown", onDocumentKeyDown);
-document.addEventListener("keyup", onDocumentKeyUp);
+
+export const eventInit = () => {
+  document.addEventListener("pointerdown", onPointerDown);
+  document.addEventListener("keydown", onDocumentKeyDown);
+  document.addEventListener("keyup", onDocumentKeyUp);
+};
 
 const pointer = new Vector2();
 const raycaster = new Raycaster();
