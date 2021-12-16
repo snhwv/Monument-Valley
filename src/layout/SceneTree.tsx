@@ -3,6 +3,7 @@ import { Col, Row, TreeProps } from "antd";
 
 import { Tree } from "antd";
 import { useState } from "react";
+import { Object3D } from "three";
 
 // const initData = [
 //   {
@@ -27,13 +28,32 @@ const fieldNames = {
   title: "title",
   children: "children",
 };
-
+const getTreeDataItem = (object: Object3D) => {
+  return { id: object.id, name: object.name, title: object.id, children: [] };
+};
 const SceneTree = () => {
   const [gData, setGData] = useState([...mainGroup.children]);
   console.log(mainGroup);
   updateSceneTree = () => {
     console.log(mainGroup);
-    setGData([...mainGroup.children]);
+
+    const obj: any = {};
+    obj[mainGroup.id] = getTreeDataItem(mainGroup);
+    mainGroup.traverse((object) => {
+      if (["cube", "valveControl"].includes(object?.userData?.type)) {
+        obj[object.id] = getTreeDataItem(object);
+      }
+    });
+    mainGroup.traverse((object) => {
+      if (["cube", "valveControl"].includes(object?.userData?.type)) {
+        if (object.parent?.id) {
+          obj[object.parent?.id].children.push(getTreeDataItem(object));
+        }
+      }
+    });
+    console.log(obj);
+
+    setGData([...obj[mainGroup.id].children]);
   };
   const onDragEnter = (info: any) => {
     console.log(info);

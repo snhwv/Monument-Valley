@@ -1,5 +1,6 @@
 import { unitWidth } from "@constants";
 import { flatedComponents, mainGroup } from "@env";
+import { updateSceneTree } from "../layout/SceneTree";
 import { BoxGeometry, Mesh, MeshLambertMaterial } from "three";
 import { v4 } from "uuid";
 
@@ -15,6 +16,7 @@ class Cube extends Mesh {
     flatedComponents.push(this);
     this.key = v4();
     this.title = this.key;
+    updateSceneTree();
   }
 }
 export default Cube as typeof Mesh;

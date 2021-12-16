@@ -1,25 +1,20 @@
 import Cube from "@components/cube";
-import { scene, transformControls, tick, init } from "@env";
-import React, { useEffect } from "react";
+import ValveControl from "@components/valveControl";
+import { transformControls, tick, init } from "@env";
+import { useEffect, useRef } from "react";
 import { eventInit } from "../event";
-import { updateSceneTree } from "./SceneTree";
 
 function Three() {
+  const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const cube = new Cube();
-    new Cube();
-    new Cube();
-    new Cube();
-    new Cube();
+    new ValveControl();
     init();
     tick();
     eventInit();
     transformControls.attach(cube);
-    setTimeout(() => {
-      updateSceneTree();
-    }, 1000);
   }, []);
-  return <canvas data-canvas className={"full canvas"}></canvas>;
+  return <canvas data-canvas ref={ref} className={"full canvas"}></canvas>;
 }
 
 export default Three;

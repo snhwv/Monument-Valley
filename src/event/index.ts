@@ -2,7 +2,9 @@ import Cube from "@components/cube";
 import { unitWidth } from "@constants";
 import {
   camera,
+  canvas,
   flatedComponents,
+  getCanvasRect,
   mainGroup,
   scene,
   setMode,
@@ -16,6 +18,14 @@ import {
   Raycaster,
   Vector2,
 } from "three";
+
+const setPointer = (event: any) => {
+  const rect = getCanvasRect();
+  pointer.set(
+    ((event.clientX - rect.left) / rect.width) * 2 - 1,
+    -((event.clientY - rect.top) / rect.height) * 2 + 1
+  );
+};
 
 export const eventInit = () => {
   document.addEventListener("pointerdown", onPointerDown);
@@ -85,11 +95,7 @@ function onPointerMove(event: any) {
   if (!isCtrlDown) {
     return;
   }
-
-  pointer.set(
-    (event.clientX / window.innerWidth) * 2 - 1,
-    -(event.clientY / window.innerHeight) * 2 + 1
-  );
+  setPointer(event);
 
   raycaster.setFromCamera(pointer, camera);
 
@@ -108,10 +114,7 @@ function onPointerMove(event: any) {
 }
 
 function onPointerDown(event: any) {
-  pointer.set(
-    (event.clientX / window.innerWidth) * 2 - 1,
-    -(event.clientY / window.innerHeight) * 2 + 1
-  );
+  setPointer(event)
 
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(flatedComponents, false);

@@ -4,11 +4,14 @@ import * as THREE from "three";
 import { Group, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-// const canvas = document.querySelector("[data-canvas]") as HTMLCanvasElement;
-
+export let canvas: HTMLCanvasElement;
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
+};
+
+export const getCanvasRect = () => {
+  return canvas.getBoundingClientRect();
 };
 
 export const getGlobalEnv = () => {
@@ -32,9 +35,12 @@ export const camera = new THREE.OrthographicCamera(
 camera.position.set(400, 400, 400);
 scene.add(camera);
 
-const onResize = () => {
-  sizes.height = window.innerHeight;
-  sizes.width = window.innerWidth;
+export const canvasResizeHandler = () => {
+  console.log('ressdfsad')
+  const rects = getCanvasRect();
+
+  sizes.height = rects.height;
+  sizes.width = rects.width;
 
   camera.left = sizes.width / -2;
   camera.right = sizes.width / 2;
@@ -52,7 +58,7 @@ export let orbitControls!: OrbitControls;
 export let renderer!: WebGLRenderer;
 
 export const sceneInit = () => {
-  const canvas = document.querySelector("[data-canvas]") as HTMLCanvasElement;
+  canvas = document.querySelector("[data-canvas]") as HTMLCanvasElement;
   orbitControls = new OrbitControls(camera, canvas);
   orbitControls.enableDamping = true;
 
@@ -61,8 +67,7 @@ export const sceneInit = () => {
     antialias: true,
     alpha: true,
   });
-  renderer.setSize(sizes.width, sizes.height);
-  renderer.setPixelRatio(window.devicePixelRatio);
+  canvasResizeHandler();
 };
 
 const floorGeometry = new THREE.BoxGeometry(300, 2, 300);
@@ -81,4 +86,4 @@ export const tick = () => {
   window.requestAnimationFrame(tick);
 };
 
-window.addEventListener("resize", debounce(onResize, 100));
+window.addEventListener("resize", debounce(canvasResizeHandler, 100));
