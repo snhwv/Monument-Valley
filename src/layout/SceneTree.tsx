@@ -4,36 +4,36 @@ import { Col, Row, TreeProps } from "antd";
 import { Tree } from "antd";
 import { useState } from "react";
 
-const initData = [
-  {
-    uuid: "1",
-    children: [
-      {
-        title: "2",
-        uuid: "2",
-      },
-      {
-        title: "3",
-        uuid: "3",
-      },
-    ],
-  },
-];
+// const initData = [
+//   {
+//     uuid: "1",
+//     children: [
+//       {
+//         title: "2",
+//         uuid: "2",
+//       },
+//       {
+//         title: "3",
+//         uuid: "3",
+//       },
+//     ],
+//   },
+// ];
 
 export let updateSceneTree!: any;
 
 const fieldNames = {
-  key: "uuid",
-  title: "uuid",
+  key: "key",
+  title: "title",
   children: "children",
 };
 
 const SceneTree = () => {
-  const [gData, setGData] = useState([...initData]);
+  const [gData, setGData] = useState([...mainGroup.children]);
   console.log(mainGroup);
   updateSceneTree = () => {
     console.log(mainGroup);
-    setGData([...initData]);
+    setGData([...mainGroup.children]);
   };
   const onDragEnter = (info: any) => {
     console.log(info);
