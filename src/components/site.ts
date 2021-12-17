@@ -11,18 +11,12 @@ import {
   Shape,
 } from "three";
 import { v4 } from "uuid";
+import Component from "./lib/recordable";
 
-class Site extends Group {
-  key: string;
-  title: string;
+class Site extends Component {
   constructor() {
     super();
-    mainGroup.add(this);
     this.userData.type = "site";
-    flatedComponents.push(this);
-    this.key = v4();
-    this.title = this.key;
-    updateSceneTree();
 
     this.generateSite();
   }

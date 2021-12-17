@@ -12,18 +12,12 @@ import {
 } from "three";
 import { v4 } from "uuid";
 import { CSG } from "three-csg-ts";
+import Component from "./lib/recordable";
 
-class Altar extends Group {
-  key: string;
-  title: string;
+class Altar extends Component {
   constructor() {
     super();
-    mainGroup.add(this);
     this.userData.type = "altar";
-    flatedComponents.push(this);
-    this.key = v4();
-    this.title = this.key;
-    updateSceneTree();
     this.generateAltar();
     this.generatePedestal();
   }

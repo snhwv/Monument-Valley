@@ -12,19 +12,13 @@ import {
   Vector3,
 } from "three";
 import { v4 } from "uuid";
+import Component from "./lib/recordable";
 
 // 桥墩
-class Pier extends Group {
-  key: string;
-  title: string;
+class Pier extends Component {
   constructor() {
     super();
-    mainGroup.add(this);
     this.userData.type = "pier";
-    flatedComponents.push(this);
-    this.key = v4();
-    this.title = this.key;
-    updateSceneTree();
     this.generatePier();
   }
 

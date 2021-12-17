@@ -11,4 +11,5 @@ export const componentTypes = [
   "roof",
   "valveControl",
   "site",
+  "customeGroup",
 ];

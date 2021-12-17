@@ -1,5 +1,5 @@
 import { componentTypes } from "@constants";
-import { mainGroup } from "@env";
+import { flatedComponents, mainGroup, transformControls } from "@env";
 import { Col, Row, TreeProps } from "antd";
 
 import { Tree } from "antd";
@@ -30,24 +30,19 @@ const fieldNames = {
   children: "children",
 };
 const getTreeDataItem = (object: Object3D) => {
-  return { id: object.id, name: object.name, title: object.id, children: [] };
+  return { key: object.id, name: object.name, title: object.id, children: [] };
 };
 const SceneTree = () => {
   const [gData, setGData] = useState([...mainGroup.children]);
   updateSceneTree = () => {
-
     const obj: any = {};
     obj[mainGroup.id] = getTreeDataItem(mainGroup);
-    mainGroup.traverse((object) => {
-      if (componentTypes.includes(object?.userData?.type)) {
-        obj[object.id] = getTreeDataItem(object);
-      }
+    flatedComponents.forEach((object) => {
+      obj[object.id] = getTreeDataItem(object);
     });
-    mainGroup.traverse((object) => {
-      if (componentTypes.includes(object?.userData?.type)) {
-        if (object.parent?.id) {
-          obj[object.parent?.id].children.push(getTreeDataItem(object));
-        }
+    flatedComponents.forEach((object) => {
+      if (object.parent?.id) {
+        obj[object.parent?.id].children.push(getTreeDataItem(object));
       }
     });
 
@@ -86,6 +81,7 @@ const SceneTree = () => {
       dragObj = item;
     });
 
+    console.log(info);
     if (!info.dropToGap) {
       // Drop on the content
       loop(data, dropKey, (item: any) => {
@@ -100,10 +96,7 @@ const SceneTree = () => {
     ) {
       loop(data, dropKey, (item: any) => {
         item.children = item.children || [];
-        // where to insert 示例添加到头部，可以是随意位置
         item.children.unshift(dragObj);
-        // in previous version, we use item.children.push(dragObj) to insert the
-        // item to the tail of the children
       });
     } else {
       let ar: any;
@@ -120,6 +113,16 @@ const SceneTree = () => {
     }
     setGData(data);
   };
+
+  const onSelect: TreeProps["onSelect"] = (selectedKeys) => {
+    if (selectedKeys?.[0]) {
+      const currentComponent = mainGroup.getObjectById(
+        selectedKeys?.[0] as number
+      );
+      currentComponent && transformControls.attach(currentComponent);
+    }
+  };
+
   return (
     <Tree
       className="draggable-tree"
@@ -127,6 +130,7 @@ const SceneTree = () => {
       draggable
       blockNode
       onDragEnter={onDragEnter}
+      onSelect={onSelect}
       onDrop={onDrop}
       treeData={gData as any}
       fieldNames={fieldNames}

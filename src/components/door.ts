@@ -13,11 +13,10 @@ import {
 } from "three";
 import { v4 } from "uuid";
 import { CSG } from "three-csg-ts";
+import Component from "./lib/recordable";
 
 // 门/窗
-class Door extends Group {
-  key: string;
-  title: string;
+class Door extends Component {
   doorNumber: number;
   curveSegments: number;
   width: number;
@@ -44,7 +43,7 @@ class Door extends Group {
     doorBottom?: number;
     doorWidth?: number;
   }) {
-    super();
+    super(obj);
 
     this.doorNumber = obj?.doorNumber || 4;
     this.curveSegments = obj?.curveSegments || 1;
@@ -53,12 +52,7 @@ class Door extends Group {
     this.doorBottom = obj?.doorBottom || 0;
     this.doorWidth = obj?.doorWidth || unitWidth / 4;
 
-    mainGroup.add(this);
     this.userData.type = "door";
-    flatedComponents.push(this);
-    this.key = v4();
-    this.title = this.key;
-    updateSceneTree();
 
     this.generateDoor();
   }

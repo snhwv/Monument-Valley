@@ -10,11 +10,10 @@ import {
   Vector3,
 } from "three";
 import { v4 } from "uuid";
+import Component from "./lib/recordable";
 
 // 支柱
-class Pillar extends Group {
-  key: string;
-  title: string;
+class Pillar extends Component {
   pillarWidth: number;
   width: number;
 
@@ -23,17 +22,12 @@ class Pillar extends Group {
   constructor(obj: { width?: number; pillarWidth?: number });
 
   constructor(obj?: { width?: number; pillarWidth?: number }) {
-    super();
+    super(obj);
 
     this.width = obj?.width || unitWidth;
     this.pillarWidth = obj?.pillarWidth || unitWidth / 10;
 
-    mainGroup.add(this);
     this.userData.type = "pillar";
-    flatedComponents.push(this);
-    this.key = v4();
-    this.title = this.key;
-    updateSceneTree();
     this.generatePillar();
   }
 

@@ -128,8 +128,7 @@ function onPointerDown(event: any) {
 
   raycaster.setFromCamera(pointer, camera);
   let intersects = raycaster.intersectObjects(flatedComponents, true);
-  console.log(flatedComponents);
-  console.log(intersects);
+  // console.log(flatedComponents);
   let intersect = null;
   if (intersects.length > 0) {
     intersect = intersects[0];

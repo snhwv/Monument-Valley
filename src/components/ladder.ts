@@ -4,20 +4,13 @@ import { updateSceneTree } from "../layout/SceneTree";
 import { BoxGeometry, Group, Matrix4, Mesh, MeshLambertMaterial } from "three";
 import { v4 } from "uuid";
 import { CSG } from "three-csg-ts";
+import Component from "./lib/recordable";
 
 // 爬梯
-class Ladder extends Group {
-  key: string;
-  title: string;
+class Ladder extends Component {
   constructor() {
     super();
-    mainGroup.add(this);
-    this.userData.type = "laddler";
-    flatedComponents.push(this);
-    this.key = v4();
-    this.title = this.key;
-    updateSceneTree();
-
+    this.userData.type = "ladder";
     this.generateLadder();
   }
   generateLadder() {

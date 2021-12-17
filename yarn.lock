@@ -340,7 +340,7 @@
   "resolved" "https://registry.npmmirror.com/@types/scheduler/download/@types/scheduler-0.16.2.tgz"
   "version" "0.16.2"
 
-"@types/three@^0.135.0":
+"@types/three@^0.135.0", "@types/three@>= 0.125.0":
   "integrity" "sha512-l7WLhIHjhHMtlpyTSltPPAKLpiMwgMD1hXHj59AVUpYRoZP7Fd9NNOSRSvZBCPLpTHPYojgQvSJCoza9zoL7bg=="
   "resolved" "https://registry.npmmirror.com/@types/three/download/@types/three-0.135.0.tgz"
   "version" "0.135.0"
@@ -1289,7 +1289,12 @@
   dependencies:
     "has-flag" "^3.0.0"
 
-"three@^0.135.0":
+"three-csg-ts@^3.1.9":
+  "integrity" "sha1-FDjeO2dHubVd64jZ4KzcbkdoGXk="
+  "resolved" "https://registry.npmmirror.com/three-csg-ts/download/three-csg-ts-3.1.9.tgz"
+  "version" "3.1.9"
+
+"three@^0.135.0", "three@>= 0.125.0":
   "integrity" "sha512-kuEpuuxRzLv0MDsXai9huCxOSQPZ4vje6y0gn80SRmQvgz6/+rI0NAvCRAw56zYaWKMGMfqKWsxF9Qa2Z9xymQ=="
   "resolved" "https://registry.npmmirror.com/three/download/three-0.135.0.tgz"
   "version" "0.135.0"

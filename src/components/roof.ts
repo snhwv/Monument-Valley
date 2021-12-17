@@ -15,26 +15,19 @@ import {
 } from "three";
 import { v4 } from "uuid";
 import { CSG } from "three-csg-ts";
+import Component from "./lib/recordable";
 
 // 顶
-class Roof extends Group {
-  key: string;
-  title: string;
+class Roof extends Component {
   hatHeight = unitWidth * 2;
   constructor();
 
   constructor(obj: { doorNumber: number });
 
   constructor(obj?: { doorNumber: number }) {
-    super();
+    super(obj);
     // this.doorNumber = obj?.doorNumber || 4;
-    mainGroup.add(this);
     this.userData.type = "roof";
-    flatedComponents.push(this);
-    this.key = v4();
-    this.title = this.key;
-    updateSceneTree();
-
     this.generateRoof();
   }
 

@@ -14,19 +14,13 @@ import {
 } from "three";
 import { v4 } from "uuid";
 import { animate } from "popmotion";
+import Component from "./lib/recordable";
 
 // 控制杆
-class ValveControl extends Group {
-  key: string;
-  title: string;
+class ValveControl extends Component {
   constructor() {
     super();
-    mainGroup.add(this);
     this.userData.type = "valveControl";
-    flatedComponents.push(this);
-    this.key = v4();
-    this.title = this.key;
-    updateSceneTree();
     this.generatePlug();
     this.generateRod();
   }

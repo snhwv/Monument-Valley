@@ -12,12 +12,10 @@ import {
   Vector3,
 } from "three";
 import { v4 } from "uuid";
+import Component from "./lib/recordable";
 
 // 屋檐
-class Eave extends Group {
-  key: string;
-  title: string;
-
+class Eave extends Component {
   depth: number;
 
   eaveWidth: number;
@@ -42,7 +40,7 @@ class Eave extends Group {
     eaveWidth1?: number;
     eaveHeight1?: number;
   }) {
-    super();
+    super(obj);
 
     this.depth = obj?.depth || unitWidth / 6;
 
@@ -51,12 +49,8 @@ class Eave extends Group {
     this.eaveWidth1 = obj?.eaveWidth1 || unitWidth / 6;
     this.eaveHeight1 = obj?.eaveHeight1 || unitWidth / 6;
 
-    mainGroup.add(this);
     this.userData.type = "eave";
-    flatedComponents.push(this);
-    this.key = v4();
-    this.title = this.key;
-    updateSceneTree();
+
     this.generateEave();
   }
 
