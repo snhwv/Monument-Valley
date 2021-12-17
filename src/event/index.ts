@@ -1,5 +1,5 @@
 import Cube from "@components/cube";
-import { unitWidth } from "@constants";
+import { componentTypes, unitWidth } from "@constants";
 import {
   camera,
   canvas,
@@ -15,6 +15,7 @@ import {
   Intersection,
   Mesh,
   MeshBasicMaterial,
+  Object3D,
   Raycaster,
   Vector2,
 } from "three";
@@ -40,19 +41,19 @@ let isShiftDown = false;
 let isCtrlDown = false;
 
 type IpinterdownHander = (event: {
-  mainGroupIntersect: Intersection<Mesh>[];
+  mainGroupIntersect?: Object3D;
   next: () => void;
   raycaster: Raycaster;
 }) => void | undefined;
 
 const crudComponents: IpinterdownHander = ({ mainGroupIntersect, next }) => {
-  const intersect = mainGroupIntersect?.[0];
+  const intersect = mainGroupIntersect;
   if (!(intersect && (isShiftDown || isCtrlDown))) {
     next();
     return;
   }
   if (isShiftDown) {
-    intersect.object.parent?.remove(intersect.object);
+    intersect.parent?.remove(intersect);
   } else if (isCtrlDown) {
     const cube = new Cube();
     cube.position.copy(rollOverMesh.position);
@@ -66,11 +67,11 @@ const setTransformControl: IpinterdownHander = ({
     next();
     return;
   }
-  if (mainGroupIntersect.length > 0) {
-    const intersect = mainGroupIntersect[0];
-    if (intersect.object !== transformControls.object) {
+  if (mainGroupIntersect) {
+    const intersect = mainGroupIntersect;
+    if (intersect !== transformControls.object) {
       transformControls.detach();
-      transformControls.attach(intersect.object);
+      transformControls.attach(intersect);
     }
   }
   next();
@@ -91,7 +92,6 @@ scene.add(rollOverMesh);
 rollOverMesh.visible = false;
 
 function onPointerMove(event: any) {
-  console.log("move");
   if (!isCtrlDown) {
     return;
   }
@@ -113,11 +113,29 @@ function onPointerMove(event: any) {
   }
 }
 
+const getComponentParent = (object: Object3D): any => {
+  if (componentTypes.includes(object?.userData?.type)) {
+    return object;
+  } else if (object.parent) {
+    return getComponentParent(object.parent);
+  } else {
+    return null;
+  }
+};
+
 function onPointerDown(event: any) {
-  setPointer(event)
+  setPointer(event);
 
   raycaster.setFromCamera(pointer, camera);
-  const intersects = raycaster.intersectObjects(flatedComponents, false);
+  let intersects = raycaster.intersectObjects(flatedComponents, true);
+  console.log(flatedComponents);
+  console.log(intersects);
+  let intersect = null;
+  if (intersects.length > 0) {
+    intersect = intersects[0];
+    const currentComponent = getComponentParent(intersect.object);
+    intersect = currentComponent;
+  }
 
   let next: any = pointerdownHandlerArr[0];
   let i = 0;
@@ -126,7 +144,7 @@ function onPointerDown(event: any) {
     const handler = next;
     next = null;
     handler({
-      mainGroupIntersect: intersects,
+      mainGroupIntersect: intersect,
       next: () => {
         next = pointerdownHandlerArr[i];
       },

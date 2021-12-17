@@ -1,0 +1,58 @@
+import { unitWidth } from "@constants";
+import { flatedComponents, mainGroup } from "@env";
+import { updateSceneTree } from "../layout/SceneTree";
+import {
+  BoxGeometry,
+  Group,
+  Matrix4,
+  Mesh,
+  MeshLambertMaterial,
+  Vector3,
+} from "three";
+import { v4 } from "uuid";
+
+// 支柱
+class Pillar extends Group {
+  key: string;
+  title: string;
+  cubeWidth = unitWidth / 10;
+  constructor() {
+    super();
+    mainGroup.add(this);
+    this.userData.type = "pillar";
+    flatedComponents.push(this);
+    this.key = v4();
+    this.title = this.key;
+    updateSceneTree();
+    this.generatePillar();
+  }
+
+  generatePillar() {
+    var rod = new Group();
+    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+
+    const cubeGeometry = new BoxGeometry(this.cubeWidth, unitWidth, this.cubeWidth);
+
+    const cubem = new Matrix4();
+    cubem.makeTranslation(
+      (unitWidth - this.cubeWidth) / 2,
+      0,
+      (unitWidth - this.cubeWidth) / 2
+    );
+    cubeGeometry.applyMatrix4(cubem);
+
+    var endCylinder = new Mesh(cubeGeometry, cubeMaterial);
+
+    for (let i = 0; i < 4; i++) {
+      const mesh = endCylinder.clone();
+
+      const meshm = new Matrix4();
+      meshm.makeRotationAxis(new Vector3(0, 1, 0), (i * Math.PI) / 2);
+      mesh.applyMatrix4(meshm);
+
+      rod.add(mesh);
+    }
+    this.add(rod);
+  }
+}
+export default Pillar;

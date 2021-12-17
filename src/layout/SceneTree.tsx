@@ -1,3 +1,4 @@
+import { componentTypes } from "@constants";
 import { mainGroup } from "@env";
 import { Col, Row, TreeProps } from "antd";
 
@@ -33,30 +34,26 @@ const getTreeDataItem = (object: Object3D) => {
 };
 const SceneTree = () => {
   const [gData, setGData] = useState([...mainGroup.children]);
-  console.log(mainGroup);
   updateSceneTree = () => {
-    console.log(mainGroup);
 
     const obj: any = {};
     obj[mainGroup.id] = getTreeDataItem(mainGroup);
     mainGroup.traverse((object) => {
-      if (["cube", "valveControl"].includes(object?.userData?.type)) {
+      if (componentTypes.includes(object?.userData?.type)) {
         obj[object.id] = getTreeDataItem(object);
       }
     });
     mainGroup.traverse((object) => {
-      if (["cube", "valveControl"].includes(object?.userData?.type)) {
+      if (componentTypes.includes(object?.userData?.type)) {
         if (object.parent?.id) {
           obj[object.parent?.id].children.push(getTreeDataItem(object));
         }
       }
     });
-    console.log(obj);
 
     setGData([...obj[mainGroup.id].children]);
   };
   const onDragEnter = (info: any) => {
-    console.log(info);
     // expandedKeys 需要受控时设置
     // this.setState({
     //   expandedKeys: info.expandedKeys,
@@ -64,7 +61,6 @@ const SceneTree = () => {
   };
 
   const onDrop: TreeProps["onDrop"] = (info: any) => {
-    console.log(info);
     const dropKey = info.node[fieldNames.key];
     const dragKey = info.dragNode[fieldNames.key];
     const dropPos = info.node.pos.split("-");

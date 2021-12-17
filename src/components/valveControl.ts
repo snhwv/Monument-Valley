@@ -6,13 +6,16 @@ import {
   BufferGeometry,
   CylinderBufferGeometry,
   Group,
+  Matrix4,
   Mesh,
   MeshLambertMaterial,
   Plane,
+  Vector3,
 } from "three";
 import { v4 } from "uuid";
 import { animate } from "popmotion";
 
+// 控制杆
 class ValveControl extends Group {
   key: string;
   title: string;
@@ -28,7 +31,7 @@ class ValveControl extends Group {
     this.generateRod();
   }
 
-  plugWidth = 14;
+  plugHeight = unitWidth;
   plugR = 7;
 
   rodWidth = 30;
@@ -44,7 +47,7 @@ class ValveControl extends Group {
     var geometry = new CylinderBufferGeometry(
       this.plugR,
       this.plugR,
-      this.plugWidth,
+      this.plugHeight,
       32
     );
     var cylinder = new Mesh(geometry, cubeMaterial);
@@ -65,9 +68,19 @@ class ValveControl extends Group {
     );
     const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
     const verticalGeo = geometry.clone();
+
+    const vm = new Matrix4();
+    vm.makeRotationX(Math.PI / 2);
+    verticalGeo.applyMatrix4(vm);
+
     var verticalCylinder = new Mesh(verticalGeo, cubeMaterial);
 
     const horizontalGeo = geometry.clone();
+
+    const hm = new Matrix4();
+    hm.makeRotationZ(Math.PI / 2);
+    horizontalGeo.applyMatrix4(hm);
+
     var horizontalCylinder = new Mesh(horizontalGeo, cubeMaterial);
 
     this.verticalCylinder = verticalCylinder;
@@ -83,10 +96,23 @@ class ValveControl extends Group {
       32
     );
     this.endGeometry = endGeometry;
+
+    const endm = new Matrix4();
+    endGeometry.applyMatrix4(
+      new Matrix4()
+        .makeTranslation(this.rodWidth, 0, 0)
+        .multiply(endm.makeRotationZ(Math.PI / 2))
+    );
+
     var endCylinder = new Mesh(endGeometry, cubeMaterial);
 
     for (let i = 0; i < 4; i++) {
       const mesh = endCylinder.clone();
+
+      const meshm = new Matrix4();
+      meshm.makeRotationAxis(new Vector3(0, 1, 0), (i * Math.PI) / 2);
+      mesh.applyMatrix4(meshm);
+
       rod.add(mesh);
     }
     this.add(rod);

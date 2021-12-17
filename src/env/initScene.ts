@@ -36,7 +36,6 @@ camera.position.set(400, 400, 400);
 scene.add(camera);
 
 export const canvasResizeHandler = () => {
-  console.log('ressdfsad')
   const rects = getCanvasRect();
 
   sizes.height = rects.height;
@@ -46,6 +45,11 @@ export const canvasResizeHandler = () => {
   camera.right = sizes.width / 2;
   camera.top = sizes.height / 2;
   camera.bottom = sizes.height / -2;
+
+  camera.left *= 0.5;
+  camera.right *= 0.5;
+  camera.top *= 0.5;
+  camera.bottom *= 0.5;
 
   camera.updateProjectionMatrix();
 
@@ -78,7 +82,7 @@ export const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 floor.position.set(0, -1 - unitWidth / 2, 0);
 export const mainGroup = new Group();
 
-scene.add(floor);
+// scene.add(floor);
 scene.add(mainGroup);
 export const tick = () => {
   orbitControls.update();
