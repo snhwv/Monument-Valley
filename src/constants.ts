@@ -10,4 +10,5 @@ export const componentTypes = [
   "plane",
   "roof",
   "valveControl",
+  "site",
 ];

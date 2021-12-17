@@ -7,6 +7,7 @@ import Pier from "@components/pier";
 import Pillar from "@components/pillar";
 import Plane from "@components/plane";
 import Roof from "@components/roof";
+import Site from "@components/site";
 import ValveControl from "@components/valveControl";
 import { transformControls, tick, init } from "@env";
 import { useEffect, useRef } from "react";
@@ -15,18 +16,19 @@ import { eventInit } from "../event";
 function Three() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    // new Cube();
+    new Cube();
     // new Eave();
     // new Pillar();
     // new ValveControl();
     // new Pier();
     // new Plane();
     // new Ladder();
-    new Door();
+    // new Door();
     // new Roof();
     // new Altar();
+    new Site();
 
-    // const valveControl = new Roof();
+    // const valveControl = new Site();
     init();
     tick();
     eventInit();
