@@ -16,8 +16,12 @@ import { eventInit } from "../event";
 function Three() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    new Cube();
-    // new Eave();
+    // new Cube();
+    new Eave({
+      depth: 5,
+      eaveWidth: 5,
+      eaveWidth1: 2
+    });
     // new Pillar();
     // new ValveControl();
     // new Pier();
@@ -26,13 +30,13 @@ function Three() {
     // new Door();
     // new Roof();
     // new Altar();
-    new Site();
+    // new Site();
 
-    // const valveControl = new Site();
+    const valveControl = new Cube();
     init();
     tick();
     eventInit();
-    // transformControls.attach(valveControl);
+    transformControls.attach(valveControl);
   }, []);
   return <canvas data-canvas ref={ref} className={"full canvas"}></canvas>;
 }

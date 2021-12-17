@@ -15,9 +15,19 @@ import { v4 } from "uuid";
 class Pillar extends Group {
   key: string;
   title: string;
-  cubeWidth = unitWidth / 10;
-  constructor() {
+  pillarWidth: number;
+  width: number;
+
+  constructor();
+
+  constructor(obj: { width?: number; pillarWidth?: number });
+
+  constructor(obj?: { width?: number; pillarWidth?: number }) {
     super();
+
+    this.width = obj?.width || unitWidth;
+    this.pillarWidth = obj?.pillarWidth || unitWidth / 10;
+
     mainGroup.add(this);
     this.userData.type = "pillar";
     flatedComponents.push(this);
@@ -31,13 +41,17 @@ class Pillar extends Group {
     var rod = new Group();
     const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
 
-    const cubeGeometry = new BoxGeometry(this.cubeWidth, unitWidth, this.cubeWidth);
+    const cubeGeometry = new BoxGeometry(
+      this.pillarWidth,
+      unitWidth,
+      this.pillarWidth
+    );
 
     const cubem = new Matrix4();
     cubem.makeTranslation(
-      (unitWidth - this.cubeWidth) / 2,
+      (this.width - this.pillarWidth) / 2,
       0,
-      (unitWidth - this.cubeWidth) / 2
+      (this.width - this.pillarWidth) / 2
     );
     cubeGeometry.applyMatrix4(cubem);
 

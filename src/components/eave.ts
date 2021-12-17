@@ -17,8 +17,40 @@ import { v4 } from "uuid";
 class Eave extends Group {
   key: string;
   title: string;
-  constructor() {
+
+  depth: number;
+
+  eaveWidth: number;
+  eaveHeight: number;
+  eaveWidth1: number;
+  eaveHeight1: number;
+
+  constructor();
+
+  constructor(obj: {
+    depth?: number;
+    eaveWidth?: number;
+    eaveHeight?: number;
+    eaveWidth1?: number;
+    eaveHeight1?: number;
+  });
+
+  constructor(obj?: {
+    depth?: number;
+    eaveWidth?: number;
+    eaveHeight?: number;
+    eaveWidth1?: number;
+    eaveHeight1?: number;
+  }) {
     super();
+
+    this.depth = obj?.depth || unitWidth / 6;
+
+    this.eaveWidth = obj?.eaveWidth || unitWidth / 6;
+    this.eaveHeight = obj?.eaveHeight || unitWidth / 6;
+    this.eaveWidth1 = obj?.eaveWidth1 || unitWidth / 6;
+    this.eaveHeight1 = obj?.eaveHeight1 || unitWidth / 6;
+
     mainGroup.add(this);
     this.userData.type = "eave";
     flatedComponents.push(this);
@@ -32,43 +64,41 @@ class Eave extends Group {
     var rod = new Group();
     const heartShape = new Shape();
 
-    const pillarWidth = unitWidth / 6;
+    const eaveWidth = this.eaveWidth;
+    const eaveHeight = this.eaveWidth;
+
+    const eaveWidth1 = this.eaveWidth;
+    const eaveHeight1 = this.eaveWidth;
 
     heartShape.moveTo(-unitWidth / 2, unitWidth / 2);
 
     heartShape.lineTo(-unitWidth / 2, -unitWidth / 2);
 
-    heartShape.lineTo(-unitWidth / 2 + pillarWidth, -unitWidth / 2);
+    heartShape.lineTo(-unitWidth / 2 + eaveWidth, -unitWidth / 2);
+
+    heartShape.lineTo(-unitWidth / 2 + eaveWidth, -unitWidth / 2 + eaveHeight);
 
     heartShape.lineTo(
-      -unitWidth / 2 + pillarWidth,
-      -unitWidth / 2 + pillarWidth
-    );
-
-    heartShape.lineTo(
-      -unitWidth / 2 + pillarWidth * 2,
-      -unitWidth / 2 + pillarWidth * 2
+      -unitWidth / 2 + eaveWidth + eaveWidth1,
+      -unitWidth / 2 + eaveHeight + eaveHeight1
     );
     heartShape.lineTo(
-      unitWidth / 2 - pillarWidth * 2,
-      -unitWidth / 2 + pillarWidth * 2
+      unitWidth / 2 - eaveWidth - eaveWidth1,
+      -unitWidth / 2 + eaveHeight + eaveHeight1
     );
 
-    heartShape.lineTo(
-      unitWidth / 2 - pillarWidth,
-      -unitWidth / 2 + pillarWidth
-    );
+    heartShape.lineTo(unitWidth / 2 - eaveWidth, -unitWidth / 2 + eaveHeight);
 
-    heartShape.lineTo(unitWidth / 2 - pillarWidth, -unitWidth / 2);
+    heartShape.lineTo(unitWidth / 2 - eaveWidth, -unitWidth / 2);
 
     heartShape.lineTo(unitWidth / 2, -unitWidth / 2);
 
     heartShape.lineTo(unitWidth / 2, unitWidth / 2);
 
-    heartShape.lineTo(-unitWidth / 4, unitWidth / 2);
+    heartShape.lineTo(-unitWidth / 2, unitWidth / 2);
 
     const extrudeSettings = {
-      depth: pillarWidth,
+      depth: this.depth,
       bevelEnabled: false,
     };
 
@@ -77,7 +107,7 @@ class Eave extends Group {
     const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
 
     const cubem = new Matrix4();
-    cubem.makeTranslation(0, 0, unitWidth / 2 - pillarWidth);
+    cubem.makeTranslation(0, 0, unitWidth / 2 - this.depth);
     cubeGeometry.applyMatrix4(cubem);
 
     var endCylinder = new Mesh(cubeGeometry, cubeMaterial);

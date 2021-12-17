@@ -20,15 +20,39 @@ class Door extends Group {
   title: string;
   doorNumber: number;
   curveSegments: number;
+  width: number;
+  doorTop: number;
+  doorBottom: number;
+  doorWidth: number;
 
   constructor();
 
-  constructor(obj: { doorNumber: number; curveSegments: number });
+  constructor(obj: {
+    doorNumber?: number;
+    curveSegments?: number;
+    width?: number;
+    doorTop?: number;
+    doorBottom?: number;
+    doorWidth?: number;
+  });
 
-  constructor(obj?: { doorNumber: number; curveSegments: number }) {
+  constructor(obj?: {
+    doorNumber?: number;
+    curveSegments?: number;
+    width?: number;
+    doorTop?: number;
+    doorBottom?: number;
+    doorWidth?: number;
+  }) {
     super();
+
     this.doorNumber = obj?.doorNumber || 4;
     this.curveSegments = obj?.curveSegments || 1;
+    this.width = obj?.width || unitWidth;
+    this.doorTop = obj?.doorTop || unitWidth / 4;
+    this.doorBottom = obj?.doorBottom || 0;
+    this.doorWidth = obj?.doorWidth || unitWidth / 4;
+
     mainGroup.add(this);
     this.userData.type = "door";
     flatedComponents.push(this);
@@ -40,7 +64,8 @@ class Door extends Group {
   }
 
   generateDoor() {
-    const cubeGeometry = new BoxGeometry(unitWidth, unitWidth, unitWidth);
+    const width = this.width;
+    const cubeGeometry = new BoxGeometry(width, unitWidth, width);
     const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
     const cube = new Mesh(cubeGeometry, cubeMaterial);
 
@@ -48,8 +73,9 @@ class Door extends Group {
 
     const doorDepth = unitWidth / 4;
 
-    const doorWidth = unitWidth / 4;
-    const doorTop = unitWidth / 4;
+    const doorWidth = this.doorWidth;
+    const doorTop = this.doorTop;
+    const doorBottom = this.doorBottom;
 
     heartShape.moveTo(-doorWidth / 2, unitWidth / 2 - doorTop);
 
@@ -63,8 +89,9 @@ class Door extends Group {
     );
 
     heartShape.lineTo(doorWidth / 2, unitWidth / 2 - doorTop);
-    heartShape.lineTo(doorWidth / 2, -unitWidth / 2);
-    heartShape.lineTo(-doorWidth / 2, -unitWidth / 2);
+
+    heartShape.lineTo(doorWidth / 2, -unitWidth / 2 + doorBottom);
+    heartShape.lineTo(-doorWidth / 2, -unitWidth / 2 + doorBottom);
 
     heartShape.lineTo(-doorWidth / 2, unitWidth / 2 - doorTop);
 
@@ -90,7 +117,7 @@ class Door extends Group {
 
       const doorItem = new Mesh(geo, cubeMaterial);
 
-        subRes = CSG.subtract(subRes, doorItem);
+      subRes = CSG.subtract(subRes, doorItem);
     }
     this.add(subRes);
   }
