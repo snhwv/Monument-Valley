@@ -1,6 +1,7 @@
 import { componentMap } from "@components";
 import { unitWidth } from "@constants";
 import debounce from "lodash.debounce";
+import { updateSceneTree } from "../layout/SceneTree";
 import * as THREE from "three";
 import { Group, Matrix4, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -94,6 +95,7 @@ export const sceneInit = () => {
       });
     };
     generateObj(parsedMainGroupChildren, mainGroup);
+    updateSceneTree();
   }
   console.log(mainGroup);
 };

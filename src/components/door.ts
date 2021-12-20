@@ -40,7 +40,6 @@ class Door extends Component {
     doorWidth?: number;
   }) {
     super(obj);
-
   }
 
   generateElement() {

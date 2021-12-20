@@ -136,7 +136,7 @@ const SceneTree = () => {
     // new Cube()
     const treeData = generateTree((object: any) => {
       return {
-        type: object.userData.type,
+        type: object?.constructor?.name,
         args: object.args,
         matrix: object.matrix,
         children: [],
