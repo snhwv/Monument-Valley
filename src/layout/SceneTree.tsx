@@ -2,8 +2,9 @@ import { flatedComponents, mainGroup, transformControls } from "@env";
 import { Button, Col, Row, TreeProps } from "antd";
 
 import { Tree } from "antd";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Object3D } from "three";
+import EditModal from "./components/EditModal";
 
 export let updateSceneTree!: any;
 
@@ -82,7 +83,6 @@ const SceneTree = () => {
       dragObj = item;
     });
 
-    console.log(info);
     if (!info.dropToGap) {
       // Drop on the content
       loop(data, dropKey, (item: any) => {
@@ -119,16 +119,15 @@ const SceneTree = () => {
       addTo(ar[i].currentComponent.parent, dragObj.currentComponent);
     }
 
-    console.log(mainGroup.children);
-
     setGData(data);
   };
 
   const onSelect: TreeProps["onSelect"] = (selectedKeys, { node }: any) => {
-    console.log(node);
     if (selectedKeys?.[0]) {
       const currentComponent = node.currentComponent as Object3D;
-      currentComponent && transformControls.attach(currentComponent);
+      currentComponent &&
+        currentComponent.parent &&
+        transformControls.attach(currentComponent);
     }
   };
 
@@ -153,6 +152,13 @@ const SceneTree = () => {
     item.currentComponent.parent?.add(copyComponent);
     updateSceneTree();
   };
+  const onRemove = (item: any) => {
+    if (transformControls.object === item.currentComponent) {
+      transformControls.detach();
+    }
+    item.currentComponent.removeFromParent();
+    updateSceneTree();
+  };
   return (
     <>
       <Button onClick={save}>保存</Button>
@@ -171,11 +177,26 @@ const SceneTree = () => {
             <Row>
               <Col flex="1">{item?.title}</Col>
               <Col flex="none">
-                <Button type="link" size="small" onClick={() => onCopy(item)}>
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onCopy(item);
+                  }}
+                >
                   复制
                 </Button>
-                <Button type="link" size="small">
-                  修改
+                <EditModal item={item}></EditModal>
+                <Button
+                  type="link"
+                  size="small"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onRemove(item);
+                  }}
+                >
+                  删除
                 </Button>
               </Col>
             </Row>

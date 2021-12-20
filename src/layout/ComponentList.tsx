@@ -19,7 +19,7 @@ const ComponentList = () => {
             </a>,
           ]}
         >
-          <Typography.Text mark>{item}</Typography.Text>
+          <Typography.Text>{item}</Typography.Text>
         </List.Item>
       )}
     />

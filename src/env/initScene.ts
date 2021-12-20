@@ -78,7 +78,6 @@ export const sceneInit = () => {
   const mainGroupChildren = localStorage.getItem("mainGroupChildren");
   if (mainGroupChildren) {
     const parsedMainGroupChildren = JSON.parse(mainGroupChildren);
-    console.log(parsedMainGroupChildren);
     const generateObj = (arr: any[], parent: any) => {
       arr.map((item: any) => {
         const component: Group = new (componentMap as any)[item.type](
@@ -97,7 +96,6 @@ export const sceneInit = () => {
     generateObj(parsedMainGroupChildren, mainGroup);
     updateSceneTree();
   }
-  console.log(mainGroup);
 };
 
 const floorGeometry = new THREE.BoxGeometry(300, 2, 300);

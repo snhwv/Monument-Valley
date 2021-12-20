@@ -42,14 +42,27 @@ class Door extends Component {
     super(obj);
   }
 
+  getDefaultProps() {
+    return [
+      {
+        doorNumber: 1,
+        curveSegments: 1,
+        width: unitWidth,
+        doorTop: unitWidth / 4,
+        doorBottom: 0,
+        doorWidth: unitWidth / 4,
+      },
+    ];
+  }
+
   generateElement() {
     const obj = this.args?.[0];
-    this.doorNumber = obj?.doorNumber || 4;
-    this.curveSegments = obj?.curveSegments || 1;
-    this.width = obj?.width || unitWidth;
-    this.doorTop = obj?.doorTop || unitWidth / 4;
-    this.doorBottom = obj?.doorBottom || 0;
-    this.doorWidth = obj?.doorWidth || unitWidth / 4;
+    this.doorNumber = obj?.doorNumber;
+    this.curveSegments = obj?.curveSegments;
+    this.width = obj?.width;
+    this.doorTop = obj?.doorTop;
+    this.doorBottom = obj?.doorBottom;
+    this.doorWidth = obj?.doorWidth;
 
     this.generateDoor();
   }

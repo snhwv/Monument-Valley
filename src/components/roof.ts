@@ -21,7 +21,9 @@ class Roof extends Component {
   }
 
   generateElement(): void {
-    this.generateRoof();
+    this.hatHeight = unitWidth * 2;
+    this.generateHat();
+    this.generatePedestal();
   }
 
   generatePedestal() {
@@ -89,11 +91,6 @@ class Roof extends Component {
       new Mesh(horizontalGeometry, cubeMaterial)
     );
     this.add(result);
-  }
-
-  generateRoof() {
-    this.generateHat();
-    this.generatePedestal();
   }
 }
 export default Roof;

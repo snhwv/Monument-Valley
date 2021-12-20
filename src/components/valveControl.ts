@@ -17,6 +17,14 @@ class ValveControl extends Component {
     super();
   }
   generateElement(): void {
+    this.plugHeight = unitWidth;
+    this.plugR = 7;
+
+    this.rodWidth = 30;
+    this.rodR = 2.2;
+    this.rodEndWidth = 8;
+    this.rodEndR = 3.4;
+
     this.generatePlug();
     this.generateRod();
   }

@@ -20,8 +20,17 @@ class Pillar extends Component {
 
   constructor(obj?: { width?: number; pillarWidth?: number }) {
     super(obj);
-
   }
+
+  getDefaultProps() {
+    return [
+      {
+        width: unitWidth,
+        pillarWidth: unitWidth / 10,
+      },
+    ];
+  }
+
   generateElement() {
     const obj = this.args?.[0];
 

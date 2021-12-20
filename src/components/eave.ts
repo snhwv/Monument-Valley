@@ -37,16 +37,28 @@ class Eave extends Component {
     eaveHeight1?: number;
   }) {
     super(obj);
-
   }
+
+  getDefaultProps() {
+    return [
+      {
+        depth: unitWidth / 6,
+        eaveWidth: unitWidth / 6,
+        eaveHeight: unitWidth / 6,
+        eaveWidth1: unitWidth / 6,
+        eaveHeight1: unitWidth / 6,
+      },
+    ];
+  }
+
   generateElement() {
     const obj = this.args?.[0];
 
-    this.depth = obj?.depth || unitWidth / 6;
-    this.eaveWidth = obj?.eaveWidth || unitWidth / 6;
-    this.eaveHeight = obj?.eaveHeight || unitWidth / 6;
-    this.eaveWidth1 = obj?.eaveWidth1 || unitWidth / 6;
-    this.eaveHeight1 = obj?.eaveHeight1 || unitWidth / 6;
+    this.depth = obj?.depth;
+    this.eaveWidth = obj?.eaveWidth;
+    this.eaveHeight = obj?.eaveHeight;
+    this.eaveWidth1 = obj?.eaveWidth1;
+    this.eaveHeight1 = obj?.eaveHeight1;
 
     this.generateEave();
   }
@@ -56,10 +68,10 @@ class Eave extends Component {
     const heartShape = new Shape();
 
     const eaveWidth = this.eaveWidth;
-    const eaveHeight = this.eaveWidth;
+    const eaveHeight = this.eaveHeight;
 
-    const eaveWidth1 = this.eaveWidth;
-    const eaveHeight1 = this.eaveWidth;
+    const eaveWidth1 = this.eaveWidth1;
+    const eaveHeight1 = this.eaveHeight1;
 
     heartShape.moveTo(-unitWidth / 2, unitWidth / 2);
 
