@@ -1,8 +1,5 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
 import {
-  BoxGeometry,
   BufferGeometry,
   CylinderBufferGeometry,
   Group,
@@ -12,15 +9,14 @@ import {
   Plane,
   Vector3,
 } from "three";
-import { v4 } from "uuid";
-import { animate } from "popmotion";
 import Component from "./lib/recordable";
 
 // 控制杆
 class ValveControl extends Component {
   constructor() {
     super();
-    this.userData.type = "valveControl";
+  }
+  generateElement(): void {
     this.generatePlug();
     this.generateRod();
   }

@@ -1,6 +1,4 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
 import {
   BoxGeometry,
   Group,
@@ -9,13 +7,12 @@ import {
   MeshLambertMaterial,
   Vector3,
 } from "three";
-import { v4 } from "uuid";
 import Component from "./lib/recordable";
 
 // 支柱
 class Pillar extends Component {
-  pillarWidth: number;
-  width: number;
+  pillarWidth!: number;
+  width!: number;
 
   constructor();
 
@@ -24,10 +21,13 @@ class Pillar extends Component {
   constructor(obj?: { width?: number; pillarWidth?: number }) {
     super(obj);
 
+  }
+  generateElement() {
+    const obj = this.args?.[0];
+
     this.width = obj?.width || unitWidth;
     this.pillarWidth = obj?.pillarWidth || unitWidth / 10;
 
-    this.userData.type = "pillar";
     this.generatePillar();
   }
 

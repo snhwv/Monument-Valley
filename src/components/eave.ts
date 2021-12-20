@@ -1,8 +1,5 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
 import {
-  BoxGeometry,
   ExtrudeGeometry,
   Group,
   Matrix4,
@@ -11,17 +8,16 @@ import {
   Shape,
   Vector3,
 } from "three";
-import { v4 } from "uuid";
 import Component from "./lib/recordable";
 
 // 屋檐
 class Eave extends Component {
-  depth: number;
+  depth!: number;
 
-  eaveWidth: number;
-  eaveHeight: number;
-  eaveWidth1: number;
-  eaveHeight1: number;
+  eaveWidth!: number;
+  eaveHeight!: number;
+  eaveWidth1!: number;
+  eaveHeight1!: number;
 
   constructor();
 
@@ -42,14 +38,15 @@ class Eave extends Component {
   }) {
     super(obj);
 
-    this.depth = obj?.depth || unitWidth / 6;
+  }
+  generateElement() {
+    const obj = this.args?.[0];
 
+    this.depth = obj?.depth || unitWidth / 6;
     this.eaveWidth = obj?.eaveWidth || unitWidth / 6;
     this.eaveHeight = obj?.eaveHeight || unitWidth / 6;
     this.eaveWidth1 = obj?.eaveWidth1 || unitWidth / 6;
     this.eaveHeight1 = obj?.eaveHeight1 || unitWidth / 6;
-
-    this.userData.type = "eave";
 
     this.generateEave();
   }

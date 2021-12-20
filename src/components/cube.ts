@@ -1,14 +1,12 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
 import { BoxGeometry, Mesh, MeshLambertMaterial } from "three";
-import { v4 } from "uuid";
 import Component from "./lib/recordable";
 
 class Cube extends Component {
   constructor() {
     super();
-    this.userData.type = "cube";
+  }
+  generateElement() {
     this.generateCube();
   }
   generateCube() {

@@ -1,10 +1,9 @@
-import { unitWidth } from "@constants";
 import { flatedComponents, mainGroup } from "@env";
 import { updateSceneTree } from "../../layout/SceneTree";
-import { BoxGeometry, Group, Mesh, MeshLambertMaterial } from "three";
+import { Group } from "three";
 import { v4 } from "uuid";
 
-class Component extends Group {
+abstract class Component extends Group {
   key: string;
   title: string;
   args: any;
@@ -16,6 +15,17 @@ class Component extends Group {
     this.key = v4();
     this.title = this.key;
     updateSceneTree();
+    this.generateElement();
   }
+
+  changeArgs(...args: any) {
+    this.args = args;
+    this.children.map((item) => {
+      item.removeFromParent();
+    });
+    this.generateElement();
+  }
+
+  abstract generateElement(): void;
 }
 export default Component;

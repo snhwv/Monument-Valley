@@ -1,8 +1,5 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
-import { BoxGeometry, Group, Matrix4, Mesh, MeshLambertMaterial } from "three";
-import { v4 } from "uuid";
+import { BoxGeometry, Matrix4, Mesh, MeshLambertMaterial } from "three";
 import { CSG } from "three-csg-ts";
 import Component from "./lib/recordable";
 
@@ -10,7 +7,8 @@ import Component from "./lib/recordable";
 class Ladder extends Component {
   constructor() {
     super();
-    this.userData.type = "ladder";
+  }
+  generateElement() {
     this.generateLadder();
   }
   generateLadder() {

@@ -1,26 +1,9 @@
-import { componentTypes } from "@constants";
 import { flatedComponents, mainGroup, transformControls } from "@env";
-import { Col, Row, TreeProps } from "antd";
+import { Button, Col, Row, TreeProps } from "antd";
 
 import { Tree } from "antd";
 import { useState } from "react";
 import { Object3D } from "three";
-
-// const initData = [
-//   {
-//     uuid: "1",
-//     children: [
-//       {
-//         title: "2",
-//         uuid: "2",
-//       },
-//       {
-//         title: "3",
-//         uuid: "3",
-//       },
-//     ],
-//   },
-// ];
 
 export let updateSceneTree!: any;
 
@@ -29,24 +12,42 @@ const fieldNames = {
   title: "title",
   children: "children",
 };
-const getTreeDataItem = (object: Object3D) => {
-  return { key: object.id, name: object.name, title: object.id, children: [] };
+const getTreeDataItem = (object: any): any => {
+  return {
+    key: object.id,
+    name: object.name,
+    currentComponent: object,
+    title: object.id,
+    children: [],
+  };
 };
+
+const addTo = (parent: Object3D, child: Object3D) => {
+  if (!parent.children.includes(child)) {
+    child.parent?.remove?.(child);
+    parent.add(child);
+  }
+};
+
+const generateTree = (getItemData = getTreeDataItem): any[] => {
+  const obj: any = {};
+  obj[mainGroup.id] = getItemData(mainGroup);
+  flatedComponents.forEach((object) => {
+    obj[object.id] = getItemData(object);
+  });
+  flatedComponents.forEach((object) => {
+    if (object.parent?.id) {
+      obj[object.parent?.id].children.push(obj[object.id]);
+    }
+  });
+  return [...obj[mainGroup.id].children];
+};
+
 const SceneTree = () => {
   const [gData, setGData] = useState([...mainGroup.children]);
   updateSceneTree = () => {
-    const obj: any = {};
-    obj[mainGroup.id] = getTreeDataItem(mainGroup);
-    flatedComponents.forEach((object) => {
-      obj[object.id] = getTreeDataItem(object);
-    });
-    flatedComponents.forEach((object) => {
-      if (object.parent?.id) {
-        obj[object.parent?.id].children.push(getTreeDataItem(object));
-      }
-    });
-
-    setGData([...obj[mainGroup.id].children]);
+    const treeData = generateTree(getTreeDataItem);
+    setGData(treeData);
   };
   const onDragEnter = (info: any) => {
     // expandedKeys 需要受控时设置
@@ -88,6 +89,8 @@ const SceneTree = () => {
         item.children = item.children || [];
         // where to insert 示例添加到头部，可以是随意位置
         item.children.unshift(dragObj);
+
+        addTo(item.currentComponent, dragObj.currentComponent);
       });
     } else if (
       (info.node.children || []).length > 0 && // Has children
@@ -97,6 +100,8 @@ const SceneTree = () => {
       loop(data, dropKey, (item: any) => {
         item.children = item.children || [];
         item.children.unshift(dragObj);
+
+        addTo(item.currentComponent, dragObj.currentComponent);
       });
     } else {
       let ar: any;
@@ -110,31 +115,74 @@ const SceneTree = () => {
       } else {
         ar.splice(i + 1, 0, dragObj);
       }
+
+      addTo(ar[i].currentComponent.parent, dragObj.currentComponent);
     }
+
+    console.log(mainGroup.children);
+
     setGData(data);
   };
 
-  const onSelect: TreeProps["onSelect"] = (selectedKeys) => {
+  const onSelect: TreeProps["onSelect"] = (selectedKeys, { node }: any) => {
+    console.log(node);
     if (selectedKeys?.[0]) {
-      const currentComponent = mainGroup.getObjectById(
-        selectedKeys?.[0] as number
-      );
+      const currentComponent = node.currentComponent as Object3D;
       currentComponent && transformControls.attach(currentComponent);
     }
   };
 
+  const save = () => {
+    // new Cube()
+    const treeData = generateTree((object: any) => {
+      return {
+        type: object.userData.type,
+        args: object.args,
+        matrix: object.matrix,
+        children: [],
+      };
+    });
+    console.log(treeData);
+    localStorage.setItem("mainGroupChildren", JSON.stringify(treeData));
+  };
+  const onCopy = (item: any) => {
+    const copyComponent = new item.currentComponent.constructor(
+      ...item.currentComponent.args
+    );
+    copyComponent.parent.remove(copyComponent);
+    item.currentComponent.parent?.add(copyComponent);
+    updateSceneTree();
+  };
   return (
-    <Tree
-      className="draggable-tree"
-      //   defaultExpandedKeys={expandedKeys}
-      draggable
-      blockNode
-      onDragEnter={onDragEnter}
-      onSelect={onSelect}
-      onDrop={onDrop}
-      treeData={gData as any}
-      fieldNames={fieldNames}
-    />
+    <>
+      <Button onClick={save}>保存</Button>
+      <Tree
+        className="draggable-tree"
+        //   defaultExpandedKeys={expandedKeys}
+        draggable
+        blockNode
+        onDragEnter={onDragEnter}
+        onSelect={onSelect}
+        onDrop={onDrop}
+        treeData={gData as any}
+        fieldNames={fieldNames}
+        titleRender={(item) => {
+          return (
+            <Row>
+              <Col flex="1">{item?.title}</Col>
+              <Col flex="none">
+                <Button type="link" size="small" onClick={() => onCopy(item)}>
+                  复制
+                </Button>
+                <Button type="link" size="small">
+                  修改
+                </Button>
+              </Col>
+            </Row>
+          );
+        }}
+      />
+    </>
   );
 };
 export default SceneTree;

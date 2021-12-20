@@ -1,24 +1,19 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
 import {
-  BoxGeometry,
   ExtrudeGeometry,
-  Group,
   Matrix4,
   Mesh,
   MeshLambertMaterial,
   Shape,
-  Vector3,
 } from "three";
-import { v4 } from "uuid";
 import Component from "./lib/recordable";
 
 // 桥墩
 class Pier extends Component {
   constructor() {
     super();
-    this.userData.type = "pier";
+  }
+  generateElement() {
     this.generatePier();
   }
 

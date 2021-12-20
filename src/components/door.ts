@@ -1,28 +1,24 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
 import {
   BoxGeometry,
   ExtrudeGeometry,
-  Group,
   Matrix4,
   Mesh,
   MeshLambertMaterial,
   Shape,
   Vector3,
 } from "three";
-import { v4 } from "uuid";
 import { CSG } from "three-csg-ts";
 import Component from "./lib/recordable";
 
 // 门/窗
 class Door extends Component {
-  doorNumber: number;
-  curveSegments: number;
-  width: number;
-  doorTop: number;
-  doorBottom: number;
-  doorWidth: number;
+  doorNumber!: number;
+  curveSegments!: number;
+  width!: number;
+  doorTop!: number;
+  doorBottom!: number;
+  doorWidth!: number;
 
   constructor();
 
@@ -45,6 +41,10 @@ class Door extends Component {
   }) {
     super(obj);
 
+  }
+
+  generateElement() {
+    const obj = this.args?.[0];
     this.doorNumber = obj?.doorNumber || 4;
     this.curveSegments = obj?.curveSegments || 1;
     this.width = obj?.width || unitWidth;
@@ -52,11 +52,8 @@ class Door extends Component {
     this.doorBottom = obj?.doorBottom || 0;
     this.doorWidth = obj?.doorWidth || unitWidth / 4;
 
-    this.userData.type = "door";
-
     this.generateDoor();
   }
-
   generateDoor() {
     const width = this.width;
     const cubeGeometry = new BoxGeometry(width, unitWidth, width);

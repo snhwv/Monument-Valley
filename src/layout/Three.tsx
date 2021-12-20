@@ -17,18 +17,20 @@ import { eventInit } from "../event";
 function Three() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    new Cube();
-    new Eave();
-    new Pillar();
-    new ValveControl();
-    new Pier();
-    new Plane();
-    new Ladder();
-    new Door();
-    new Roof();
-    new Altar();
-    new Site();
-    new CustomeGroup();
+    // new Cube();
+    // new Eave();
+    // new Pillar();
+    // new ValveControl();
+    // new Pier();
+    // new Plane();
+    // new Ladder();
+    // new Door({
+    //   doorNumber: 2
+    // });
+    // new Roof();
+    // new Altar();
+    // new Site();
+    // new CustomeGroup();
 
     // const valveControl = new Cube();
     init();

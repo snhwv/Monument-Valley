@@ -1,23 +1,20 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
 import {
   BoxBufferGeometry,
   BoxGeometry,
-  Group,
   Matrix4,
   Mesh,
   MeshLambertMaterial,
   Vector3,
 } from "three";
-import { v4 } from "uuid";
 import { CSG } from "three-csg-ts";
 import Component from "./lib/recordable";
 
 class Altar extends Component {
   constructor() {
     super();
-    this.userData.type = "altar";
+  }
+  generateElement() {
     this.generateAltar();
     this.generatePedestal();
   }

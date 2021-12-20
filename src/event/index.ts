@@ -1,5 +1,6 @@
+import { componentTypes } from "@components";
 import Cube from "@components/cube";
-import { componentTypes, unitWidth } from "@constants";
+import { unitWidth } from "@constants";
 import {
   camera,
   canvas,
@@ -114,7 +115,9 @@ function onPointerMove(event: any) {
 }
 
 const getComponentParent = (object: Object3D): any => {
-  if (componentTypes.includes(object?.userData?.type)) {
+  console.log(componentTypes);
+
+  if (componentTypes.includes(object?.constructor?.name)) {
     return object;
   } else if (object.parent) {
     return getComponentParent(object.parent);
@@ -128,7 +131,6 @@ function onPointerDown(event: any) {
 
   raycaster.setFromCamera(pointer, camera);
   let intersects = raycaster.intersectObjects(flatedComponents, true);
-  // console.log(flatedComponents);
   let intersect = null;
   if (intersects.length > 0) {
     intersect = intersects[0];

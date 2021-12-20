@@ -1,23 +1,18 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
 import {
-  BoxGeometry,
   ExtrudeGeometry,
-  Group,
   Matrix4,
   Mesh,
   MeshLambertMaterial,
   Shape,
 } from "three";
-import { v4 } from "uuid";
 import Component from "./lib/recordable";
 
 class Site extends Component {
   constructor() {
     super();
-    this.userData.type = "site";
-
+  }
+  generateElement(): void {
     this.generateSite();
   }
 

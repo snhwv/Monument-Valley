@@ -1,7 +1,8 @@
+import { componentMap } from "@components";
 import { unitWidth } from "@constants";
 import debounce from "lodash.debounce";
 import * as THREE from "three";
-import { Group, WebGLRenderer } from "three";
+import { Group, Matrix4, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 export let canvas: HTMLCanvasElement;
@@ -72,6 +73,29 @@ export const sceneInit = () => {
     alpha: true,
   });
   canvasResizeHandler();
+
+  const mainGroupChildren = localStorage.getItem("mainGroupChildren");
+  if (mainGroupChildren) {
+    const parsedMainGroupChildren = JSON.parse(mainGroupChildren);
+    console.log(parsedMainGroupChildren);
+    const generateObj = (arr: any[], parent: any) => {
+      arr.map((item: any) => {
+        const component: Group = new (componentMap as any)[item.type](
+          ...item.args
+        );
+        component.parent?.remove(component);
+        parent.add(component);
+        const matrix = new Matrix4();
+        matrix.elements = item.matrix.elements;
+        component.applyMatrix4(matrix);
+        if (item.children?.length) {
+          generateObj(item.children, component);
+        }
+      });
+    };
+    generateObj(parsedMainGroupChildren, mainGroup);
+  }
+  console.log(mainGroup);
 };
 
 const floorGeometry = new THREE.BoxGeometry(300, 2, 300);
@@ -80,10 +104,12 @@ const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xfaebd7 });
 export const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 
 floor.position.set(0, -1 - unitWidth / 2, 0);
+
 export const mainGroup = new Group();
 
 // scene.add(floor);
 scene.add(mainGroup);
+
 export const tick = () => {
   orbitControls.update();
   renderer.render(scene, camera);

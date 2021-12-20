@@ -1,17 +1,16 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
 import { BoxGeometry, Matrix4, Mesh, MeshLambertMaterial } from "three";
-import { v4 } from "uuid";
 import Component from "./lib/recordable";
 
 class Plane extends Component {
   constructor() {
     super();
-    this.userData.type = "plane";
+  }
 
+  generateElement(): void {
     this.generatePlane();
   }
+
   generatePlane() {
     const height = unitWidth / 6;
     const cubeGeometry = new BoxGeometry(unitWidth, height, unitWidth);

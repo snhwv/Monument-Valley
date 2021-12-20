@@ -1,4 +1,5 @@
 import { Col, Row, Tabs } from "antd";
+import ComponentList from "./ComponentList";
 import SceneTree from "./SceneTree";
 import Three from "./Three";
 
@@ -12,7 +13,7 @@ function Layout() {
             <SceneTree></SceneTree>
           </TabPane>
           <TabPane tab="Tab 2" key="2">
-            Content of Tab Pane 2
+            <ComponentList></ComponentList>
           </TabPane>
         </Tabs>
       </Col>

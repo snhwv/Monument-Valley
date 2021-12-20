@@ -1,19 +1,13 @@
 import { unitWidth } from "@constants";
-import { flatedComponents, mainGroup } from "@env";
-import { updateSceneTree } from "../layout/SceneTree";
 import {
   BoxBufferGeometry,
-  BoxGeometry,
   ExtrudeGeometry,
-  Group,
   Matrix4,
   Mesh,
   MeshLambertMaterial,
   Shape,
   Vector2,
-  Vector3,
 } from "three";
-import { v4 } from "uuid";
 import { CSG } from "three-csg-ts";
 import Component from "./lib/recordable";
 
@@ -22,12 +16,11 @@ class Roof extends Component {
   hatHeight = unitWidth * 2;
   constructor();
 
-  constructor(obj: { doorNumber: number });
+  constructor() {
+    super();
+  }
 
-  constructor(obj?: { doorNumber: number }) {
-    super(obj);
-    // this.doorNumber = obj?.doorNumber || 4;
-    this.userData.type = "roof";
+  generateElement(): void {
     this.generateRoof();
   }
 
