@@ -127,4 +127,5 @@ class Eave extends Component {
     this.add(rod);
   }
 }
+(Eave as any).cnName = "屋檐";
 export default Eave;

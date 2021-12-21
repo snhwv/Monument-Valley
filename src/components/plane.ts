@@ -22,4 +22,5 @@ class Plane extends Component {
     this.add(new Mesh(cubeGeometry, cubeMaterial));
   }
 }
+(Plane as any).cnName = "桥板";
 export default Plane;

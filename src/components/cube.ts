@@ -15,4 +15,5 @@ class Cube extends Component {
     this.add(new Mesh(cubeGeometry, cubeMaterial));
   }
 }
+(Cube as any).cnName = "正方体";
 export default Cube;

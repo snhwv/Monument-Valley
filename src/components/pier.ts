@@ -60,4 +60,5 @@ class Pier extends Component {
     this.add(endCylinder);
   }
 }
+(Pier as any).cnName = "桥墩";
 export default Pier;

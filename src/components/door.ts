@@ -20,6 +20,7 @@ class Door extends Component {
   doorBottom!: number;
   doorWidth!: number;
 
+
   constructor();
 
   constructor(obj: {
@@ -125,4 +126,5 @@ class Door extends Component {
     this.add(subRes);
   }
 }
+(Door as any).cnName = "门窗";
 export default Door;

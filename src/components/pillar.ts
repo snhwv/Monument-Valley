@@ -72,4 +72,5 @@ class Pillar extends Component {
     this.add(rod);
   }
 }
+(Pillar as any).cnName = "支柱";
 export default Pillar;

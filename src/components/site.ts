@@ -61,4 +61,5 @@ class Site extends Component {
     this.add(doorItem);
   }
 }
+(Site as any).cnName = "站点";
 export default Site;

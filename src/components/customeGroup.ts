@@ -7,4 +7,5 @@ class CustomeGroup extends Component {
 
   generateElement() {}
 }
+(CustomeGroup as any).cnName = "组";
 export default CustomeGroup;

@@ -65,4 +65,5 @@ class Altar extends Component {
     this.add(unionRes);
   }
 }
+(Altar as any).cnName = "祭坛";
 export default Altar;

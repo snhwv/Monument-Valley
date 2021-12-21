@@ -93,4 +93,5 @@ class Roof extends Component {
     this.add(result);
   }
 }
+(Roof as any).cnName = "屋顶";
 export default Roof;

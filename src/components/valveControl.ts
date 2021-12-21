@@ -166,4 +166,5 @@ class ValveControl extends Component {
   //     tween.start();
   //   }
 }
+(ValveControl as any).cnName = "控制点";
 export default ValveControl;

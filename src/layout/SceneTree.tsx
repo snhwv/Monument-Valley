@@ -18,7 +18,7 @@ const getTreeDataItem = (object: any): any => {
     key: object.id,
     name: object.name,
     currentComponent: object,
-    title: object.id,
+    title: object.constructor.cnName + object.id,
     children: [],
   };
 };
@@ -141,7 +141,6 @@ const SceneTree = () => {
         children: [],
       };
     });
-    console.log(treeData);
     localStorage.setItem("mainGroupChildren", JSON.stringify(treeData));
   };
   const onCopy = (item: any) => {

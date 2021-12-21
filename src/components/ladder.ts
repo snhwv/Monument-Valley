@@ -49,4 +49,5 @@ class Ladder extends Component {
     this.add(subRes);
   }
 }
+(Ladder as any).cnName = "爬梯";
 export default Ladder;
