@@ -11,6 +11,7 @@ import {
   setMode,
   transformControls,
 } from "@env";
+import { saveScene, setTreeExpandedKeys } from "../layout/SceneTree";
 import {
   BoxGeometry,
   Intersection,
@@ -73,6 +74,8 @@ const setTransformControl: IpinterdownHander = ({
     if (intersect !== transformControls.object) {
       transformControls.detach();
       transformControls.attach(intersect);
+
+      setTreeExpandedKeys([intersect.id]);
     }
   }
   next();
@@ -154,8 +157,8 @@ function onPointerDown(event: any) {
   }
 }
 
-const saveScene = () => {
-  console.log(mainGroup);
+const onSaveScene = () => {
+  saveScene();
 };
 
 function onDocumentKeyDown(event: any) {
@@ -175,7 +178,7 @@ function onDocumentKeyDown(event: any) {
     case 83:
       if (event.ctrlKey) {
         event.preventDefault();
-        saveScene();
+        onSaveScene();
         return;
       }
       setMode("scale");

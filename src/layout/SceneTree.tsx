@@ -7,6 +7,8 @@ import { Object3D } from "three";
 import EditModal from "./components/EditModal";
 
 export let updateSceneTree!: any;
+export let saveScene!: any;
+export let setTreeExpandedKeys!: any;
 
 const fieldNames = {
   key: "key",
@@ -46,6 +48,7 @@ const generateTree = (getItemData = getTreeDataItem): any[] => {
 
 const SceneTree = () => {
   const [gData, setGData] = useState([...mainGroup.children]);
+  const [expandedKeys, setExpandedKeys] = useState<any>([]);
   updateSceneTree = () => {
     const treeData = generateTree(getTreeDataItem);
     setGData(treeData);
@@ -131,6 +134,13 @@ const SceneTree = () => {
     }
   };
 
+  setTreeExpandedKeys = (keys: any[]) => {
+    setExpandedKeys(keys);
+  };
+
+  saveScene = () => {
+    save();
+  };
   const save = () => {
     // new Cube()
     const treeData = generateTree((object: any) => {
@@ -166,6 +176,8 @@ const SceneTree = () => {
         //   defaultExpandedKeys={expandedKeys}
         draggable
         blockNode
+        expandedKeys={expandedKeys}
+        selectedKeys={expandedKeys}
         onDragEnter={onDragEnter}
         onSelect={onSelect}
         onDrop={onDrop}
