@@ -3,16 +3,15 @@ import { BoxGeometry, Matrix4, Mesh, MeshLambertMaterial } from "three";
 import Component from "./lib/recordable";
 
 class Plane extends Component {
-  constructor() {
-    super();
+  constructor(...args: any) {
+    super(...args);
   }
-
   generateElement(): void {
     this.generatePlane();
   }
 
   generatePlane() {
-    const height = unitWidth / 6;
+    const height = 4;
     const cubeGeometry = new BoxGeometry(unitWidth, height, unitWidth);
     const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
 

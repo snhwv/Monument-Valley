@@ -10,8 +10,8 @@ import Component from "./lib/recordable";
 
 // 桥墩
 class Pier extends Component {
-  constructor() {
-    super();
+  constructor(...args: any) {
+    super(...args);
   }
   generateElement() {
     this.generatePier();
@@ -20,7 +20,7 @@ class Pier extends Component {
   generatePier() {
     const heartShape = new Shape();
 
-    const pillarWidth = unitWidth / 6;
+    const pillarWidth = 4;
 
     heartShape.moveTo(-unitWidth / 2, unitWidth / 2);
 

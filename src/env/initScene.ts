@@ -81,7 +81,7 @@ export const sceneInit = () => {
     const generateObj = (arr: any[], parent: any) => {
       arr.map((item: any) => {
         const component: Group = new (componentMap as any)[item.type](
-          ...item.args
+          ...item.userData.props
         );
         component.parent?.remove(component);
         parent.add(component);

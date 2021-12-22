@@ -9,8 +9,8 @@ import {
 import Component from "./lib/recordable";
 
 class Site extends Component {
-  constructor() {
-    super();
+  constructor(...args: any) {
+    super(...args);
   }
   generateElement(): void {
     this.generateSite();

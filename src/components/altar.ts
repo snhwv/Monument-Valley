@@ -11,8 +11,8 @@ import { CSG } from "three-csg-ts";
 import Component from "./lib/recordable";
 
 class Altar extends Component {
-  constructor() {
-    super();
+  constructor(...args: any) {
+    super(...args);
   }
   generateElement() {
     this.generateAltar();
@@ -29,7 +29,7 @@ class Altar extends Component {
     );
 
     const cubem = new Matrix4();
-    cubem.makeTranslation(0, thickness / 2 - unitWidth / 2, 0);
+    cubem.makeTranslation(0, -thickness / 2 - unitWidth / 2, 0);
     geometry.applyMatrix4(cubem);
 
     var cube = new Mesh(geometry, cubeMaterial);

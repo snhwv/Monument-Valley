@@ -1,8 +1,8 @@
 import Component from "./lib/recordable";
 
 class CustomeGroup extends Component {
-  constructor() {
-    super();
+  constructor(...args: any) {
+    super(...args);
   }
 
   generateElement() {}

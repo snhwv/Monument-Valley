@@ -31,9 +31,10 @@ const setPointer = (event: any) => {
 };
 
 export const eventInit = () => {
-  document.addEventListener("pointerdown", onPointerDown);
-  document.addEventListener("keydown", onDocumentKeyDown);
-  document.addEventListener("keyup", onDocumentKeyUp);
+  
+  canvas.addEventListener("pointerdown", onPointerDown);
+  canvas.addEventListener("keydown", onDocumentKeyDown);
+  canvas.addEventListener("keyup", onDocumentKeyUp);
 };
 
 const pointer = new Vector2();

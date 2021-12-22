@@ -30,19 +30,22 @@ class CarvedCylinder extends Component {
     r?: number;
   });
 
-  constructor(obj?: {
-    doorNumber?: number;
-    curveSegments?: number;
-    doorTop?: number;
-    doorBottom?: number;
-    doorWidth?: number;
-    r?: number;
-  }) {
-    super(obj);
+  constructor(
+    obj?: {
+      doorNumber?: number;
+      curveSegments?: number;
+      doorTop?: number;
+      doorBottom?: number;
+      doorWidth?: number;
+      r?: number;
+    },
+    ...rest: any
+  ) {
+    super(obj, ...rest);
   }
 
   generateElement() {
-    const obj = this.args?.[0];
+    const obj = this.userData.props?.[0];
 
     this.doorNumber = obj?.doorNumber;
     this.curveSegments = obj?.curveSegments;
@@ -62,7 +65,7 @@ class CarvedCylinder extends Component {
         doorTop: unitWidth / 4,
         doorBottom: 0,
         doorWidth: unitWidth / 4,
-        r: unitWidth,
+        r: unitWidth / 2,
       },
     ];
   }

@@ -13,8 +13,8 @@ import Component from "./lib/recordable";
 
 // 控制杆
 class ValveControl extends Component {
-  constructor() {
-    super();
+  constructor(...args: any) {
+    super(...args);
   }
   generateElement(): void {
     this.plugHeight = unitWidth;

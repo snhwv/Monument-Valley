@@ -39,7 +39,7 @@ const EditModal: React.FC<any> = ({ item }) => {
           val[key] = Number(val[key]);
         }
       });
-      item.currentComponent.changeArgs(val);
+      item.currentComponent.changeProps(val);
     }
   };
   const formRef = useRef<any>(null);

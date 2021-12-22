@@ -13,14 +13,6 @@ import Component from "./lib/recordable";
 
 // 门/窗
 class Door extends Component {
-  doorNumber!: number;
-  curveSegments!: number;
-  width!: number;
-  doorTop!: number;
-  doorBottom!: number;
-  doorWidth!: number;
-
-
   constructor();
 
   constructor(obj: {
@@ -32,15 +24,18 @@ class Door extends Component {
     doorWidth?: number;
   });
 
-  constructor(obj?: {
-    doorNumber?: number;
-    curveSegments?: number;
-    width?: number;
-    doorTop?: number;
-    doorBottom?: number;
-    doorWidth?: number;
-  }) {
-    super(obj);
+  constructor(
+    obj?: {
+      doorNumber?: number;
+      curveSegments?: number;
+      width?: number;
+      doorTop?: number;
+      doorBottom?: number;
+      doorWidth?: number;
+    },
+    ...rest: any
+  ) {
+    super(obj, ...rest);
   }
 
   getDefaultProps() {
@@ -57,18 +52,18 @@ class Door extends Component {
   }
 
   generateElement() {
-    const obj = this.args?.[0];
-    this.doorNumber = obj?.doorNumber;
-    this.curveSegments = obj?.curveSegments;
-    this.width = obj?.width;
-    this.doorTop = obj?.doorTop;
-    this.doorBottom = obj?.doorBottom;
-    this.doorWidth = obj?.doorWidth;
-
     this.generateDoor();
   }
   generateDoor() {
-    const width = this.width;
+    const obj = this.userData.props?.[0];
+
+    const width = obj?.width;
+    const doorWidth = obj?.doorWidth;
+    const doorTop = obj?.doorTop;
+    const doorBottom = obj?.doorBottom;
+    const curveSegments = obj?.curveSegments;
+    const doorNumber = obj?.doorNumber;
+
     const cubeGeometry = new BoxGeometry(width, unitWidth, width);
     const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
     const cube = new Mesh(cubeGeometry, cubeMaterial);
@@ -76,10 +71,6 @@ class Door extends Component {
     const heartShape = new Shape();
 
     const doorDepth = unitWidth / 4;
-
-    const doorWidth = this.doorWidth;
-    const doorTop = this.doorTop;
-    const doorBottom = this.doorBottom;
 
     heartShape.moveTo(-doorWidth / 2, unitWidth / 2 - doorTop);
 
@@ -102,7 +93,7 @@ class Door extends Component {
     const extrudeSettings = {
       depth: doorDepth,
       bevelEnabled: false,
-      curveSegments: this.curveSegments,
+      curveSegments,
     };
 
     const doorGeometry = new ExtrudeGeometry(heartShape, extrudeSettings);
@@ -112,7 +103,7 @@ class Door extends Component {
     doorGeometry.applyMatrix4(cubem);
 
     let subRes: Mesh = cube;
-    for (let i = 0; i < this.doorNumber; i++) {
+    for (let i = 0; i < doorNumber; i++) {
       const geo = doorGeometry.clone();
 
       const cubem = new Matrix4();

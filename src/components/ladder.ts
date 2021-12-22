@@ -5,8 +5,8 @@ import Component from "./lib/recordable";
 
 // 爬梯
 class Ladder extends Component {
-  constructor() {
-    super();
+  constructor(...args: any) {
+    super(...args);
   }
   generateElement() {
     this.generateLadder();

@@ -16,8 +16,8 @@ class Roof extends Component {
   hatHeight = unitWidth * 2;
   constructor();
 
-  constructor() {
-    super();
+  constructor(...args: any) {
+    super(...args);
   }
 
   generateElement(): void {

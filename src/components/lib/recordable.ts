@@ -7,25 +7,28 @@ import merge from "lodash.merge";
 abstract class Component extends Group {
   key: string;
   title: string;
-  args: any;
   constructor(...args: any) {
     super();
-    this.args = [];
+    this.userData.props = [];
     mainGroup.add(this);
     flatedComponents.push(this);
     this.key = v4();
     this.title = this.key;
-    this.changeArgs(...args);
+
+    if (args?.[1]) {
+      this.changeProps(...args);
+    }
+
     updateSceneTree();
   }
 
-  changeArgs(...args: any) {
+  changeProps(...args: any) {
     this.children.map((item) => {
       item.removeFromParent();
     });
     const defaultProps = this?.getDefaultProps?.();
     if (defaultProps) {
-      merge(this.args, defaultProps, args);
+      merge(this.userData.props, defaultProps, args);
     }
     this.generateElement();
   }

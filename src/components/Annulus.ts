@@ -4,15 +4,13 @@ import { CSG } from "three-csg-ts";
 import Component from "./lib/recordable";
 
 class Annulus extends Component {
-  r0!: number;
-  r1!: number;
 
   constructor();
 
   constructor(obj: { r0?: number; r1?: number });
 
-  constructor(obj?: { r0?: number; r1?: number }) {
-    super(obj);
+  constructor(obj?: { r0?: number; r1?: number }, ...rest: any) {
+    super(obj, ...rest);
   }
 
   getDefaultProps() {
@@ -25,16 +23,14 @@ class Annulus extends Component {
   }
 
   generateElement() {
-    const obj = this.args?.[0];
-
-    this.r0 = obj?.r0;
-    this.r1 = obj?.r1;
 
     this.generateCylinder();
   }
   generateCylinder() {
-    const r0 = this.r0;
-    const r1 = this.r1;
+    const obj = this.userData.props?.[0];
+
+    const r0 = obj?.r0;
+    const r1 = obj?.r1;
     const geometry = new CylinderGeometry(r0, r0, unitWidth, 32);
     const geometry1 = new CylinderGeometry(r1, r1, unitWidth, 32);
     const material = new MeshLambertMaterial({ color: 0xb6ae71 });

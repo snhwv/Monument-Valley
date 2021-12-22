@@ -149,7 +149,7 @@ const SceneTree = () => {
     const treeData = generateTree((object: any) => {
       return {
         type: object?.constructor?.name,
-        args: object.args,
+        userData: object.userData,
         matrix: object.matrix,
         children: [],
       };

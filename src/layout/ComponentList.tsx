@@ -3,7 +3,7 @@ import { List, Typography } from "antd";
 
 const ComponentList = () => {
   const addComponent = (Component: any) => {
-    new Component();
+    new Component(undefined, true);
   };
   return (
     <List

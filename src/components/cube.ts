@@ -3,8 +3,8 @@ import { BoxGeometry, Mesh, MeshLambertMaterial } from "three";
 import Component from "./lib/recordable";
 
 class Cube extends Component {
-  constructor() {
-    super();
+  constructor(...args: any) {
+    super(...args);
   }
   generateElement() {
     this.generateCube();

@@ -32,15 +32,18 @@ class Eave extends Component {
     height2?: number;
   });
 
-  constructor(obj?: {
-    width0?: number;
-    height0?: number;
-    width1?: number;
-    height1?: number;
-    width2?: number;
-    height2?: number;
-  }) {
-    super(obj);
+  constructor(
+    obj?: {
+      width0?: number;
+      height0?: number;
+      width1?: number;
+      height1?: number;
+      width2?: number;
+      height2?: number;
+    },
+    ...rest: any
+  ) {
+    super(obj, ...rest);
   }
 
   getDefaultProps() {
@@ -57,7 +60,7 @@ class Eave extends Component {
   }
 
   generateElement() {
-    const obj = this.args?.[0];
+    const obj = this.userData.props?.[0];
 
     this.width0 = obj?.width0;
     this.height0 = obj?.height0;

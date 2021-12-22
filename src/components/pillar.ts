@@ -18,21 +18,21 @@ class Pillar extends Component {
 
   constructor(obj: { width?: number; pillarWidth?: number });
 
-  constructor(obj?: { width?: number; pillarWidth?: number }) {
-    super(obj);
+  constructor(obj?: { width?: number; pillarWidth?: number }, ...rest: any) {
+    super(obj, ...rest);
   }
 
   getDefaultProps() {
     return [
       {
         width: unitWidth,
-        pillarWidth: unitWidth / 10,
+        pillarWidth: 1.6,
       },
     ];
   }
 
   generateElement() {
-    const obj = this.args?.[0];
+    const obj = this.userData.props?.[0];
 
     this.width = obj?.width || unitWidth;
     this.pillarWidth = obj?.pillarWidth || unitWidth / 10;
