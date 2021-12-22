@@ -49,6 +49,7 @@ const generateTree = (getItemData = getTreeDataItem): any[] => {
 const SceneTree = () => {
   const [gData, setGData] = useState([...mainGroup.children]);
   const [expandedKeys, setExpandedKeys] = useState<any>([]);
+  const [selectKeys, setSelectKeys] = useState<any>([]);
   updateSceneTree = () => {
     const treeData = generateTree(getTreeDataItem);
     setGData(treeData);
@@ -126,6 +127,7 @@ const SceneTree = () => {
   };
 
   const onSelect: TreeProps["onSelect"] = (selectedKeys, { node }: any) => {
+    setSelectKeys(selectedKeys);
     if (selectedKeys?.[0]) {
       const currentComponent = node.currentComponent as Object3D;
       currentComponent &&
@@ -135,6 +137,7 @@ const SceneTree = () => {
   };
 
   setTreeExpandedKeys = (keys: any[]) => {
+    setSelectKeys(keys);
     setExpandedKeys(keys);
   };
 
@@ -168,6 +171,9 @@ const SceneTree = () => {
     item.currentComponent.removeFromParent();
     updateSceneTree();
   };
+  const onExpand: TreeProps["onExpand"] = (expandedKeys) => {
+    setExpandedKeys(expandedKeys);
+  };
   return (
     <>
       <Button onClick={save}>保存</Button>
@@ -176,8 +182,10 @@ const SceneTree = () => {
         //   defaultExpandedKeys={expandedKeys}
         draggable
         blockNode
+        autoExpandParent
         expandedKeys={expandedKeys}
-        selectedKeys={expandedKeys}
+        onExpand={onExpand}
+        selectedKeys={selectKeys}
         onDragEnter={onDragEnter}
         onSelect={onSelect}
         onDrop={onDrop}
