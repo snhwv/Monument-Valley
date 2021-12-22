@@ -2,15 +2,15 @@ import { componentMap } from "@components";
 import { List, Typography } from "antd";
 
 const ComponentList = () => {
-  const addComponent = (key: string) => {
-    new componentMap[key]();
+  const addComponent = (Component: any) => {
+    new Component();
   };
   return (
     <List
       header={<div>Header</div>}
       footer={<div>Footer</div>}
       bordered
-      dataSource={Object.keys(componentMap)}
+      dataSource={Object.values(componentMap)}
       renderItem={(item) => (
         <List.Item
           actions={[
@@ -19,7 +19,7 @@ const ComponentList = () => {
             </a>,
           ]}
         >
-          <Typography.Text>{item}</Typography.Text>
+          <Typography.Text>{item.cnName}</Typography.Text>
         </List.Item>
       )}
     />

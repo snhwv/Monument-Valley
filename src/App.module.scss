@@ -3,7 +3,10 @@ body {
   margin: 0;
 }
 canvas {
-  background: #f9e99e;
+  background: url(./bg.jpg);
+  background-color: #f9e99e;
+  background-repeat: no-repeat;
+  background-position: center;
   width: 100% !important;
   height: 100% !important;
 }

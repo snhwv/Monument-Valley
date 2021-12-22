@@ -157,11 +157,7 @@ const SceneTree = () => {
     localStorage.setItem("mainGroupChildren", JSON.stringify(treeData));
   };
   const onCopy = (item: any) => {
-    const copyComponent = new item.currentComponent.constructor(
-      ...item.currentComponent.args
-    );
-    copyComponent.parent.remove(copyComponent);
-    item.currentComponent.parent?.add(copyComponent);
+    item.currentComponent.clone();
     updateSceneTree();
   };
   const onRemove = (item: any) => {

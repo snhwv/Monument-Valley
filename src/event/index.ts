@@ -57,8 +57,6 @@ const crudComponents: IpinterdownHander = ({ mainGroupIntersect, next }) => {
   if (isShiftDown) {
     intersect.parent?.remove(intersect);
   } else if (isCtrlDown) {
-    const cube = new Cube();
-    cube.position.copy(rollOverMesh.position);
   }
 };
 const setTransformControl: IpinterdownHander = ({
@@ -84,38 +82,6 @@ const pointerdownHandlerArr: IpinterdownHander[] = [
   crudComponents,
   setTransformControl,
 ];
-
-const rollOverGeo = new BoxGeometry(unitWidth, unitWidth, unitWidth);
-const rollOverMaterial = new MeshBasicMaterial({
-  color: 0xff0000,
-  opacity: 0.5,
-  transparent: true,
-});
-const rollOverMesh = new Mesh(rollOverGeo, rollOverMaterial);
-scene.add(rollOverMesh);
-rollOverMesh.visible = false;
-
-function onPointerMove(event: any) {
-  if (!isCtrlDown) {
-    return;
-  }
-  setPointer(event);
-
-  raycaster.setFromCamera(pointer, camera);
-
-  const intersects = raycaster.intersectObject(mainGroup, true);
-
-  if (intersects.length > 0) {
-    const intersect = intersects[0];
-    if (!intersect.face?.normal) {
-      return;
-    }
-
-    rollOverMesh.position
-      .copy(intersect.object.position)
-      .add(intersect.face.normal.multiplyScalar(unitWidth));
-  }
-}
 
 const getComponentParent = (object: Object3D): any => {
   console.log(componentTypes);
@@ -171,8 +137,6 @@ function onDocumentKeyDown(event: any) {
     // ctrl
     case 17:
       isCtrlDown = true;
-      rollOverMesh.visible = isCtrlDown;
-      document.addEventListener("pointermove", onPointerMove);
       break;
     // s
     case 83:
@@ -201,8 +165,6 @@ function onDocumentKeyUp(event: any) {
       break;
     case 17:
       isCtrlDown = false;
-      rollOverMesh.visible = isCtrlDown;
-      document.removeEventListener("pointermove", onPointerMove);
       break;
   }
 }
