@@ -1,5 +1,6 @@
 import { unitWidth } from "@constants";
 import {
+  BoxGeometry,
   ExtrudeGeometry,
   Group,
   Matrix4,
@@ -8,33 +9,36 @@ import {
   Shape,
   Vector3,
 } from "three";
+import { CSG } from "three-csg-ts";
 import Component from "./lib/recordable";
 
 // 屋檐
 class Eave extends Component {
-  depth!: number;
-
-  eaveWidth!: number;
-  eaveHeight!: number;
-  eaveWidth1!: number;
-  eaveHeight1!: number;
+  width0!: number;
+  height0!: number;
+  width1!: number;
+  height1!: number;
+  width2!: number;
+  height2!: number;
 
   constructor();
 
   constructor(obj: {
-    depth?: number;
-    eaveWidth?: number;
-    eaveHeight?: number;
-    eaveWidth1?: number;
-    eaveHeight1?: number;
+    width0?: number;
+    height0?: number;
+    width1?: number;
+    height1?: number;
+    width2?: number;
+    height2?: number;
   });
 
   constructor(obj?: {
-    depth?: number;
-    eaveWidth?: number;
-    eaveHeight?: number;
-    eaveWidth1?: number;
-    eaveHeight1?: number;
+    width0?: number;
+    height0?: number;
+    width1?: number;
+    height1?: number;
+    width2?: number;
+    height2?: number;
   }) {
     super(obj);
   }
@@ -42,11 +46,12 @@ class Eave extends Component {
   getDefaultProps() {
     return [
       {
-        depth: unitWidth / 6,
-        eaveWidth: unitWidth / 6,
-        eaveHeight: unitWidth / 6,
-        eaveWidth1: unitWidth / 6,
-        eaveHeight1: unitWidth / 6,
+        width0: unitWidth / 9,
+        height0: unitWidth / 9,
+        width1: unitWidth / 9,
+        height1: unitWidth / 9,
+        width2: unitWidth / 9,
+        height2: unitWidth / 9,
       },
     ];
   }
@@ -54,11 +59,12 @@ class Eave extends Component {
   generateElement() {
     const obj = this.args?.[0];
 
-    this.depth = obj?.depth;
-    this.eaveWidth = obj?.eaveWidth;
-    this.eaveHeight = obj?.eaveHeight;
-    this.eaveWidth1 = obj?.eaveWidth1;
-    this.eaveHeight1 = obj?.eaveHeight1;
+    this.width0 = obj?.width0;
+    this.height0 = obj?.height0;
+    this.width1 = obj?.width1;
+    this.height1 = obj?.height1;
+    this.width2 = obj?.width2;
+    this.height2 = obj?.height2;
 
     this.generateEave();
   }
@@ -67,64 +73,102 @@ class Eave extends Component {
     var rod = new Group();
     const heartShape = new Shape();
 
-    const eaveWidth = this.eaveWidth;
-    const eaveHeight = this.eaveHeight;
+    const width0 = this.width0;
+    const height0 = this.height0;
 
-    const eaveWidth1 = this.eaveWidth1;
-    const eaveHeight1 = this.eaveHeight1;
+    const width1 = this.width1;
+    const height1 = this.height1;
 
-    heartShape.moveTo(-unitWidth / 2, unitWidth / 2);
+    const width2 = this.width2;
+    const height2 = this.height2;
 
-    heartShape.lineTo(-unitWidth / 2, -unitWidth / 2);
-
-    heartShape.lineTo(-unitWidth / 2 + eaveWidth, -unitWidth / 2);
-
-    heartShape.lineTo(-unitWidth / 2 + eaveWidth, -unitWidth / 2 + eaveHeight);
-
+    heartShape.moveTo(-unitWidth / 2 + width0, -unitWidth / 2);
+    heartShape.lineTo(-unitWidth / 2 + width0, -unitWidth / 2 + height0);
     heartShape.lineTo(
-      -unitWidth / 2 + eaveWidth + eaveWidth1,
-      -unitWidth / 2 + eaveHeight + eaveHeight1
+      -unitWidth / 2 + width0 + width1,
+      -unitWidth / 2 + height0
     );
     heartShape.lineTo(
-      unitWidth / 2 - eaveWidth - eaveWidth1,
-      -unitWidth / 2 + eaveHeight + eaveHeight1
+      -unitWidth / 2 + width0 + width1,
+      -unitWidth / 2 + height0 + height1
+    );
+    heartShape.lineTo(
+      -unitWidth / 2 + width0 + width1 + width2,
+      -unitWidth / 2 + height0 + height1 + height2
     );
 
-    heartShape.lineTo(unitWidth / 2 - eaveWidth, -unitWidth / 2 + eaveHeight);
+    heartShape.lineTo(
+      -(-unitWidth / 2 + width0 + width1 + width2),
+      -unitWidth / 2 + height0 + height1 + height2
+    );
+    heartShape.lineTo(
+      -(-unitWidth / 2 + width0 + width1),
+      -unitWidth / 2 + height0 + height1
+    );
+    heartShape.lineTo(
+      -(-unitWidth / 2 + width0 + width1),
+      -unitWidth / 2 + height0
+    );
+    heartShape.lineTo(-(-unitWidth / 2 + width0), -unitWidth / 2 + height0);
+    heartShape.lineTo(-(-unitWidth / 2 + width0), -unitWidth / 2);
 
-    heartShape.lineTo(unitWidth / 2 - eaveWidth, -unitWidth / 2);
+    heartShape.lineTo(-unitWidth / 2 + width0, -unitWidth / 2);
 
-    heartShape.lineTo(unitWidth / 2, -unitWidth / 2);
+    // heartShape.moveTo(-unitWidth / 2, unitWidth / 2);
 
-    heartShape.lineTo(unitWidth / 2, unitWidth / 2);
+    // heartShape.lineTo(-unitWidth / 2, -unitWidth / 2);
 
-    heartShape.lineTo(-unitWidth / 2, unitWidth / 2);
+    // heartShape.lineTo(-unitWidth / 2 + eaveWidth, -unitWidth / 2);
+
+    // heartShape.lineTo(-unitWidth / 2 + eaveWidth, -unitWidth / 2 + eaveHeight);
+
+    // heartShape.lineTo(
+    //   -unitWidth / 2 + eaveWidth + eaveWidth1,
+    //   -unitWidth / 2 + eaveHeight + eaveHeight1
+    // );
+    // heartShape.lineTo(
+    //   unitWidth / 2 - eaveWidth - eaveWidth1,
+    //   -unitWidth / 2 + eaveHeight + eaveHeight1
+    // );
+
+    // heartShape.lineTo(unitWidth / 2 - eaveWidth, -unitWidth / 2 + eaveHeight);
+
+    // heartShape.lineTo(unitWidth / 2 - eaveWidth, -unitWidth / 2);
+
+    // heartShape.lineTo(unitWidth / 2, -unitWidth / 2);
+
+    // heartShape.lineTo(unitWidth / 2, unitWidth / 2);
+
+    // heartShape.lineTo(-unitWidth / 2, unitWidth / 2);
 
     const extrudeSettings = {
-      depth: this.depth,
+      depth: unitWidth,
       bevelEnabled: false,
     };
 
-    const cubeGeometry = new ExtrudeGeometry(heartShape, extrudeSettings);
+    const verticalGeometry = new ExtrudeGeometry(heartShape, extrudeSettings);
 
     const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
 
     const cubem = new Matrix4();
-    cubem.makeTranslation(0, 0, unitWidth / 2 - this.depth);
-    cubeGeometry.applyMatrix4(cubem);
+    cubem.makeTranslation(0, 0, -unitWidth / 2);
+    verticalGeometry.applyMatrix4(cubem);
 
-    var endCylinder = new Mesh(cubeGeometry, cubeMaterial);
+    var horizontalGeometry = verticalGeometry.clone();
 
-    for (let i = 0; i < 4; i++) {
-      const mesh = endCylinder.clone();
+    const hm = new Matrix4();
+    hm.makeRotationY(Math.PI / 2);
+    horizontalGeometry.applyMatrix4(hm);
 
-      const meshm = new Matrix4();
-      meshm.makeRotationAxis(new Vector3(0, 1, 0), (i * Math.PI) / 2);
-      mesh.applyMatrix4(meshm);
+    const cubeGeometry = new BoxGeometry(unitWidth, unitWidth, unitWidth);
+    const cube = new Mesh(cubeGeometry, cubeMaterial);
 
-      rod.add(mesh);
-    }
-    this.add(rod);
+    let subRes: Mesh = cube;
+
+    subRes = CSG.subtract(subRes, new Mesh(verticalGeometry, cubeMaterial));
+    subRes = CSG.subtract(subRes, new Mesh(horizontalGeometry, cubeMaterial));
+
+    this.add(subRes);
   }
 }
 (Eave as any).cnName = "屋檐";
