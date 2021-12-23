@@ -1,5 +1,11 @@
 import { Button, Form, Input, Modal } from "antd";
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 
 const EditModal: React.FC<any> = ({ item }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -31,6 +37,10 @@ const EditModal: React.FC<any> = ({ item }) => {
     getProps(item.currentComponent?.getDefaultProps());
     setFormField(propObj);
   };
+
+  useEffect(() => {
+    formRef.current?.setFieldsValue(item.currentComponent.userData.props?.[0]);
+  }, [formField]);
 
   const onFinish = (val: any) => {
     if (val) {
