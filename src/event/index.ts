@@ -33,8 +33,8 @@ const setPointer = (event: any) => {
 export const eventInit = () => {
   
   canvas.addEventListener("pointerdown", onPointerDown);
-  canvas.addEventListener("keydown", onDocumentKeyDown);
-  canvas.addEventListener("keyup", onDocumentKeyUp);
+  document.addEventListener("keydown", onDocumentKeyDown);
+  document.addEventListener("keyup", onDocumentKeyUp);
 };
 
 const pointer = new Vector2();
@@ -85,8 +85,6 @@ const pointerdownHandlerArr: IpinterdownHander[] = [
 ];
 
 const getComponentParent = (object: Object3D): any => {
-  console.log(componentTypes);
-
   if (componentTypes.includes(object?.constructor?.name)) {
     return object;
   } else if (object.parent) {

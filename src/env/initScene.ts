@@ -5,6 +5,7 @@ import { updateSceneTree } from "../layout/SceneTree";
 import * as THREE from "three";
 import { Group, Matrix4, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import data from "../data";
 
 export let canvas: HTMLCanvasElement;
 const sizes = {
@@ -75,7 +76,8 @@ export const sceneInit = () => {
   });
   canvasResizeHandler();
 
-  const mainGroupChildren = localStorage.getItem("mainGroupChildren");
+  // const mainGroupChildren = localStorage.getItem("mainGroupChildren");
+  const mainGroupChildren = data;
   if (mainGroupChildren) {
     const parsedMainGroupChildren = JSON.parse(mainGroupChildren);
     const generateObj = (arr: any[], parent: any) => {
