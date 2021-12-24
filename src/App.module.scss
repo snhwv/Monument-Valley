@@ -14,3 +14,8 @@ canvas {
 .content {
   height: 100vh;
 }
+:global {
+  .ant-tabs-content {
+    height: 100%;
+  }
+}

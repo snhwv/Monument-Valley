@@ -11,7 +11,11 @@ export const transformInit = () => {
 
   setMode("translate");
   setTranslationSnap(unitWidth / 2);
+  // setTranslationSnap(unitWidth / 2 / 2 / 2 / 2);
+  // setTranslationSnap(unitWidth / 2 / 2 / 2);
   setRotationSnap(Math.PI / 2);
+  // setScaleSnap(1 / 2 / 2 / 2);
+  // setScaleSnap(1 / 2 / 2);
   setScaleSnap(1);
 
   scene.add(transformControls);

@@ -23,9 +23,12 @@ abstract class Component extends Group {
   }
 
   changeProps(...args: any) {
-    this.children.map((item) => {
-      item.removeFromParent();
-    });
+    const childrenLength = this.children.length;
+
+    for (let i = 0; i < childrenLength; i++) {
+      this.children[0].removeFromParent();
+    }
+
     const defaultProps = this?.getDefaultProps?.();
     if (defaultProps) {
       merge(this.userData.props, defaultProps, args);

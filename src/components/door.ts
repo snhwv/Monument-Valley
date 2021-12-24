@@ -47,6 +47,8 @@ class Door extends Component {
         doorTop: unitWidth / 4,
         doorBottom: 0,
         doorWidth: unitWidth / 4,
+        doorDepth: unitWidth / 4,
+        height: unitWidth,
       },
     ];
   }
@@ -63,32 +65,33 @@ class Door extends Component {
     const doorBottom = obj?.doorBottom;
     const curveSegments = obj?.curveSegments;
     const doorNumber = obj?.doorNumber;
+    const doorDepth = obj?.doorDepth;
 
-    const cubeGeometry = new BoxGeometry(width, unitWidth, width);
+    const height = obj?.height;
+
+    const cubeGeometry = new BoxGeometry(width, height, width);
     const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
     const cube = new Mesh(cubeGeometry, cubeMaterial);
 
     const heartShape = new Shape();
 
-    const doorDepth = unitWidth / 4;
-
-    heartShape.moveTo(-doorWidth / 2, unitWidth / 2 - doorTop);
+    heartShape.moveTo(-doorWidth / 2, height / 2 - doorTop);
 
     heartShape.absarc(
       0,
-      unitWidth / 2 - doorTop,
+      height / 2 - doorTop,
       doorWidth / 2,
       (2 * Math.PI) / 2,
       0,
       true
     );
 
-    heartShape.lineTo(doorWidth / 2, unitWidth / 2 - doorTop);
+    heartShape.lineTo(doorWidth / 2, height / 2 - doorTop);
 
-    heartShape.lineTo(doorWidth / 2, -unitWidth / 2 + doorBottom);
-    heartShape.lineTo(-doorWidth / 2, -unitWidth / 2 + doorBottom);
+    heartShape.lineTo(doorWidth / 2, -height / 2 + doorBottom);
+    heartShape.lineTo(-doorWidth / 2, -height / 2 + doorBottom);
 
-    heartShape.lineTo(-doorWidth / 2, unitWidth / 2 - doorTop);
+    heartShape.lineTo(-doorWidth / 2, height / 2 - doorTop);
 
     const extrudeSettings = {
       depth: doorDepth,
@@ -99,7 +102,7 @@ class Door extends Component {
     const doorGeometry = new ExtrudeGeometry(heartShape, extrudeSettings);
 
     const cubem = new Matrix4();
-    cubem.makeTranslation(0, 0, unitWidth / 2 - doorDepth);
+    cubem.makeTranslation(0, 0, width / 2 - doorDepth);
     doorGeometry.applyMatrix4(cubem);
 
     let subRes: Mesh = cube;

@@ -9,7 +9,12 @@ function Layout() {
     <Row className={"full"}>
       <Col span={4} className={"fullHeight"}>
         <Tabs defaultActiveKey="1" className={"fullHeight"}>
-          <TabPane tab="Tab 1" key="1">
+          <TabPane
+            tab="Tab 1"
+            key="1"
+            className={"fullHeight"}
+            style={{ overflow: "auto" }}
+          >
             <SceneTree></SceneTree>
           </TabPane>
           <TabPane tab="Tab 2" key="2">
