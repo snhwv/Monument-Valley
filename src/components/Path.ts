@@ -1,8 +1,8 @@
 import { unitWidth } from "@constants";
+import { Paths } from "@env";
 import {
-  BoxGeometry,
+  Matrix4,
   Mesh,
-  MeshBasicMaterial,
   MeshLambertMaterial,
   SphereGeometry,
   Vector3,
@@ -12,6 +12,7 @@ import Component from "./lib/recordable";
 class Path extends Component {
   constructor(obj: any, ...args: any) {
     super(obj, ...args);
+    Paths.push(this);
   }
   getDefaultProps() {
     return [
@@ -27,6 +28,9 @@ class Path extends Component {
     ];
   }
   generateElement() {
+    this.userData.connectPointList = [];
+    this.userData.pointMatrixList = [];
+
     const obj = this.userData.props?.[0];
 
     const width = obj?.width;
@@ -43,8 +47,12 @@ class Path extends Component {
     this.generatePath();
   }
 
-  generateConnectPoint(offset: Vector3) {
+  setColor() {
+    const { material } = this.userData.pathCenter;
+    material.color = 0xff0000;
+  }
 
+  generateConnectPoint(offset: Vector3) {
     const obj = this.userData.props?.[0];
 
     const pointR = obj?.pointR;
@@ -55,6 +63,9 @@ class Path extends Component {
     const sphere = new Mesh(geometry, material);
 
     sphere.position.add(offset).add(new Vector3(0, -height / 2, 0));
+
+    sphere.updateWorldMatrix(false, false);
+    this.userData.pointMatrixList.push(sphere.matrixWorld);
     this.add(sphere);
   }
   generatePath() {
@@ -66,6 +77,8 @@ class Path extends Component {
     const material = new MeshLambertMaterial({ color: 0xffff00 });
     const sphere = new Mesh(geometry, material);
     sphere.position.add(new Vector3(0, -height / 2, 0));
+
+    this.userData.pathCenter = sphere;
     this.add(sphere);
   }
 }

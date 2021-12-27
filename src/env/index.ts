@@ -1,3 +1,4 @@
+import Path from "@components/Path";
 import { Object3D } from "three";
 import { sceneInit } from "./initScene";
 import { transformInit } from "./transformControl";
@@ -13,4 +14,5 @@ const init = () => {
 };
 
 const flatedComponents: Object3D[] = [];
-export { init, flatedComponents };
+const Paths: Path[] = [];
+export { init, flatedComponents, Paths };

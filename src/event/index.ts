@@ -7,6 +7,7 @@ import {
   flatedComponents,
   getCanvasRect,
   mainGroup,
+  Paths,
   scene,
   setMode,
   transformControls,
@@ -15,12 +16,14 @@ import { saveScene, setTreeExpandedKeys } from "../layout/SceneTree";
 import {
   BoxGeometry,
   Intersection,
+  Matrix4,
   Mesh,
   MeshBasicMaterial,
   Object3D,
   Raycaster,
   Vector2,
 } from "three";
+import Path from "@components/Path";
 
 const setPointer = (event: any) => {
   const rect = getCanvasRect();
@@ -31,7 +34,6 @@ const setPointer = (event: any) => {
 };
 
 export const eventInit = () => {
-  
   canvas.addEventListener("pointerdown", onPointerDown);
   document.addEventListener("keydown", onDocumentKeyDown);
   document.addEventListener("keyup", onDocumentKeyUp);
@@ -79,9 +81,46 @@ const setTransformControl: IpinterdownHander = ({
   }
   next();
 };
+const pathPointMap = new Map();
+const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
+  Paths.forEach((item) => {
+    item.userData.pointMatrixList.forEach((matrix: Matrix4) => {
+      const key = matrix.elements.toString();
+      if (!pathPointMap.has(key)) {
+        pathPointMap.set(key, [item]);
+      } else {
+        pathPointMap.get(key).push(item);
+      }
+    });
+  });
+  const PathArrList = [...pathPointMap.values()].filter(
+    (item) => item.length > 1
+  );
+  PathArrList.forEach((pathArr) => {
+    pathArr.forEach((path: Path) => {
+      path.userData.connectPointList.push(...pathArr);
+    });
+  });
+
+  if (mainGroupIntersect) {
+    const intersect = mainGroupIntersect;
+    if (intersect !== transformControls.object) {
+      transformControls.detach();
+      transformControls.attach(intersect);
+
+      setTreeExpandedKeys([intersect.id]);
+    }
+  }
+
+  console.log(Paths);
+  console.log(mainGroupIntersect);
+  // console.log(pathPointMap);
+  next();
+};
 const pointerdownHandlerArr: IpinterdownHander[] = [
   crudComponents,
   setTransformControl,
+  setPaths,
 ];
 
 const getComponentParent = (object: Object3D): any => {
