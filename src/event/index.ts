@@ -22,8 +22,10 @@ import {
   Object3D,
   Raycaster,
   Vector2,
+  Vector3,
 } from "three";
 import Path from "@components/Path";
+import { createMGraph, Floyd, getPath, MGraph } from "@utils/floyd";
 
 const setPointer = (event: any) => {
   const rect = getCanvasRect();
@@ -81,11 +83,38 @@ const setTransformControl: IpinterdownHander = ({
   }
   next();
 };
+function generateMGraph() {
+  const nodes = Paths;
+  const graph: any[][] = [];
+  const nodesLength = nodes.length;
+
+  for (let i = 0; i < nodesLength; i++) {
+    graph[i] = [];
+    for (let j = 0; j < nodesLength; j++) {
+      graph[i][j] = Infinity;
+    }
+  }
+  for (let i = 0; i < nodesLength; i++) {
+    const node = nodes[i];
+    node.userData.connectPointList.forEach((connectNode: Path) => {
+      if (connectNode !== node) {
+        const indexOfNodes = nodes.indexOf(connectNode);
+        graph[i][indexOfNodes] = 1;
+      }
+    });
+  }
+  return graph;
+}
 const pathPointMap = new Map();
 const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
+  pathPointMap.clear();
   Paths.forEach((item) => {
-    item.userData.pointMatrixList.forEach((matrix: Matrix4) => {
-      const key = matrix.elements.toString();
+    item.userData.connectPointList = new Set();
+    item.userData.pointPositionList.forEach((v: Vector3) => {
+      const key = v
+        .toArray()
+        .map((item) => Number(item.toFixed(3)))
+        .toString();
       if (!pathPointMap.has(key)) {
         pathPointMap.set(key, [item]);
       } else {
@@ -93,28 +122,32 @@ const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
       }
     });
   });
-  const PathArrList = [...pathPointMap.values()].filter(
-    (item) => item.length > 1
-  );
+  const PathArrList = [...pathPointMap.values()];
   PathArrList.forEach((pathArr) => {
     pathArr.forEach((path: Path) => {
-      path.userData.connectPointList.push(...pathArr);
+      pathArr.forEach((path1: Path) => {
+        (path.userData.connectPointList as Set<Path>).add(path1);
+      });
     });
   });
 
   if (mainGroupIntersect) {
-    const intersect = mainGroupIntersect;
-    if (intersect !== transformControls.object) {
-      transformControls.detach();
-      transformControls.attach(intersect);
-
-      setTreeExpandedKeys([intersect.id]);
-    }
+    const values = mainGroupIntersect.userData.connectPointList as Set<Path>;
+    values.forEach((path: Path) => {
+      path.setColor();
+    });
   }
-
-  console.log(Paths);
+  console.log(pathPointMap);
   console.log(mainGroupIntersect);
-  // console.log(pathPointMap);
+
+  const G = new MGraph(Paths.length);
+  createMGraph(generateMGraph(), G);
+  Floyd(G);
+  const wayPath = getPath(22, 8);
+  console.log(wayPath);
+  wayPath.path.forEach(item => {
+    Paths[item].setColor()
+  })
   next();
 };
 const pointerdownHandlerArr: IpinterdownHander[] = [

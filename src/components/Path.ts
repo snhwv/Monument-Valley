@@ -1,6 +1,7 @@
 import { unitWidth } from "@constants";
 import { Paths } from "@env";
 import {
+  Color,
   Matrix4,
   Mesh,
   MeshLambertMaterial,
@@ -28,8 +29,8 @@ class Path extends Component {
     ];
   }
   generateElement() {
-    this.userData.connectPointList = [];
-    this.userData.pointMatrixList = [];
+    this.userData.connectPointList = new Set();
+    this.userData.pointPositionList = [];
 
     const obj = this.userData.props?.[0];
 
@@ -49,7 +50,7 @@ class Path extends Component {
 
   setColor() {
     const { material } = this.userData.pathCenter;
-    material.color = 0xff0000;
+    material.color = new Color(0xff0000);
   }
 
   generateConnectPoint(offset: Vector3) {
@@ -64,9 +65,16 @@ class Path extends Component {
 
     sphere.position.add(offset).add(new Vector3(0, -height / 2, 0));
 
-    sphere.updateWorldMatrix(false, false);
-    this.userData.pointMatrixList.push(sphere.matrixWorld);
     this.add(sphere);
+    setTimeout(() => {
+
+      sphere.updateMatrixWorld(true);
+
+      const p = new Vector3();
+      sphere.getWorldPosition(p);
+
+      this.userData.pointPositionList.push(p);
+    }, 0);
   }
   generatePath() {
     const obj = this.userData.props?.[0];
