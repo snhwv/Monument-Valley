@@ -1,34 +1,24 @@
 import { componentTypes } from "@components";
-import Cube from "@components/cube";
-import { unitWidth } from "@constants";
 import {
   camera,
   canvas,
   flatedComponents,
   getCanvasRect,
-  mainGroup,
+  orbitControls,
   Paths,
-  scene,
   setMode,
   transformControls,
 } from "@env";
 import { saveScene, setTreeExpandedKeys } from "../layout/SceneTree";
 import {
-  ArrowHelper,
-  BoxGeometry,
-  Intersection,
-  Matrix4,
-  Mesh,
-  MeshBasicMaterial,
   Object3D,
-  Plane,
-  PlaneHelper,
   Raycaster,
   Vector2,
   Vector3,
 } from "three";
 import Path from "@components/Path";
 import { createMGraph, Floyd, getPath, MGraph } from "@utils/floyd";
+import Rotable from "@components/lib/rotable";
 
 const setPointer = (event: any) => {
   const rect = getCanvasRect();
@@ -40,10 +30,43 @@ const setPointer = (event: any) => {
 
 export const eventInit = () => {
   canvas.addEventListener("pointerdown", onPointerDown);
+  canvas.addEventListener("pointerup", onPointerUp);
+  canvas.addEventListener("pointermove", onPointerMove);
   document.addEventListener("keydown", onDocumentKeyDown);
   document.addEventListener("keyup", onDocumentKeyUp);
 };
 
+let isMouseDown = false;
+const onPointerUp = () => {
+  isMouseDown = false;
+  orbitControls.enabled = true;
+};
+function onPointerMove(event: any) {
+  setPointer(event);
+  raycaster.setFromCamera(pointer, camera);
+  let intersects = raycaster.intersectObjects(flatedComponents, true);
+  let intersect = null;
+  if (intersects.length > 0) {
+    intersect = intersects[0];
+    const currentComponent = getComponentParent(intersect.object);
+    intersect = currentComponent;
+  }
+
+  let next: any = pointermoveHandlerArr[0];
+  let i = 0;
+  while (next) {
+    i++;
+    const handler = next;
+    next = null;
+    handler({
+      mainGroupIntersect: intersect,
+      next: () => {
+        next = pointermoveHandlerArr[i];
+      },
+      raycaster,
+    });
+  }
+}
 const pointer = new Vector2();
 const raycaster = new Raycaster();
 
@@ -56,6 +79,57 @@ type IpinterdownHander = (event: {
   raycaster: Raycaster;
 }) => void | undefined;
 
+const rotationPointer = new Vector3();
+
+const setRotation: IpinterdownHander = ({
+  mainGroupIntersect,
+  raycaster,
+  next,
+}) => {
+  // const V = new Vector3(1, 0, 0);
+  // const V1 = new Vector3(1, 0, 1);
+  // console.log(V.dot(V1));
+
+  if (isMouseDown && mainGroupIntersect instanceof Rotable) {
+    const target = new Vector3();
+    raycaster.ray.intersectPlane(
+      mainGroupIntersect.userData.rotablePlane,
+      target
+    );
+    mainGroupIntersect.worldToLocal(target);
+    let angle = rotationPointer.angleTo(target);
+
+    const velocity = new Vector3();
+    velocity.crossVectors(rotationPointer, target);
+    const dirction =
+      velocity.dot(mainGroupIntersect.userData.rotablePlane.normal) > 0
+        ? 1
+        : -1;
+    angle = dirction * angle;
+
+    mainGroupIntersect.rotateOnAxis(mainGroupIntersect.up, angle);
+
+    rotationPointer.copy(target);
+  }
+  next();
+};
+
+const setRotationPrevPoint: IpinterdownHander = ({
+  mainGroupIntersect,
+  raycaster,
+  next,
+}) => {
+  if (mainGroupIntersect instanceof Rotable) {
+    const target = new Vector3();
+    raycaster.ray.intersectPlane(
+      mainGroupIntersect.userData.rotablePlane,
+      target
+    );
+    mainGroupIntersect.worldToLocal(target);
+    rotationPointer.copy(target);
+  }
+  next();
+};
 const crudComponents: IpinterdownHander = ({ mainGroupIntersect, next }) => {
   const intersect = mainGroupIntersect;
   if (!(intersect && (isShiftDown || isCtrlDown))) {
@@ -218,10 +292,12 @@ const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
   next();
 };
 const pointerdownHandlerArr: IpinterdownHander[] = [
+  setRotationPrevPoint,
   crudComponents,
-  setTransformControl,
+  // setTransformControl,
   setPaths,
 ];
+const pointermoveHandlerArr: IpinterdownHander[] = [setRotation];
 
 const getComponentParent = (object: Object3D): any => {
   if (componentTypes.includes(object?.constructor?.name)) {
@@ -235,7 +311,8 @@ const getComponentParent = (object: Object3D): any => {
 
 function onPointerDown(event: any) {
   setPointer(event);
-
+  isMouseDown = true;
+  orbitControls.enabled = false;
   raycaster.setFromCamera(pointer, camera);
   let intersects = raycaster.intersectObjects(flatedComponents, true);
   let intersect = null;

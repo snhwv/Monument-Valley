@@ -9,10 +9,10 @@ import {
   Plane,
   Vector3,
 } from "three";
-import Component from "./lib/recordable";
+import Rotable from "./lib/rotable";
 
 // 控制杆
-class ValveControl extends Component {
+class ValveControl extends Rotable {
   constructor(...args: any) {
     super(...args);
   }
