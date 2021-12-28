@@ -76,21 +76,28 @@ export const sceneInit = () => {
   });
   canvasResizeHandler();
 
-  // const mainGroupChildren = localStorage.getItem("mainGroupChildren");
-  const mainGroupChildren = data;
+  const mainGroupChildren = localStorage.getItem("mainGroupChildren");
+  // const mainGroupChildren = data;
   // const mainGroupChildren = '';
   if (mainGroupChildren) {
     const parsedMainGroupChildren = JSON.parse(mainGroupChildren);
     const generateObj = (arr: any[], parent: any) => {
       arr.map((item: any) => {
+        const onCreate = (comp: Group) => {
+          comp.parent?.remove(comp);
+          parent.add(comp);
+
+          const matrix = new Matrix4();
+          matrix.elements = item.matrix.elements;
+          comp.applyMatrix4(matrix);
+        };
+
         const component: Group = new (componentMap as any)[item.type](
-          ...item.userData.props
+          item.userData.props[0],
+          item.userData.props[1],
+          onCreate
         );
-        component.parent?.remove(component);
-        parent.add(component);
-        const matrix = new Matrix4();
-        matrix.elements = item.matrix.elements;
-        component.applyMatrix4(matrix);
+
         if (item.children?.length) {
           generateObj(item.children, component);
         }

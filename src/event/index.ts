@@ -14,12 +14,15 @@ import {
 } from "@env";
 import { saveScene, setTreeExpandedKeys } from "../layout/SceneTree";
 import {
+  ArrowHelper,
   BoxGeometry,
   Intersection,
   Matrix4,
   Mesh,
   MeshBasicMaterial,
   Object3D,
+  Plane,
+  PlaneHelper,
   Raycaster,
   Vector2,
   Vector3,
@@ -105,24 +108,31 @@ function generateMGraph() {
   }
   return graph;
 }
-const pathPointMap = new Map();
-const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
-  pathPointMap.clear();
-  Paths.forEach((item) => {
+const staticPathPointMap = new Map();
+let pathPointMap = new Map();
+let dynamicPathPointMap = new Map();
+
+export const generateStaticMap = () => {
+  staticPathPointMap.clear();
+  Paths.filter((item) => item.userData.isStatic).forEach((item) => {
     item.userData.connectPointList = new Set();
     item.userData.pointPositionList.forEach((v: Vector3) => {
       const key = v
         .toArray()
         .map((item) => Number(item.toFixed(3)))
         .toString();
-      if (!pathPointMap.has(key)) {
-        pathPointMap.set(key, [item]);
+      if (!staticPathPointMap.has(key)) {
+        staticPathPointMap.set(key, [item]);
       } else {
-        pathPointMap.get(key).push(item);
+        staticPathPointMap.get(key).push(item);
       }
     });
   });
-  const PathArrList = [...pathPointMap.values()];
+  const PathArrList = [...staticPathPointMap.values()];
+  connectPath(PathArrList);
+};
+
+const connectPath = (PathArrList: Path[][]) => {
   PathArrList.forEach((pathArr) => {
     pathArr.forEach((path: Path) => {
       pathArr.forEach((path1: Path) => {
@@ -130,24 +140,81 @@ const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
       });
     });
   });
+};
 
-  if (mainGroupIntersect) {
-    const values = mainGroupIntersect.userData.connectPointList as Set<Path>;
-    values.forEach((path: Path) => {
-      path.setColor();
+const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
+  if (
+    mainGroupIntersect &&
+    (mainGroupIntersect as Path).constructor.name === "Path"
+  ) {
+    pathPointMap = new Map([...staticPathPointMap.entries()]);
+
+    const dynamicPointArrList: Path[][] = [];
+    Paths.filter((item) => !item.userData.isStatic).forEach((item) => {
+      item.updatePointPositionList();
     });
-  }
-  console.log(pathPointMap);
-  console.log(mainGroupIntersect);
+    Paths.filter((item) => !item.userData.isStatic).forEach((item) => {
+      item.userData.connectPointList = new Set();
+      item.userData.pointPositionList.forEach((v: Vector3) => {
+        const key = v
+          .toArray()
+          .map((item) => Number(item.toFixed(3)))
+          .toString();
+        if (!pathPointMap.has(key)) {
+          const mapv = [item];
+          dynamicPointArrList.push(mapv);
+          pathPointMap.set(key, mapv);
+        } else {
+          const mapv = pathPointMap.get(key);
+          dynamicPointArrList.push(mapv);
+          mapv.push(item);
+        }
+      });
+    });
+    connectPath(dynamicPointArrList);
 
-  const G = new MGraph(Paths.length);
-  createMGraph(generateMGraph(), G);
-  Floyd(G);
-  const wayPath = getPath(22, 8);
-  console.log(wayPath);
-  wayPath.path.forEach(item => {
-    Paths[item].setColor()
-  })
+    const projectPlaneNormal = new Vector3().copy(camera.position).normalize();
+
+    dynamicPathPointMap.clear();
+    Paths.filter((item) => !item.userData.isStatic).forEach((item) => {
+      item.userData.pointPositionList.forEach((v: Vector3) => {
+        const projectV = new Vector3()
+          .copy(v)
+          .projectOnPlane(projectPlaneNormal);
+        const key = projectV
+          .toArray()
+          .map((item) => Number(item.toFixed(3)))
+          .toString();
+        if (!dynamicPathPointMap.has(key)) {
+          const mapv = [item];
+          dynamicPathPointMap.set(key, mapv);
+        } else {
+          const mapv = dynamicPathPointMap.get(key);
+          mapv.push(item);
+        }
+      });
+    });
+    connectPath([...dynamicPathPointMap.values()]);
+
+    const G = new MGraph(Paths.length);
+    createMGraph(generateMGraph(), G);
+    Floyd(G);
+    const wayPath = getPath(19, Paths.indexOf(mainGroupIntersect as Path));
+    console.log(wayPath);
+
+    if (wayPath.weight < 9999) {
+      wayPath.path.forEach((item) => {
+        Paths[item].setColor();
+      });
+    }
+
+    // console.log(mainGroupIntersect);
+    // (mainGroupIntersect.userData.connectPointList as Set<Path>).forEach(
+    //   (item) => {
+    //     item.setColor();
+    //   }
+    // );
+  }
   next();
 };
 const pointerdownHandlerArr: IpinterdownHander[] = [

@@ -29,7 +29,6 @@ export function createMGraph(Arr2: number[][], G: MGraph) {
   for (let i = 0; i < G.numVertexes; i++) {
     G.vexs[i] = "V" + i; //scanf('%s'); //ascii码转字符 //String.fromCharCode(i + 65);
   }
-  // console.log(G.vexs); //打印顶点
 
   //邻接矩阵初始化
   for (let i = 0; i < G.numVertexes; i++) {
