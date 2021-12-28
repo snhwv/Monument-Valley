@@ -10,12 +10,7 @@ import {
   transformControls,
 } from "@env";
 import { saveScene, setTreeExpandedKeys } from "../layout/SceneTree";
-import {
-  Object3D,
-  Raycaster,
-  Vector2,
-  Vector3,
-} from "three";
+import { Object3D, Raycaster, Vector2, Vector3 } from "three";
 import Path from "@components/Path";
 import { createMGraph, Floyd, getPath, MGraph } from "@utils/floyd";
 import Rotable from "@components/lib/rotable";
@@ -52,20 +47,20 @@ function onPointerMove(event: any) {
     intersect = currentComponent;
   }
 
-  let next: any = pointermoveHandlerArr[0];
-  let i = 0;
-  while (next) {
-    i++;
-    const handler = next;
-    next = null;
-    handler({
-      mainGroupIntersect: intersect,
-      next: () => {
-        next = pointermoveHandlerArr[i];
-      },
-      raycaster,
-    });
-  }
+  // let next: any = pointermoveHandlerArr[0];
+  // let i = 0;
+  // while (next) {
+  //   i++;
+  //   const handler = next;
+  //   next = null;
+  //   handler({
+  //     mainGroupIntersect: intersect,
+  //     next: () => {
+  //       next = pointermoveHandlerArr[i];
+  //     },
+  //     raycaster,
+  //   });
+  // }
 }
 const pointer = new Vector2();
 const raycaster = new Raycaster();
@@ -86,10 +81,6 @@ const setRotation: IpinterdownHander = ({
   raycaster,
   next,
 }) => {
-  // const V = new Vector3(1, 0, 0);
-  // const V1 = new Vector3(1, 0, 1);
-  // console.log(V.dot(V1));
-
   if (isMouseDown && mainGroupIntersect instanceof Rotable) {
     const target = new Vector3();
     raycaster.ray.intersectPlane(
@@ -292,7 +283,7 @@ const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
   next();
 };
 const pointerdownHandlerArr: IpinterdownHander[] = [
-  setRotationPrevPoint,
+  // setRotationPrevPoint,
   crudComponents,
   // setTransformControl,
   setPaths,
