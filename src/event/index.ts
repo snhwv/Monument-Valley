@@ -5,21 +5,15 @@ import {
   flatedComponents,
   getCanvasRect,
   orbitControls,
-  Paths,
   setMode,
-  transformControls,
 } from "@env";
-import { saveScene, setTreeExpandedKeys } from "../layout/SceneTree";
-import {
-  Group,
-  Object3D,
-  Raycaster,
-  Vector2,
-  Vector3,
-} from "three";
-import Path from "@components/Path";
-import { createMGraph, Floyd, getPath, MGraph } from "@utils/floyd";
-import Rotable from "@components/lib/rotable";
+import { saveScene } from "../layout/SceneTree";
+import { Object3D, Raycaster, Vector2 } from "three";
+import { setPaths } from "./getPath";
+import { IpinterdownHander, store } from "./store";
+import { crudComponents } from "./crudComponent";
+import { setTransformControl } from "./setTransformControl";
+import { setRotation, setRotationPrevPoint } from "./rotateComponent";
 
 const setPointer = (event: any) => {
   const rect = getCanvasRect();
@@ -37,13 +31,12 @@ export const eventInit = () => {
   document.addEventListener("keyup", onDocumentKeyUp);
 };
 
-let isRotable = false;
 const onPointerUp = (event: any) => {
   event.preventDefault();
-  isRotable = false;
+  store.isRotable = false;
   orbitControls.enabled = true;
 
-  rotationComponent = null;
+  store.rotationComponent = null;
 };
 function onPointerMove(event: any) {
   event.preventDefault();
@@ -75,229 +68,10 @@ function onPointerMove(event: any) {
 const pointer = new Vector2();
 const raycaster = new Raycaster();
 
-let isShiftDown = false;
-let isCtrlDown = false;
-
-type IpinterdownHander = (event: {
-  mainGroupIntersect?: Object3D;
-  next: () => void;
-  raycaster: Raycaster;
-}) => void | undefined;
-
-const rotationPointer = new Vector3();
-
-let rotationComponent: Group | null;
-
-const setRotation: IpinterdownHander = ({ raycaster, next }) => {
-  if (isRotable && rotationComponent) {
-    const target = new Vector3();
-    raycaster.ray.intersectPlane(
-      rotationComponent.userData.rotablePlane,
-      target
-    );
-
-    const worldP = new Vector3();
-    rotationComponent.getWorldPosition(worldP);
-    target.sub(worldP);
-
-    let angle = rotationPointer.angleTo(target);
-
-    const velocity = new Vector3();
-    velocity.crossVectors(rotationPointer, target);
-    const dirction = velocity.dot(rotationComponent.up) > 0 ? 1 : -1;
-    angle = dirction * angle;
-    rotationComponent.rotateOnAxis(rotationComponent.up, angle);
-    rotationPointer.copy(target);
-  }
-  next();
-};
-
-const setRotationPrevPoint: IpinterdownHander = ({
-  mainGroupIntersect,
-  raycaster,
-  next,
-}) => {
-  if (mainGroupIntersect instanceof Rotable) {
-    isRotable = true;
-    orbitControls.enabled = false;
-
-    rotationComponent = mainGroupIntersect;
-
-    const target = new Vector3();
-    raycaster.ray.intersectPlane(
-      mainGroupIntersect.userData.rotablePlane,
-      target
-    );
-    mainGroupIntersect.worldToLocal(target);
-    rotationPointer.copy(target);
-  }
-  next();
-};
-const crudComponents: IpinterdownHander = ({ mainGroupIntersect, next }) => {
-  const intersect = mainGroupIntersect;
-  if (!(intersect && (isShiftDown || isCtrlDown))) {
-    next();
-    return;
-  }
-  if (isShiftDown) {
-    intersect.parent?.remove(intersect);
-  } else if (isCtrlDown) {
-  }
-};
-const setTransformControl: IpinterdownHander = ({
-  mainGroupIntersect,
-  next,
-}) => {
-  if (transformControls.dragging) {
-    next();
-    return;
-  }
-  if (mainGroupIntersect) {
-    const intersect = mainGroupIntersect;
-    if (intersect !== transformControls.object) {
-      transformControls.detach();
-      transformControls.attach(intersect);
-
-      setTreeExpandedKeys([intersect.id]);
-    }
-  }
-  next();
-};
-function generateMGraph() {
-  const nodes = Paths;
-  const graph: any[][] = [];
-  const nodesLength = nodes.length;
-
-  for (let i = 0; i < nodesLength; i++) {
-    graph[i] = [];
-    for (let j = 0; j < nodesLength; j++) {
-      graph[i][j] = Infinity;
-    }
-  }
-  for (let i = 0; i < nodesLength; i++) {
-    const node = nodes[i];
-    node.userData.connectPointList.forEach((connectNode: Path) => {
-      if (connectNode !== node) {
-        const indexOfNodes = nodes.indexOf(connectNode);
-        graph[i][indexOfNodes] = 1;
-      }
-    });
-  }
-  return graph;
-}
-const staticPathPointMap = new Map();
-let pathPointMap = new Map();
-let dynamicPathPointMap = new Map();
-
-export const generateStaticMap = () => {
-  staticPathPointMap.clear();
-  Paths.filter((item) => item.userData.isStatic).forEach((item) => {
-    item.userData.connectPointList = new Set();
-    item.userData.pointPositionList.forEach((v: Vector3) => {
-      const key = v
-        .toArray()
-        .map((item) => Number(item.toFixed(3)))
-        .toString();
-      if (!staticPathPointMap.has(key)) {
-        staticPathPointMap.set(key, [item]);
-      } else {
-        staticPathPointMap.get(key).push(item);
-      }
-    });
-  });
-  const PathArrList = [...staticPathPointMap.values()];
-  connectPath(PathArrList);
-};
-
-const connectPath = (PathArrList: Path[][]) => {
-  PathArrList.forEach((pathArr) => {
-    pathArr.forEach((path: Path) => {
-      pathArr.forEach((path1: Path) => {
-        (path.userData.connectPointList as Set<Path>).add(path1);
-      });
-    });
-  });
-};
-
-const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
-  if (
-    mainGroupIntersect &&
-    (mainGroupIntersect as Path).constructor.name === "Path"
-  ) {
-    pathPointMap = new Map([...staticPathPointMap.entries()]);
-
-    const dynamicPointArrList: Path[][] = [];
-    Paths.filter((item) => !item.userData.isStatic).forEach((item) => {
-      item.updatePointPositionList();
-    });
-    Paths.filter((item) => !item.userData.isStatic).forEach((item) => {
-      item.userData.connectPointList = new Set();
-      item.userData.pointPositionList.forEach((v: Vector3) => {
-        const key = v
-          .toArray()
-          .map((item) => Number(item.toFixed(3)))
-          .toString();
-        if (!pathPointMap.has(key)) {
-          const mapv = [item];
-          dynamicPointArrList.push(mapv);
-          pathPointMap.set(key, mapv);
-        } else {
-          const mapv = pathPointMap.get(key);
-          dynamicPointArrList.push(mapv);
-          mapv.push(item);
-        }
-      });
-    });
-    connectPath(dynamicPointArrList);
-
-    const projectPlaneNormal = new Vector3().copy(camera.position).normalize();
-
-    dynamicPathPointMap.clear();
-    Paths.filter((item) => !item.userData.isStatic).forEach((item) => {
-      item.userData.pointPositionList.forEach((v: Vector3) => {
-        const projectV = new Vector3()
-          .copy(v)
-          .projectOnPlane(projectPlaneNormal);
-        const key = projectV
-          .toArray()
-          .map((item) => Number(item.toFixed(3)))
-          .toString();
-        if (!dynamicPathPointMap.has(key)) {
-          const mapv = [item];
-          dynamicPathPointMap.set(key, mapv);
-        } else {
-          const mapv = dynamicPathPointMap.get(key);
-          mapv.push(item);
-        }
-      });
-    });
-    connectPath([...dynamicPathPointMap.values()]);
-
-    const G = new MGraph(Paths.length);
-    createMGraph(generateMGraph(), G);
-    Floyd(G);
-    const wayPath = getPath(19, Paths.indexOf(mainGroupIntersect as Path));
-    console.log(wayPath);
-
-    if (wayPath.weight < 9999) {
-      wayPath.path.forEach((item) => {
-        Paths[item].setColor();
-      });
-    }
-
-    // console.log(mainGroupIntersect);
-    // (mainGroupIntersect.userData.connectPointList as Set<Path>).forEach(
-    //   (item) => {
-    //     item.setColor();
-    //   }
-    // );
-  }
-  next();
-};
 const pointerdownHandlerArr: IpinterdownHander[] = [
   setRotationPrevPoint,
   crudComponents,
-  // setTransformControl,
+  setTransformControl,
   setPaths,
 ];
 const pointermoveHandlerArr: IpinterdownHander[] = [setRotation];
@@ -348,12 +122,12 @@ function onDocumentKeyDown(event: any) {
   switch (event.keyCode) {
     // shift
     case 16:
-      isShiftDown = true;
+      store.isShiftDown = true;
       break;
 
     // ctrl
     case 17:
-      isCtrlDown = true;
+      store.isCtrlDown = true;
       break;
     // s
     case 83:
@@ -378,10 +152,10 @@ function onDocumentKeyDown(event: any) {
 function onDocumentKeyUp(event: any) {
   switch (event.keyCode) {
     case 16:
-      isShiftDown = false;
+      store.isShiftDown = false;
       break;
     case 17:
-      isCtrlDown = false;
+      store.isCtrlDown = false;
       break;
   }
 }

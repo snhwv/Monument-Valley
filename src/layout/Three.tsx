@@ -1,6 +1,7 @@
 import { tick, init } from "@env";
 import { useEffect, useRef } from "react";
-import { eventInit, generateStaticMap } from "../event";
+import { eventInit } from "../event";
+import { generateStaticMap } from "../event/getPath";
 
 function Three() {
   const ref = useRef<HTMLCanvasElement>(null);
