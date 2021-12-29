@@ -12,15 +12,14 @@ export const setRotation: IpinterdownHander = ({ raycaster, next }) => {
       target
     );
 
-    const worldP = new Vector3();
-    store.rotationComponent.getWorldPosition(worldP);
-    target.sub(worldP);
+    target.projectOnPlane(store.rotationComponent.userData.rotablePlane.normal);
 
     let angle = rotationPointer.angleTo(target);
 
     const velocity = new Vector3();
     velocity.crossVectors(rotationPointer, target);
-    const dirction = velocity.dot(store.rotationComponent.up) > 0 ? 1 : -1;
+
+    const dirction = velocity.dot(store.rotationComponent.userData.rotablePlane.normal) > 0 ? 1 : -1;
     angle = dirction * angle;
     store.rotationComponent.rotateOnAxis(store.rotationComponent.up, angle);
     rotationPointer.copy(target);
@@ -38,13 +37,15 @@ export const setRotationPrevPoint: IpinterdownHander = ({
     orbitControls.enabled = false;
 
     store.rotationComponent = mainGroupIntersect;
-
+    mainGroupIntersect.generateRotablePlane();
     const target = new Vector3();
     raycaster.ray.intersectPlane(
       mainGroupIntersect.userData.rotablePlane,
       target
     );
-    mainGroupIntersect.worldToLocal(target);
+
+    target.projectOnPlane(mainGroupIntersect.userData.rotablePlane.normal);
+
     rotationPointer.copy(target);
   }
   next();
