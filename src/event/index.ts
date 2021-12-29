@@ -10,7 +10,13 @@ import {
   transformControls,
 } from "@env";
 import { saveScene, setTreeExpandedKeys } from "../layout/SceneTree";
-import { Object3D, Raycaster, Vector2, Vector3 } from "three";
+import {
+  Group,
+  Object3D,
+  Raycaster,
+  Vector2,
+  Vector3,
+} from "three";
 import Path from "@components/Path";
 import { createMGraph, Floyd, getPath, MGraph } from "@utils/floyd";
 import Rotable from "@components/lib/rotable";
@@ -31,12 +37,16 @@ export const eventInit = () => {
   document.addEventListener("keyup", onDocumentKeyUp);
 };
 
-let isMouseDown = false;
-const onPointerUp = () => {
-  isMouseDown = false;
+let isRotable = false;
+const onPointerUp = (event: any) => {
+  event.preventDefault();
+  isRotable = false;
   orbitControls.enabled = true;
+
+  rotationComponent = null;
 };
 function onPointerMove(event: any) {
+  event.preventDefault();
   setPointer(event);
   raycaster.setFromCamera(pointer, camera);
   let intersects = raycaster.intersectObjects(flatedComponents, true);
@@ -47,20 +57,20 @@ function onPointerMove(event: any) {
     intersect = currentComponent;
   }
 
-  // let next: any = pointermoveHandlerArr[0];
-  // let i = 0;
-  // while (next) {
-  //   i++;
-  //   const handler = next;
-  //   next = null;
-  //   handler({
-  //     mainGroupIntersect: intersect,
-  //     next: () => {
-  //       next = pointermoveHandlerArr[i];
-  //     },
-  //     raycaster,
-  //   });
-  // }
+  let next: any = pointermoveHandlerArr[0];
+  let i = 0;
+  while (next) {
+    i++;
+    const handler = next;
+    next = null;
+    handler({
+      mainGroupIntersect: intersect,
+      next: () => {
+        next = pointermoveHandlerArr[i];
+      },
+      raycaster,
+    });
+  }
 }
 const pointer = new Vector2();
 const raycaster = new Raycaster();
@@ -76,30 +86,27 @@ type IpinterdownHander = (event: {
 
 const rotationPointer = new Vector3();
 
-const setRotation: IpinterdownHander = ({
-  mainGroupIntersect,
-  raycaster,
-  next,
-}) => {
-  if (isMouseDown && mainGroupIntersect instanceof Rotable) {
+let rotationComponent: Group | null;
+
+const setRotation: IpinterdownHander = ({ raycaster, next }) => {
+  if (isRotable && rotationComponent) {
     const target = new Vector3();
     raycaster.ray.intersectPlane(
-      mainGroupIntersect.userData.rotablePlane,
+      rotationComponent.userData.rotablePlane,
       target
     );
-    mainGroupIntersect.worldToLocal(target);
+
+    const worldP = new Vector3();
+    rotationComponent.getWorldPosition(worldP);
+    target.sub(worldP);
+
     let angle = rotationPointer.angleTo(target);
 
     const velocity = new Vector3();
     velocity.crossVectors(rotationPointer, target);
-    const dirction =
-      velocity.dot(mainGroupIntersect.userData.rotablePlane.normal) > 0
-        ? 1
-        : -1;
+    const dirction = velocity.dot(rotationComponent.up) > 0 ? 1 : -1;
     angle = dirction * angle;
-
-    mainGroupIntersect.rotateOnAxis(mainGroupIntersect.up, angle);
-
+    rotationComponent.rotateOnAxis(rotationComponent.up, angle);
     rotationPointer.copy(target);
   }
   next();
@@ -111,6 +118,11 @@ const setRotationPrevPoint: IpinterdownHander = ({
   next,
 }) => {
   if (mainGroupIntersect instanceof Rotable) {
+    isRotable = true;
+    orbitControls.enabled = false;
+
+    rotationComponent = mainGroupIntersect;
+
     const target = new Vector3();
     raycaster.ray.intersectPlane(
       mainGroupIntersect.userData.rotablePlane,
@@ -283,7 +295,7 @@ const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
   next();
 };
 const pointerdownHandlerArr: IpinterdownHander[] = [
-  // setRotationPrevPoint,
+  setRotationPrevPoint,
   crudComponents,
   // setTransformControl,
   setPaths,
@@ -301,9 +313,8 @@ const getComponentParent = (object: Object3D): any => {
 };
 
 function onPointerDown(event: any) {
+  event.preventDefault();
   setPointer(event);
-  isMouseDown = true;
-  orbitControls.enabled = false;
   raycaster.setFromCamera(pointer, camera);
   let intersects = raycaster.intersectObjects(flatedComponents, true);
   let intersect = null;
