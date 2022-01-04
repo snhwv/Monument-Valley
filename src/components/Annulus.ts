@@ -37,7 +37,7 @@ class Annulus extends Component {
 
     const geometry = new CylinderGeometry(r0, r0, height, 32);
     const geometry1 = new CylinderGeometry(r1, r1, height, 32);
-    const material = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const material = this.getDefaultMaterial();
 
     const cubem = new Matrix4();
     cubem.makeTranslation(0, -unitWidth / 2 + height / 2, 0);

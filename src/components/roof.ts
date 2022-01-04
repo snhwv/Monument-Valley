@@ -28,7 +28,7 @@ class Roof extends Component {
 
   generatePedestal() {
     const thickness = 1;
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial();
     var geometry = new BoxBufferGeometry(
       unitWidth + 4,
       thickness,
@@ -85,7 +85,7 @@ class Roof extends Component {
     hm.makeRotationY(Math.PI / 2);
     verticalGeometry.applyMatrix4(hm);
 
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial();
     const result = CSG.intersect(
       new Mesh(verticalGeometry, cubeMaterial),
       new Mesh(horizontalGeometry, cubeMaterial)

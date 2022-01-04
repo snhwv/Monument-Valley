@@ -1,6 +1,6 @@
 import { flatedComponents, mainGroup } from "@env";
 import { updateSceneTree } from "../../layout/SceneTree";
-import { Group } from "three";
+import { Group, MeshLambertMaterial } from "three";
 import { v4 } from "uuid";
 import merge from "lodash.merge";
 export function isFunction(val: unknown): val is Function {
@@ -35,11 +35,34 @@ abstract class Component extends Group {
       this.children[0].removeFromParent();
     }
 
-    const defaultProps = this?.getDefaultProps?.();
+    const defaultProps = this?._getDefaultProps?.();
     if (defaultProps) {
       merge(this.userData.props, defaultProps, args);
     }
+    const obj = this.userData.props?.[0];
+    const zIndex = obj?.zIndex;
+
+    if (zIndex) {
+      this.renderOrder = zIndex;
+    }
+
     this.generateElement();
+  }
+
+  getDefaultMaterial() {
+    const material = new MeshLambertMaterial({
+      color: 0xb6ae71,
+      depthTest: this.getZIndex() ? false : true,
+    });
+    return material;
+  }
+
+  getZIndex(): number {
+    const obj = this.userData.props?.[0];
+    return obj?.zIndex || 0;
+  }
+  _getDefaultProps(): any[] {
+    return merge(this.getDefaultProps(), [{ zIndex: 0 }]);
   }
   getDefaultProps(): any[] {
     return [];

@@ -73,7 +73,7 @@ class CarvedCylinder extends Component {
   generateCarvedCylinder() {
     const r = this.r;
     const geometry = new CylinderGeometry(r, r, unitWidth, 32);
-    const material = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const material = this.getDefaultMaterial();
 
     const heartShape = new Shape();
 

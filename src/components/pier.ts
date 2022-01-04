@@ -49,7 +49,7 @@ class Pier extends Component {
 
     const cubeGeometry = new ExtrudeGeometry(heartShape, extrudeSettings);
 
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial();
 
     const cubem = new Matrix4();
     cubem.makeTranslation(0, 0, -unitWidth / 2);

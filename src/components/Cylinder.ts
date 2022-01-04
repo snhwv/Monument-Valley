@@ -25,7 +25,7 @@ class Cylinder extends Component {
     const height = obj?.height;
 
     const geometry = new CylinderGeometry(r, r, height, 32);
-    const material = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const material = this.getDefaultMaterial();
 
     const cubem = new Matrix4();
     cubem.makeTranslation(0, -unitWidth / 2 + height / 2, 0);

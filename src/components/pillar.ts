@@ -42,7 +42,7 @@ class Pillar extends Component {
 
   generatePillar() {
     var rod = new Group();
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial();
 
     const cubeGeometry = new BoxGeometry(
       this.pillarWidth,

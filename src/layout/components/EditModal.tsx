@@ -34,7 +34,7 @@ const EditModal: React.FC<any> = ({ item }) => {
         }
       });
     };
-    getProps(item.currentComponent?.getDefaultProps());
+    getProps(item.currentComponent?._getDefaultProps());
     setFormField(propObj);
   };
 

@@ -54,9 +54,9 @@ class Path extends Component {
     this.updatePointPositionList();
   }
 
-  setColor() {
+  setColor(color?: number) {
     const { material } = this.userData.pathCenter;
-    material.color = new Color(0xff0000);
+    material.color = new Color(color || 0xff0000);
   }
 
   generateConnectPoint(offset: Vector3) {

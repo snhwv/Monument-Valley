@@ -4,7 +4,6 @@ import {
   ExtrudeGeometry,
   Matrix4,
   Mesh,
-  MeshLambertMaterial,
   Shape,
   Vector3,
 } from "three";
@@ -70,7 +69,7 @@ class Door extends Component {
     const height = obj?.height;
 
     const cubeGeometry = new BoxGeometry(width, height, width);
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial();
     const cube = new Mesh(cubeGeometry, cubeMaterial);
 
     const heartShape = new Shape();

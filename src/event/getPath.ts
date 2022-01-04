@@ -120,6 +120,10 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
     const wayPath = getPath(19, Paths.indexOf(mainGroupIntersect as Path));
     console.log(wayPath);
 
+    Paths.forEach((item) => {
+      item.setColor(0xffff00);
+    });
+
     if (wayPath.weight < 9999) {
       wayPath.path.forEach((item) => {
         Paths[item].setColor();

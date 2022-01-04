@@ -13,7 +13,7 @@ class Plane extends Component {
   generatePlane() {
     const height = 4;
     const cubeGeometry = new BoxGeometry(unitWidth, height, unitWidth);
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial();
 
     const cubem = new Matrix4();
     cubem.makeTranslation(0, (unitWidth - height) / 2, 0);

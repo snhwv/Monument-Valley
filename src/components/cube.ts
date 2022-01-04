@@ -11,7 +11,7 @@ class Cube extends Component {
   }
   generateCube() {
     const cubeGeometry = new BoxGeometry(unitWidth, unitWidth, unitWidth);
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial();
     this.add(new Mesh(cubeGeometry, cubeMaterial));
   }
 }

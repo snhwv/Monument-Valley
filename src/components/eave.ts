@@ -117,33 +117,6 @@ class Eave extends Component {
 
     heartShape.lineTo(-unitWidth / 2 + width0, -unitWidth / 2);
 
-    // heartShape.moveTo(-unitWidth / 2, unitWidth / 2);
-
-    // heartShape.lineTo(-unitWidth / 2, -unitWidth / 2);
-
-    // heartShape.lineTo(-unitWidth / 2 + eaveWidth, -unitWidth / 2);
-
-    // heartShape.lineTo(-unitWidth / 2 + eaveWidth, -unitWidth / 2 + eaveHeight);
-
-    // heartShape.lineTo(
-    //   -unitWidth / 2 + eaveWidth + eaveWidth1,
-    //   -unitWidth / 2 + eaveHeight + eaveHeight1
-    // );
-    // heartShape.lineTo(
-    //   unitWidth / 2 - eaveWidth - eaveWidth1,
-    //   -unitWidth / 2 + eaveHeight + eaveHeight1
-    // );
-
-    // heartShape.lineTo(unitWidth / 2 - eaveWidth, -unitWidth / 2 + eaveHeight);
-
-    // heartShape.lineTo(unitWidth / 2 - eaveWidth, -unitWidth / 2);
-
-    // heartShape.lineTo(unitWidth / 2, -unitWidth / 2);
-
-    // heartShape.lineTo(unitWidth / 2, unitWidth / 2);
-
-    // heartShape.lineTo(-unitWidth / 2, unitWidth / 2);
-
     const extrudeSettings = {
       depth: unitWidth,
       bevelEnabled: false,
@@ -151,7 +124,7 @@ class Eave extends Component {
 
     const verticalGeometry = new ExtrudeGeometry(heartShape, extrudeSettings);
 
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial();
 
     const cubem = new Matrix4();
     cubem.makeTranslation(0, 0, -unitWidth / 2);

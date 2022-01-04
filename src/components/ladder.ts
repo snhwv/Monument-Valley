@@ -13,7 +13,7 @@ class Ladder extends Component {
   }
   generateLadder() {
     const cubeGeometry = new BoxGeometry(unitWidth, unitWidth, unitWidth);
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial();
     const cube = new Mesh(cubeGeometry, cubeMaterial);
 
     const gap = unitWidth / 8;
