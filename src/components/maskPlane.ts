@@ -1,9 +1,5 @@
 import { unitWidth } from "@constants";
-import {
-  Matrix4,
-  Mesh,
-  PlaneGeometry,
-} from "three";
+import { Matrix4, Mesh, PlaneGeometry } from "three";
 import Component from "./lib/recordable";
 
 class MaskPlane extends Component {
@@ -14,13 +10,36 @@ class MaskPlane extends Component {
     this.generatePlane();
   }
 
-  generatePlane() {
+  getDefaultProps() {
+    return [
+      {
+        width: unitWidth,
+        height: unitWidth,
+        offsetWidth: 0,
+        offsetHeight: 0,
+        offsetZ: 0,
+      },
+    ];
+  }
 
-    const geometry = new PlaneGeometry(unitWidth, unitWidth);
+  generatePlane() {
+    const obj = this.userData.props?.[0];
+    const {
+      width = unitWidth,
+      height = unitWidth,
+      offsetWidth = 0,
+      offsetHeight = 0,
+      offsetZ = 0,
+    } = obj;
+    const geometry = new PlaneGeometry(width, height);
     const cubeMaterial = this.getDefaultMaterial();
 
     const cubem = new Matrix4();
-    cubem.makeTranslation(0, unitWidth / 2, 0);
+    cubem.makeTranslation(
+      unitWidth - width / 2 + offsetWidth,
+      unitWidth - height / 2 + offsetHeight,
+      offsetZ
+    );
     geometry.applyMatrix4(cubem);
 
     const mesh = new Mesh(geometry, cubeMaterial);

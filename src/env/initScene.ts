@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { Group, Matrix4, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import data from "../data";
+import Ada from "./ada";
 
 export let canvas: HTMLCanvasElement;
 const sizes = {
@@ -76,8 +77,8 @@ export const sceneInit = () => {
   });
   canvasResizeHandler();
 
-  // const mainGroupChildren = localStorage.getItem("mainGroupChildren");
-  const mainGroupChildren = data;
+  const mainGroupChildren = localStorage.getItem("mainGroupChildren");
+  // const mainGroupChildren = data;
   // const mainGroupChildren = '';
   if (mainGroupChildren) {
     const parsedMainGroupChildren = JSON.parse(mainGroupChildren);
@@ -119,6 +120,7 @@ export const mainGroup = new Group();
 
 // scene.add(floor);
 scene.add(mainGroup);
+scene.add(new Ada());
 
 export const tick = () => {
   orbitControls.update();
