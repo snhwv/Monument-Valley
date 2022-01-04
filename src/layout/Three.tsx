@@ -1,5 +1,6 @@
 import { tick, init } from "@env";
 import { useEffect, useRef } from "react";
+import Level1 from "../levels/level1";
 import { eventInit } from "../event";
 import { generateStaticMap } from "../event/getPath";
 
@@ -10,6 +11,9 @@ function Three() {
     tick();
     eventInit();
     generateStaticMap();
+
+    const level1 = new Level1();
+    level1.init();
   }, []);
   return <canvas data-canvas ref={ref} className={"full canvas"}></canvas>;
 }

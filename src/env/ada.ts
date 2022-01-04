@@ -1,4 +1,5 @@
 import { unitWidth } from "@constants";
+import { flatedComponents, Paths, scene } from "@env";
 import { BoxGeometry, Group, Mesh, MeshLambertMaterial } from "three";
 
 class Ada extends Group {
@@ -19,4 +20,6 @@ class Ada extends Group {
     this.add(new Mesh(cubeGeometry, material));
   }
 }
+
+
 export default Ada;

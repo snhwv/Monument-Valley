@@ -6,7 +6,6 @@ import * as THREE from "three";
 import { Group, Matrix4, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import data from "../data";
-import Ada from "./ada";
 
 export let canvas: HTMLCanvasElement;
 const sizes = {
@@ -120,8 +119,6 @@ export const mainGroup = new Group();
 
 // scene.add(floor);
 scene.add(mainGroup);
-scene.add(new Ada());
-
 export const tick = () => {
   orbitControls.update();
   renderer.render(scene, camera);

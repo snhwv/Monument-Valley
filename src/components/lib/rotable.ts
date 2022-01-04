@@ -13,5 +13,7 @@ abstract class Rotable extends Component {
     const length = p.length() - 1;
     this.userData.rotablePlane = new Plane(p.normalize(), -length);
   }
+  onRotate(axis: Vector3, angle: number) {}
+  onRotated(totalangle: number) {}
 }
 export default Rotable;

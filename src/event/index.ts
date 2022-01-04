@@ -13,7 +13,7 @@ import { setPaths } from "./getPath";
 import { IpinterdownHander, store } from "./store";
 import { crudComponents } from "./crudComponent";
 import { setTransformControl } from "./setTransformControl";
-import { setRotation, setRotationPrevPoint } from "./rotateComponent";
+import { rotated, setRotation, setRotationPrevPoint } from "./rotateComponent";
 
 const setPointer = (event: any) => {
   const rect = getCanvasRect();
@@ -31,13 +31,33 @@ export const eventInit = () => {
   document.addEventListener("keyup", onDocumentKeyUp);
 };
 
-const onPointerUp = (event: any) => {
+function onPointerUp(event: any) {
   event.preventDefault();
-  store.isRotable = false;
-  orbitControls.enabled = true;
+  setPointer(event);
+  raycaster.setFromCamera(pointer, camera);
+  let intersects = raycaster.intersectObjects(flatedComponents, true);
+  let intersect = null;
+  if (intersects.length > 0) {
+    intersect = intersects[0];
+    const currentComponent = getComponentParent(intersect.object);
+    intersect = currentComponent;
+  }
 
-  store.rotationComponent = null;
-};
+  let next: any = pointerupHandlerArr[0];
+  let i = 0;
+  while (next) {
+    i++;
+    const handler = next;
+    next = null;
+    handler({
+      mainGroupIntersect: intersect,
+      next: () => {
+        next = pointerupHandlerArr[i];
+      },
+      raycaster,
+    });
+  }
+}
 function onPointerMove(event: any) {
   event.preventDefault();
   setPointer(event);
@@ -75,6 +95,8 @@ const pointerdownHandlerArr: IpinterdownHander[] = [
   setPaths,
 ];
 const pointermoveHandlerArr: IpinterdownHander[] = [setRotation];
+
+const pointerupHandlerArr: IpinterdownHander[] = [rotated];
 
 const getComponentParent = (object: Object3D): any => {
   if (componentTypes.includes(object?.constructor?.name)) {

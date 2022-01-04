@@ -46,6 +46,8 @@ abstract class Component extends Group {
       this.renderOrder = zIndex;
     }
 
+    this.name = obj?.name || "";
+
     this.generateElement();
   }
 
@@ -62,7 +64,7 @@ abstract class Component extends Group {
     return obj?.zIndex || 0;
   }
   _getDefaultProps(): any[] {
-    return merge(this.getDefaultProps(), [{ zIndex: 0 }]);
+    return merge(this.getDefaultProps(), [{ zIndex: 0, name: "" }]);
   }
   getDefaultProps(): any[] {
     return [];
