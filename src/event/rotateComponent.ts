@@ -27,8 +27,8 @@ export const setRotation: IpinterdownHander = ({ raycaster, next }) => {
     angle = dirction * angle;
     // store.rotationComponent.rotateOnAxis(store.rotationComponent.up, angle);
     totalAngle += angle;
-    (store.rotationComponent as any).onRotate(
-      store.rotationComponent.up,
+    (store.rotationComponent as any)?.onRotate(
+      store.rotationComponent.userData.rotablePlane.normal,
       angle
     );
 
@@ -66,7 +66,7 @@ export const rotated: IpinterdownHander = () => {
   store.isRotable = false;
   orbitControls.enabled = true;
   (store.rotationComponent as any)?.onRotated(
-    store.rotationComponent?.up,
+    store.rotationComponent?.userData.rotablePlane.normal,
     totalAngle
   );
   store.rotationComponent = null;
