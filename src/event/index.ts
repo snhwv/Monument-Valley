@@ -91,7 +91,7 @@ const raycaster = new Raycaster();
 const pointerdownHandlerArr: IpinterdownHander[] = [
   setRotationPrevPoint,
   crudComponents,
-  setTransformControl,
+  // setTransformControl,
   setPaths,
 ];
 const pointermoveHandlerArr: IpinterdownHander[] = [setRotation];

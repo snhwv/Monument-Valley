@@ -26,6 +26,7 @@ class Path extends Component {
         right: 1,
         pointR: 1,
         isStatic: 1,
+        isTrigger: 0,
       },
     ];
   }
@@ -91,6 +92,9 @@ class Path extends Component {
 
       this.userData.pointPositionList.push(p);
     });
+  }
+  clearConnectPointList() {
+    this.userData.connectPointList = new Set();
   }
 
   generatePath() {

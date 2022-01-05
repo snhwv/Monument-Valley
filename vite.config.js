@@ -13,6 +13,7 @@ export default {
       "@components": resolve(__dirname, "src/components"), //把src改为@
       "@constants": resolve(__dirname, "src/constants"), //把src改为@
       "@utils": resolve(__dirname, "src/utils"), //把src改为@
+      "@game": resolve(__dirname, "src/game"), //把src改为@
     },
   },
   plugins: [

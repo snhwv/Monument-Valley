@@ -21,6 +21,8 @@
       "@components": ["src/components"],
       "@components/*": ["src/components/*"],
       "@utils/*": ["src/utils/*"],
+      "@game": ["src/game"],
+      "@game/*": ["src/game/*"],
     }
   },
   "include": ["./src"]

@@ -1,5 +1,5 @@
+import Path from "@components/Path";
 import { unitWidth } from "@constants";
-import { flatedComponents, Paths, scene } from "@env";
 import { BoxGeometry, Group, Mesh, MeshLambertMaterial } from "three";
 
 class Ada extends Group {
@@ -14,12 +14,11 @@ class Ada extends Group {
     const cubeGeometry = new BoxGeometry(unitWidth, unitWidth, unitWidth);
     const material = new MeshLambertMaterial({
       color: 0xffae71,
-      depthTest: false,
+      depthTest: true,
     });
 
     this.add(new Mesh(cubeGeometry, material));
   }
 }
-
 
 export default Ada;

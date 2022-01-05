@@ -14,5 +14,11 @@ const init = () => {
 };
 
 const flatedComponents: Object3D[] = [];
+
+const getCompFromFlatedArrByName = (name: string) => {
+  return flatedComponents.find((item) => item.name === name);
+};
+
 const Paths: Path[] = [];
-export { init, flatedComponents, Paths };
+
+export { init, flatedComponents, Paths, getCompFromFlatedArrByName };

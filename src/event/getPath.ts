@@ -1,5 +1,6 @@
 import Path from "@components/Path";
 import { camera, Paths } from "@env";
+import { movingPath } from "@game";
 import { createMGraph, Floyd, getPath, MGraph } from "@utils/floyd";
 import { Vector3 } from "three";
 import { IpinterdownHander } from "./store";
@@ -30,6 +31,8 @@ const staticPathPointMap = new Map();
 let pathPointMap = new Map();
 let dynamicPathPointMap = new Map();
 
+const POSITION_PRECISION = 1;
+
 export const generateStaticMap = () => {
   staticPathPointMap.clear();
   Paths.filter((item) => item.userData.isStatic).forEach((item) => {
@@ -37,7 +40,7 @@ export const generateStaticMap = () => {
     item.userData.pointPositionList.forEach((v: Vector3) => {
       const key = v
         .toArray()
-        .map((item) => Number(item.toFixed(3)))
+        .map((item) => Number(item.toFixed(POSITION_PRECISION)))
         .toString();
       if (!staticPathPointMap.has(key)) {
         staticPathPointMap.set(key, [item]);
@@ -76,7 +79,7 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
       item.userData.pointPositionList.forEach((v: Vector3) => {
         const key = v
           .toArray()
-          .map((item) => Number(item.toFixed(3)))
+          .map((item) => Number(item.toFixed(POSITION_PRECISION)))
           .toString();
         if (!pathPointMap.has(key)) {
           const mapv = [item];
@@ -101,7 +104,7 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
           .projectOnPlane(projectPlaneNormal);
         const key = projectV
           .toArray()
-          .map((item) => Number(item.toFixed(3)))
+          .map((item) => Number(item.toFixed(POSITION_PRECISION)))
           .toString();
         if (!dynamicPathPointMap.has(key)) {
           const mapv = [item];
@@ -117,14 +120,18 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
     const G = new MGraph(Paths.length);
     createMGraph(generateMGraph(), G);
     Floyd(G);
-    const wayPath = getPath(19, Paths.indexOf(mainGroupIntersect as Path));
+    const wayPath = getPath(
+      Paths.indexOf(movingPath.getAdaOn()),
+      Paths.indexOf(mainGroupIntersect as Path)
+    );
     console.log(wayPath);
 
     Paths.forEach((item) => {
       item.setColor(0xffff00);
     });
-
     if (wayPath.weight < 9999) {
+      movingPath.setPathIndexList(wayPath.path);
+      movingPath.move();
       wayPath.path.forEach((item) => {
         Paths[item].setColor();
       });
