@@ -68,7 +68,7 @@ export const sceneInit = () => {
   canvas = document.querySelector("[data-canvas]") as HTMLCanvasElement;
   orbitControls = new OrbitControls(camera, canvas);
   orbitControls.enableDamping = true;
-  // orbitControls.enabled = false;
+  orbitControls.enabled = false;
 
   renderer = new THREE.WebGLRenderer({
     canvas,

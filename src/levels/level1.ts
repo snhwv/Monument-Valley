@@ -22,18 +22,24 @@ export default class Level1 {
 
     movingPath.setAdaOn(initPath);
 
-    this.hiddenMaskComponents();
+    // this.hiddenMaskComponents();
     this.configAnimation();
     this.triggerAnimation();
     this.pathTriggerPoint();
   }
   hiddenMaskComponents() {
     const mask_1 = getCompFromFlatedArrByName("mask_1");
+    const mask_2 = getCompFromFlatedArrByName("mask_2");
     mask_1.visible = false;
+    mask_2.visible = false;
   }
-  showMaskComponents() {
+  showMask1Components() {
     const mask_1 = getCompFromFlatedArrByName("mask_1");
     mask_1.visible = true;
+  }
+  showMask2Components() {
+    const mask_2 = getCompFromFlatedArrByName("mask_2");
+    mask_2.visible = true;
   }
   configAnimation() {
     const rotationControl: any = getCompFromFlatedArrByName("rotationControl");
@@ -130,7 +136,7 @@ export default class Level1 {
         if (nextCube) {
           moveCube(nextCube);
         } else {
-          this.showMaskComponents();
+          this.showMask1Components();
         }
       };
       moveNext();
@@ -166,10 +172,10 @@ export default class Level1 {
         },
         // onComplete: moveNext,
       });
+
+      this.showMask2Components();
     };
     // trigger_2.onTrigger = () => {};
   }
-  pathTriggerPoint() {
-    
-  }
+  pathTriggerPoint() {}
 }

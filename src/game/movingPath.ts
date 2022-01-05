@@ -37,6 +37,9 @@ class MovingPath {
     const nextIndex = this.pathIndexList.shift();
     if (typeof nextIndex === "number") {
       const nextPath = Paths[nextIndex];
+      if(nextPath.getFirstProps()?.isJump) {
+        // ada.renderOrder = 5;
+      }
       if (nextPath !== this.getAdaOn()) {
         this.moveAdaToPath(nextPath);
       }
@@ -51,7 +54,7 @@ class MovingPath {
     animate({
       from: fromPostion,
       to: toPostion,
-      duration: 200,
+      duration: 2000,
       onUpdate: (latest: any) => {
         ada.position.copy(latest);
       },

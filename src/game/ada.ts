@@ -10,13 +10,13 @@ class Ada extends Group {
     this.generateCube();
   }
   generateCube() {
-    const cubeGeometry = new BoxGeometry(unitWidth * 0.5, unitWidth * 0.5, unitWidth * 0.5);
+    const cubeGeometry = new BoxGeometry(unitWidth * 1, unitWidth * 1, unitWidth * 1);
     const material = new MeshLambertMaterial({
       color: 0xffae71,
-      depthTest: true,
+      depthTest: false,
     });
 
-    // this.renderOrder = 1;
+    this.renderOrder = 0;
 
     this.add(new Mesh(cubeGeometry, material));
   }

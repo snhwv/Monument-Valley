@@ -26,6 +26,7 @@ class Path extends Component {
         right: 1,
         pointR: 1,
         isStatic: 1,
+        isJump: 0,
         isTrigger: 0,
       },
     ];
