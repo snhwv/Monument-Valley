@@ -28,6 +28,13 @@ abstract class Component extends Group {
     updateSceneTree();
   }
 
+  getProps() {
+    return this.userData.props;
+  }
+  getFirstProps() {
+    return this.userData.props?.[0];
+  }
+
   changeProps(...args: any) {
     const childrenLength = this.children.length;
 

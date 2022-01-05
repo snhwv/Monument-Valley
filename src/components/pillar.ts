@@ -41,7 +41,6 @@ class Pillar extends Component {
   }
 
   generatePillar() {
-    var rod = new Group();
     const cubeMaterial = this.getDefaultMaterial();
 
     const cubeGeometry = new BoxGeometry(
@@ -67,9 +66,8 @@ class Pillar extends Component {
       meshm.makeRotationAxis(new Vector3(0, 1, 0), (i * Math.PI) / 2);
       mesh.applyMatrix4(meshm);
 
-      rod.add(mesh);
+      this.add(mesh);
     }
-    this.add(rod);
   }
 }
 (Pillar as any).cnName = "支柱";

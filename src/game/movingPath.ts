@@ -53,12 +53,15 @@ class MovingPath {
       to: toPostion,
       duration: 200,
       onUpdate: (latest: any) => {
-        console.log(latest);
         ada.position.copy(latest);
       },
       onComplete: () => {
         this.setAdaOn(path);
-        this.moveNext();
+        if (path.getProps()?.[0]?.isTrigger) {
+          path?.onTrigger();
+        } else {
+          this.moveNext();
+        }
       },
     });
   }

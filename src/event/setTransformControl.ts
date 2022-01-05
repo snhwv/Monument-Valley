@@ -10,6 +10,7 @@ export const setTransformControl: IpinterdownHander = ({
     return;
   }
   if (mainGroupIntersect) {
+    console.log(mainGroupIntersect);
     const intersect = mainGroupIntersect;
     if (intersect !== transformControls.object) {
       transformControls.detach();

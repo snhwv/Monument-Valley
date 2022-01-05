@@ -30,6 +30,7 @@ class Path extends Component {
       },
     ];
   }
+  onTrigger() {}
   generateElement() {
     this.userData.connectPointList = new Set();
     this.userData.pointPositionList = [];
