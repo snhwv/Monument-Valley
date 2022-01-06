@@ -1,5 +1,12 @@
 import { unitWidth } from "@constants";
-import { BoxGeometry, Group, Material, Matrix4, Mesh, MeshLambertMaterial } from "three";
+import {
+  BoxGeometry,
+  Group,
+  Material,
+  Matrix4,
+  Mesh,
+  MeshLambertMaterial,
+} from "three";
 
 class Ada extends Group {
   material!: Material;
@@ -23,11 +30,12 @@ class Ada extends Group {
     this.material = material;
     this.setZIndex(0);
 
-    
-    const cubem = new Matrix4();
-    cubem.makeRotationY(Math.PI / 2);
-    cubeGeometry.applyMatrix4(cubem);
-    
+    cubeGeometry.translate(0, (unitWidth * 1) / 2, 0);
+
+    // const cubem = new Matrix4();
+    // cubem.makeRotationY(Math.PI / 2);
+    // cubeGeometry.applyMatrix4(cubem);
+
     this.add(new Mesh(cubeGeometry, material));
   }
   setZIndex(zIndex: number) {

@@ -16,7 +16,7 @@ export default class Level1 {
     if (!initPath) {
       return;
     }
-    initPath.getWorldPosition(ada.position);
+    initPath.getCenterWorldPosition(ada.position);
 
     scene.add(ada);
 

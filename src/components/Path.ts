@@ -84,6 +84,10 @@ class Path extends Component {
     this.userData.sphereArr.push(sphere);
   }
 
+  getCenterWorldPosition(target: Vector3) {
+    return (this.userData.pathCenter as Mesh).getWorldPosition(target);
+  }
+
   updatePointPositionList() {
     this.userData.pointPositionList = [];
     this.userData.sphereArr.forEach((item: Mesh) => {
