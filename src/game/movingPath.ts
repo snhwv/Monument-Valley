@@ -1,6 +1,6 @@
-import { Vector3 } from "three";
+import { Plane, Vector3 } from "three";
 import Path from "@components/Path";
-import { Paths } from "@env";
+import { camera, Paths } from "@env";
 import { ada } from "@game";
 import { animate } from "popmotion";
 
@@ -37,10 +37,38 @@ class MovingPath {
     const nextIndex = this.pathIndexList.shift();
     if (typeof nextIndex === "number") {
       const nextPath = Paths[nextIndex];
-      if(nextPath.getFirstProps()?.isJump) {
-        // ada.renderOrder = 5;
+      const adaPath = this.getAdaOn();
+      if (adaPath.getFirstProps()?.isJump && nextPath.getFirstProps()?.isJump) {
+        ada.setZIndex(100);
       }
-      if (nextPath !== this.getAdaOn()) {
+
+      // const projectPlaneNormal = new Vector3()
+      //   .copy(camera.position)
+      //   .normalize();
+
+      // const p1 = new Vector3();
+      // nextPath.getWorldPosition(p1);
+      // const p2 = new Vector3();
+      // adaPath.getWorldPosition(p2);
+      // const p3 = new Vector3();
+      // ada.getWorldPosition(p3);
+
+      // const v = new Vector3().subVectors(p1, p2);
+
+      // const projectV = new Vector3().copy(v).projectOnPlane(projectPlaneNormal);
+      // console.log(projectV);
+
+      // const n = new Vector3().copy(adaPath.up);
+      // projectV.projectOnPlane(n);
+      // adaPath.localToWorld(n);
+      // n.sub(p2);
+
+      // v.projectOnPlane(n);
+      // console.log(v);
+      // v.add(p3);
+
+      // ada.lookAt(v);
+      if (nextPath !== adaPath) {
         this.moveAdaToPath(nextPath);
       }
     }
@@ -54,11 +82,15 @@ class MovingPath {
     animate({
       from: fromPostion,
       to: toPostion,
-      duration: 2000,
+      duration: 800,
       onUpdate: (latest: any) => {
         ada.position.copy(latest);
       },
       onComplete: () => {
+        const adaPath = this.getAdaOn();
+        if (adaPath.getFirstProps()?.isJump && path.getFirstProps()?.isJump) {
+          ada.setZIndex(0);
+        }
         this.setAdaOn(path);
         if (path.getProps()?.[0]?.isTrigger) {
           path?.onTrigger();
