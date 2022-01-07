@@ -84,6 +84,7 @@ class MovingPath {
           }
           return;
         }
+        ada.lookAt(nextPosition);
 
         animate({
           from: currentPosition,
@@ -94,7 +95,13 @@ class MovingPath {
             ada.position.copy(latest);
           },
           onComplete: () => {
-            currentPosition.copy(nextPosition);
+            if (nextPosition === adaPathPoint) {
+              const nextPathP = ways.shift();
+              nextPathP && currentPosition.copy(nextPathP);
+              nextPathP && ada.position.copy(nextPathP);
+            } else {
+              currentPosition.copy(nextPosition);
+            }
             moveAdaToPoint();
           },
         });
