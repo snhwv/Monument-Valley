@@ -2,7 +2,7 @@ import { ArrowHelper, Plane, PlaneHelper, Ray, Vector3 } from "three";
 import Path from "@components/Path";
 import { camera, Paths, scene } from "@env";
 import { ada } from "@game";
-import { animate } from "popmotion";
+import { animate, keyframes, easeInOut, linear } from "popmotion";
 
 class MovingPath {
   currentPath!: Path;
@@ -42,38 +42,101 @@ class MovingPath {
         ada.setZIndex(100);
       }
 
-      const projectPlaneNormal = new Vector3()
-        .copy(camera.position)
-        .normalize();
+      const adaPathPointArrStr = adaPath.userData.connectMap.get(
+        nextPath
+      ) as string;
+      const adaPathPoint = new Vector3().fromArray(
+        adaPathPointArrStr.split(",").map((item) => Number(item))
+      );
+
+      const nextPathPointArrStr = nextPath.userData.connectMap.get(
+        adaPath
+      ) as string;
+      const nextPathPoint = new Vector3().fromArray(
+        nextPathPointArrStr.split(",").map((item) => Number(item))
+      );
+
+      console.log(adaPathPointArrStr, nextPathPointArrStr);
+
+      const currentPosition = new Vector3();
+      adaPath.getCenterWorldPosition(currentPosition);
 
       const p1 = new Vector3();
       nextPath.getCenterWorldPosition(p1);
-      const p2 = new Vector3();
-      adaPath.getCenterWorldPosition(p2);
 
-      const project1 = new Vector3()
-        .copy(p1)
-        .projectOnPlane(projectPlaneNormal);
+      const ways = [adaPathPoint, nextPathPoint, p1];
 
-      const ray1 = new Ray(p1, new Vector3().subVectors(project1, p1));
+      const moveAdaToPoint = () => {
+        const nextPosition = ways.shift();
+        if (!nextPosition) {
+          const adaPath = this.getAdaOn();
+          if (
+            adaPath.getFirstProps()?.isJump &&
+            nextPath.getFirstProps()?.isJump
+          ) {
+            ada.setZIndex(0);
+          }
+          this.setAdaOn(nextPath);
+          if (nextPath.getProps()?.[0]?.isTrigger) {
+            nextPath?.onTrigger();
+          } else {
+            this.moveNext();
+          }
+          return;
+        }
 
-      const n = new Vector3().copy(adaPath.up);
-      adaPath.localToWorld(n);
-      n.sub(p2);
+        animate({
+          from: currentPosition,
+          to: nextPosition,
+          duration: 300,
+          ease: linear,
+          onUpdate: (latest: any) => {
+            ada.position.copy(latest);
+          },
+          onComplete: () => {
+            currentPosition.copy(nextPosition);
+            moveAdaToPoint();
+          },
+        });
+      };
 
-      const plane = new Plane();
-      plane.setFromNormalAndCoplanarPoint(n, p2);
-
-      const v1 = new Vector3();
-      ray1.intersectPlane(plane, v1);
-
-      const a = new Vector3();
-      a.subVectors(p2, v1).negate().add(p2);
-
-      ada.lookAt(a);
       if (nextPath !== adaPath) {
-        this.moveAdaToPath(nextPath);
+        moveAdaToPoint();
       }
+      // const adaPathPoint = new Vector3().fromArray(a.split(",").map((item) => Number(item)));
+
+      // const projectPlaneNormal = new Vector3()
+      //   .copy(camera.position)
+      //   .normalize();
+
+      // const p1 = new Vector3();
+      // nextPath.getCenterWorldPosition(p1);
+      // const p2 = new Vector3();
+      // adaPath.getCenterWorldPosition(p2);
+
+      // const project1 = new Vector3()
+      //   .copy(p1)
+      //   .projectOnPlane(projectPlaneNormal);
+
+      // const ray1 = new Ray(p1, new Vector3().subVectors(project1, p1));
+
+      // const n = new Vector3().copy(adaPath.up);
+      // adaPath.localToWorld(n);
+      // n.sub(p2);
+
+      // const plane = new Plane();
+      // plane.setFromNormalAndCoplanarPoint(n, p2);
+
+      // const v1 = new Vector3();
+      // ray1.intersectPlane(plane, v1);
+
+      // const a = new Vector3();
+      // a.subVectors(p2, v1).negate().add(p2);
+
+      // ada.lookAt(a);
+      // if (nextPath !== adaPath) {
+      //   this.moveAdaToPath(nextPath);
+      // }
     }
   }
   moveAdaToPath(path: Path) {
