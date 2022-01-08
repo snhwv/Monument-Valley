@@ -22,7 +22,7 @@ export default class Level1 {
 
     movingPath.setAdaOn(initPath);
 
-    // this.hiddenMaskComponents();
+    this.hiddenMaskComponents();
     this.configAnimation();
     this.triggerAnimation();
     this.pathTriggerPoint();

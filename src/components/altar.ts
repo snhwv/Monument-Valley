@@ -29,7 +29,7 @@ class Altar extends Component {
     );
 
     const cubem = new Matrix4();
-    cubem.makeTranslation(0, -thickness / 2 - unitWidth / 2, 0);
+    cubem.makeTranslation(0, -thickness / 2 - unitWidth / 2 + 0.001, 0);
     geometry.applyMatrix4(cubem);
 
     var cube = new Mesh(geometry, cubeMaterial);

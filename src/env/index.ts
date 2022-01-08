@@ -8,6 +8,7 @@ export * from "./initScene";
 export * from "./transformControl";
 export * from "./light";
 export * from "./helper";
+import "./dat";
 
 const init = () => {
   sceneInit();

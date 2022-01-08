@@ -44,7 +44,7 @@ class Pier extends Component {
     const extrudeSettings = {
       depth: unitWidth,
       bevelEnabled: false,
-      curveSegments: 6,
+      curveSegments: 2,
     };
 
     const cubeGeometry = new ExtrudeGeometry(heartShape, extrudeSettings);

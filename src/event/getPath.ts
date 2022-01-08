@@ -2,7 +2,7 @@ import Path from "@components/Path";
 import { camera, Paths } from "@env";
 import { movingPath } from "@game";
 import { createMGraph, Floyd, getPath, MGraph } from "@utils/floyd";
-import { Vector3 } from "three";
+import { Object3D, Vector3 } from "three";
 import { IpinterdownHander } from "./store";
 
 function generateMGraph() {
@@ -75,9 +75,17 @@ const connectPath = (PathArrList: Path[][]) => {
 };
 
 export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
+  let obj = mainGroupIntersect as Object3D | null;
+  let visible = true;
+  while (obj) {
+    visible = visible && obj.visible;
+    obj = obj.parent;
+  }
+
   if (
     mainGroupIntersect &&
-    (mainGroupIntersect as Path).constructor.name === "Path"
+    (mainGroupIntersect as Path).constructor.name === "Path" &&
+    visible
   ) {
     pathPointMap = new Map([...staticPathPointMap.entries()]);
 

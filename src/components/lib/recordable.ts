@@ -1,6 +1,6 @@
 import { flatedComponents, mainGroup } from "@env";
 import { updateSceneTree } from "../../layout/SceneTree";
-import { Group, MeshLambertMaterial } from "three";
+import { Group, MeshLambertMaterial, MeshStandardMaterial } from "three";
 import { v4 } from "uuid";
 import merge from "lodash.merge";
 export function isFunction(val: unknown): val is Function {
@@ -59,8 +59,8 @@ abstract class Component extends Group {
   }
 
   getDefaultMaterial() {
-    const material = new MeshLambertMaterial({
-      color: 0xb6ae71,
+    const material = new MeshStandardMaterial({
+      color: 0xddd692,
       depthTest: this.getZIndex() ? false : true,
     });
     return material;

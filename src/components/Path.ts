@@ -1,6 +1,7 @@
 import { unitWidth } from "@constants";
 import { Paths } from "@env";
 import {
+  BoxGeometry,
   Color,
   Matrix4,
   Mesh,
@@ -74,6 +75,8 @@ class Path extends Component {
 
     const material = new MeshLambertMaterial({
       color: isStatic ? 0xffff00 : 0x0000ff,
+      transparent: true,
+      opacity: 0,
     });
     const sphere = new Mesh(geometry, material);
 
@@ -109,9 +112,11 @@ class Path extends Component {
     const height = obj?.height;
     const isStatic = obj?.isStatic;
 
-    const geometry = new SphereGeometry(3, 32, 32);
+    const geometry = new BoxGeometry(unitWidth, 1, unitWidth);
     const material = new MeshLambertMaterial({
       color: isStatic ? 0xffff00 : 0x0000ff,
+      transparent: true,
+      opacity: 0,
     });
     const sphere = new Mesh(geometry, material);
     sphere.position.add(new Vector3(0, -height / 2, 0));
