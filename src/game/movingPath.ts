@@ -62,6 +62,8 @@ class MovingPath {
         adaPath
       ) as Vector3;
 
+      this.isConnect(adaPathPoint, nextPathPoint);
+
       const ways = [
         adaPathPoint,
         nextPathPoint,
@@ -100,7 +102,7 @@ class MovingPath {
         animate({
           from: 0,
           to: 1,
-          duration: 100,
+          duration: 1000,
           ease: linear,
           onUpdate: (latest: any) => {
             const p = new Vector3().copy(subVector);
@@ -110,6 +112,8 @@ class MovingPath {
             );
           },
           onComplete: () => {
+            this.isConnect(adaPathPoint, nextPathPoint);
+
             if (nextPosition === adaPathPoint) {
               ways.shift();
               nextPath.attach(ada);
@@ -122,6 +126,10 @@ class MovingPath {
         moveAdaToPoint();
       }
     }
+  }
+  isConnect(point0: Vector3, point1: Vector3) {
+    // 判断两点是否连接
+    return true;
   }
 }
 
