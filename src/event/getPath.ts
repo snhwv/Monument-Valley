@@ -56,7 +56,11 @@ export const generateStaticMap = () => {
     pathList.forEach((path: Path) => {
       pathList.forEach((path1: Path) => {
         (path.userData.connectPointList as Set<Path>).add(path1);
-        (path.userData.connectMap as Map<Path, string>).set(path1, key);
+        const tar = new Vector3().fromArray(
+          key.split(",").map((item) => Number(item))
+        );
+        path.worldToLocal(tar);
+        (path.userData.connectMap as Map<Path, Vector3>).set(path1, tar);
       });
     });
   });
@@ -118,11 +122,15 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
       pathList.forEach((path: Path) => {
         pathList.forEach((path1: Path) => {
           (path.userData.connectPointList as Set<Path>).add(path1);
+          const tar = new Vector3().fromArray(
+            key.split(",").map((item) => Number(item))
+          );
+          path.worldToLocal(tar);
           if (path.userData.connectMap) {
-            (path.userData.connectMap as Map<Path, string>).set(path1, key);
+            (path.userData.connectMap as Map<Path, Vector3>).set(path1, tar);
           } else {
             path.userData.connectMap = new Map();
-            (path.userData.connectMap as Map<Path, string>).set(path1, key);
+            (path.userData.connectMap as Map<Path, Vector3>).set(path1, tar);
           }
         });
       });
@@ -162,20 +170,17 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
                 }
               );
               if (v) {
-                const vkey = v
-                  .toArray()
-                  .map((item) => Number(item.toFixed(POSITION_PRECISION)))
-                  .toString();
+                path.worldToLocal(v);
                 if (path.userData.connectMap) {
-                  (path.userData.connectMap as Map<Path, string>).set(
+                  (path.userData.connectMap as Map<Path, Vector3>).set(
                     path1,
-                    vkey
+                    v
                   );
                 } else {
                   path.userData.connectMap = new Map();
-                  (path.userData.connectMap as Map<Path, string>).set(
+                  (path.userData.connectMap as Map<Path, Vector3>).set(
                     path1,
-                    vkey
+                    v
                   );
                 }
               }
@@ -190,12 +195,6 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
       pathList.forEach((path: Path) => {
         pathList.forEach((path1: Path) => {
           (path.userData.connectPointList as Set<Path>).add(path1);
-          // if (path.userData.connectMap) {
-          //   (path.userData.connectMap as Map<Path, string>).set(path1, key);
-          // } else {
-          //   path.userData.connectMap = new Map();
-          //   (path.userData.connectMap as Map<Path, string>).set(path1, key);
-          // }
         });
       });
     });
@@ -203,10 +202,13 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
     const G = new MGraph(Paths.length);
     createMGraph(generateMGraph(), G);
     Floyd(G);
-    const wayPath = getPath(
-      Paths.indexOf(movingPath.getAdaOn()),
-      Paths.indexOf(mainGroupIntersect as Path)
-    );
+    let index = 0;
+    if (!movingPath.isMoving) {
+      index = Paths.indexOf(movingPath.getAdaOn());
+    } else if (movingPath.nextPath) {
+      index = Paths.indexOf(movingPath.nextPath);
+    }
+    const wayPath = getPath(index, Paths.indexOf(mainGroupIntersect as Path));
     // console.log(wayPath);
 
     Paths.forEach((item) => {
@@ -214,7 +216,7 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
     });
     if (wayPath.weight < 9999) {
       movingPath.setPathIndexList(wayPath.path);
-      movingPath.move();
+      !movingPath.isMoving && movingPath.move();
 
       wayPath.path.forEach((item) => {
         // console.log(Paths[item].userData.connectMap);

@@ -1,13 +1,24 @@
-import { ArrowHelper, Plane, PlaneHelper, Ray, Vector3 } from "three";
+import {
+  ArrowHelper,
+  Plane,
+  PlaneHelper,
+  Quaternion,
+  Ray,
+  Vector3,
+} from "three";
 import Path from "@components/Path";
 import { camera, Paths, scene } from "@env";
 import { ada } from "@game";
 import { animate, keyframes, easeInOut, linear } from "popmotion";
+import Component from "@components/lib/recordable";
+import { unitWidth } from "@constants";
 
 class MovingPath {
   currentPath!: Path;
   adaOnPath!: Path;
   pathIndexList!: number[];
+  nextPath?: Path | null;
+  isMoving = false;
   constructor() {
     this.generateElement();
   }
@@ -29,6 +40,7 @@ class MovingPath {
   }
   setAdaOn(path: Path) {
     this.adaOnPath = path;
+    path.attach(ada);
   }
   move() {
     this.moveNext();
@@ -36,35 +48,25 @@ class MovingPath {
   moveNext() {
     const nextIndex = this.pathIndexList.shift();
     if (typeof nextIndex === "number") {
+      this.isMoving = true;
       const nextPath = Paths[nextIndex];
+      this.nextPath = nextPath;
       const adaPath = this.getAdaOn();
       if (adaPath.getFirstProps()?.isJump && nextPath.getFirstProps()?.isJump) {
         ada.setZIndex(100);
       }
 
-      const adaPathPointArrStr = adaPath.userData.connectMap.get(
-        nextPath
-      ) as string;
-      const adaPathPoint = new Vector3().fromArray(
-        adaPathPointArrStr.split(",").map((item) => Number(item))
-      );
+      const adaPathPoint = adaPath.userData.connectMap.get(nextPath) as Vector3;
 
-      const nextPathPointArrStr = nextPath.userData.connectMap.get(
+      const nextPathPoint = nextPath.userData.connectMap.get(
         adaPath
-      ) as string;
-      const nextPathPoint = new Vector3().fromArray(
-        nextPathPointArrStr.split(",").map((item) => Number(item))
-      );
+      ) as Vector3;
 
-      console.log(adaPathPointArrStr, nextPathPointArrStr);
-
-      const currentPosition = new Vector3();
-      adaPath.getCenterWorldPosition(currentPosition);
-
-      const p1 = new Vector3();
-      nextPath.getCenterWorldPosition(p1);
-
-      const ways = [adaPathPoint, nextPathPoint, p1];
+      const ways = [
+        adaPathPoint,
+        nextPathPoint,
+        new Vector3(0, -unitWidth / 2, 0),
+      ];
 
       const moveAdaToPoint = () => {
         const nextPosition = ways.shift();
@@ -76,6 +78,8 @@ class MovingPath {
           ) {
             ada.setZIndex(0);
           }
+          this.isMoving = false;
+          this.nextPath = null;
           this.setAdaOn(nextPath);
           if (nextPath.getProps()?.[0]?.isTrigger) {
             nextPath?.onTrigger();
@@ -84,94 +88,40 @@ class MovingPath {
           }
           return;
         }
-        ada.lookAt(nextPosition);
+
+        const lookat = new Vector3().copy(nextPosition);
+        ada.parent?.localToWorld(lookat);
+        ada.lookAt(lookat);
+
+        const originPosition = new Vector3().copy(ada.position);
+
+        const subVector = new Vector3().copy(nextPosition).sub(originPosition);
 
         animate({
-          from: currentPosition,
-          to: nextPosition,
-          duration: 300,
+          from: 0,
+          to: 1,
+          duration: 100,
           ease: linear,
           onUpdate: (latest: any) => {
-            ada.position.copy(latest);
+            const p = new Vector3().copy(subVector);
+
+            ada.position.copy(
+              new Vector3().copy(originPosition).add(p.multiplyScalar(latest))
+            );
           },
           onComplete: () => {
             if (nextPosition === adaPathPoint) {
-              const nextPathP = ways.shift();
-              nextPathP && currentPosition.copy(nextPathP);
-              nextPathP && ada.position.copy(nextPathP);
-            } else {
-              currentPosition.copy(nextPosition);
+              ways.shift();
+              nextPath.attach(ada);
             }
             moveAdaToPoint();
           },
         });
       };
-
       if (nextPath !== adaPath) {
         moveAdaToPoint();
       }
-      // const adaPathPoint = new Vector3().fromArray(a.split(",").map((item) => Number(item)));
-
-      // const projectPlaneNormal = new Vector3()
-      //   .copy(camera.position)
-      //   .normalize();
-
-      // const p1 = new Vector3();
-      // nextPath.getCenterWorldPosition(p1);
-      // const p2 = new Vector3();
-      // adaPath.getCenterWorldPosition(p2);
-
-      // const project1 = new Vector3()
-      //   .copy(p1)
-      //   .projectOnPlane(projectPlaneNormal);
-
-      // const ray1 = new Ray(p1, new Vector3().subVectors(project1, p1));
-
-      // const n = new Vector3().copy(adaPath.up);
-      // adaPath.localToWorld(n);
-      // n.sub(p2);
-
-      // const plane = new Plane();
-      // plane.setFromNormalAndCoplanarPoint(n, p2);
-
-      // const v1 = new Vector3();
-      // ray1.intersectPlane(plane, v1);
-
-      // const a = new Vector3();
-      // a.subVectors(p2, v1).negate().add(p2);
-
-      // ada.lookAt(a);
-      // if (nextPath !== adaPath) {
-      //   this.moveAdaToPath(nextPath);
-      // }
     }
-  }
-  moveAdaToPath(path: Path) {
-    const fromPostion = new Vector3();
-    const toPostion = new Vector3();
-    ada.getWorldPosition(fromPostion);
-    path.getCenterWorldPosition(toPostion);
-
-    animate({
-      from: fromPostion,
-      to: toPostion,
-      duration: 300,
-      onUpdate: (latest: any) => {
-        ada.position.copy(latest);
-      },
-      onComplete: () => {
-        const adaPath = this.getAdaOn();
-        if (adaPath.getFirstProps()?.isJump && path.getFirstProps()?.isJump) {
-          ada.setZIndex(0);
-        }
-        this.setAdaOn(path);
-        if (path.getProps()?.[0]?.isTrigger) {
-          path?.onTrigger();
-        } else {
-          this.moveNext();
-        }
-      },
-    });
   }
 }
 
