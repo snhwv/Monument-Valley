@@ -1,6 +1,6 @@
 import * as dat from "dat.gui";
 import { Color } from "three";
-// import { directionalLight } from "./light";
+import { directionalLight } from "./light";
 
 export const gui = new dat.GUI();
 const debugObject = {
@@ -11,7 +11,7 @@ gui
   .addColor(debugObject, "color")
   .name("Color")
   .onChange(() => {
-    // directionalLight.color = new Color(debugObject.color);
+    directionalLight.color = new Color(debugObject.color);
   });
 
 // gui.add(cube.rotation, 'x').min(0).max(Math.PI * 2).step(0.01).name('RotationX')

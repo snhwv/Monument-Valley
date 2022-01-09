@@ -1,36 +1,45 @@
 import { unitWidth } from "@constants";
 import {
   BufferGeometry,
+  CircleGeometry,
   CylinderBufferGeometry,
   Group,
   Matrix4,
   Mesh,
-  MeshLambertMaterial,
+  MeshBasicMaterial,
+  MeshMatcapMaterial,
   Plane,
+  TextureLoader,
   Vector3,
 } from "three";
 import Rotable from "./lib/rotable";
+import matcap2 from "../assets/matcap/matcap2.png";
+import matcap3 from "../assets/matcap/matcap3.png";
+import texture1 from "../assets/texture/texture1.png";
 
 // 控制杆
 class ValveControl extends Rotable {
   constructor(...args: any) {
     super(...args);
   }
+  g!: Group;
   generateElement(): void {
-    this.plugHeight = unitWidth;
-    this.plugR = 7;
+    this.g = new Group();
 
-    this.rodWidth = 30;
+    this.plugHeight = unitWidth * 0.7;
+    this.plugR = 6.4;
+
+    this.rodWidth = 22;
     this.rodR = 2.2;
-    this.rodEndWidth = 8;
+    this.rodEndWidth = 6;
     this.rodEndR = 3.4;
 
     this.generatePlug();
     this.generateRod();
   }
 
-  plugHeight = unitWidth;
-  plugR = 7;
+  plugHeight = unitWidth * 0.6;
+  plugR = 6;
 
   rodWidth = 30;
   rodR = 2.2;
@@ -41,15 +50,47 @@ class ValveControl extends Rotable {
 
   // 中间的阀塞
   generatePlug() {
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const texture = new TextureLoader().load(texture1);
+
+    const material = new MeshMatcapMaterial({
+      depthTest: this.getZIndex() ? false : true,
+      map: texture,
+    });
+
+    const cubeMaterial = material;
+
     var geometry = new CylinderBufferGeometry(
       this.plugR,
       this.plugR,
       this.plugHeight,
       32
     );
+
+    const geometry1 = new CircleGeometry(this.plugR, 32);
+    const material1 = new MeshBasicMaterial({ color: 0xece4b2 });
+    const circle = new Mesh(geometry1, material1);
+
+    const circleM = new Matrix4();
+    circleM
+      .makeTranslation(0, this.plugHeight / 2 + 0.01, 0)
+      .multiply(
+        new Matrix4().makeRotationAxis(new Vector3(1, 0, 0), -Math.PI / 2)
+      );
+    geometry1.applyMatrix4(circleM);
+
+    const geometry2 = geometry1.clone();
+    geometry2.scale(0.5, 1, 0.5).translate(0, 0.01, 0);
+    const material2 = new MeshBasicMaterial({ color: 0x6a6b39 });
+    const circle2 = new Mesh(geometry2, material2);
+    this.g.add(circle);
+    this.g.add(circle2);
+
+    const cubem = new Matrix4();
+    cubem.makeTranslation(0, this.plugHeight / 2 - unitWidth / 2, 0);
+    this.g.applyMatrix4(cubem);
+
     var cylinder = new Mesh(geometry, cubeMaterial);
-    this.add(cylinder);
+    this.g.add(cylinder);
   }
   // 阀杆
   verticalCylinder!: Mesh;
@@ -64,7 +105,7 @@ class ValveControl extends Rotable {
       this.rodWidth * 2,
       32
     );
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial({ textureSrc: matcap2 });
     const verticalGeo = geometry.clone();
 
     const vm = new Matrix4();
@@ -101,19 +142,22 @@ class ValveControl extends Rotable {
         .makeTranslation(this.rodWidth, 0, 0)
         .multiply(endm.makeRotationZ(Math.PI / 2))
     );
+    const endMaterial = this.getDefaultMaterial({
+      textureSrc: matcap3,
+    });
 
-    var endCylinder = new Mesh(endGeometry, cubeMaterial);
+    var endCylinder = new Mesh(endGeometry, endMaterial);
 
     for (let i = 0; i < 4; i++) {
       const mesh = endCylinder.clone();
-
       const meshm = new Matrix4();
       meshm.makeRotationAxis(new Vector3(0, 1, 0), (i * Math.PI) / 2);
       mesh.applyMatrix4(meshm);
 
       rod.add(mesh);
     }
-    this.add(rod);
+    this.g.add(rod);
+    this.add(this.g);
   }
 
   isShow = true;

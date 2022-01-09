@@ -11,6 +11,7 @@ import {
 } from "three";
 import { CSG } from "three-csg-ts";
 import Component from "./lib/recordable";
+import matcap2 from "../assets/matcap/matcap2.png";
 
 // 顶
 class Roof extends Component {
@@ -29,7 +30,7 @@ class Roof extends Component {
 
   generatePedestal() {
     const thickness = 1;
-    const cubeMaterial = this.getDefaultMaterial();
+    const cubeMaterial = this.getDefaultMaterial({ textureSrc: matcap2 });
     var geometry = new BoxBufferGeometry(
       unitWidth + 4,
       thickness,
@@ -95,11 +96,8 @@ class Roof extends Component {
     hm.makeRotationY(Math.PI / 2);
     verticalGeometry.applyMatrix4(hm);
 
-    // const cubeMaterial = this.getDefaultMaterial();
-    const cubeMaterial = new MeshLambertMaterial({
-      color: 0xffb422,
-      depthTest: this.getZIndex() ? false : true,
-    });
+    // const cubeMaterial = this.getDefaultMaterial( {textureSrc: matcap2});
+    const cubeMaterial = this.getDefaultMaterial({ textureSrc: matcap2 });
     const result = CSG.intersect(
       new Mesh(verticalGeometry, cubeMaterial),
       new Mesh(horizontalGeometry, cubeMaterial)

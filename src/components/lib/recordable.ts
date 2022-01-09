@@ -1,8 +1,16 @@
 import { flatedComponents, mainGroup } from "@env";
 import { updateSceneTree } from "../../layout/SceneTree";
-import { Group, MeshLambertMaterial, MeshStandardMaterial } from "three";
+import {
+  Color,
+  Group,
+  MeshLambertMaterial,
+  MeshMatcapMaterial,
+  MeshStandardMaterial,
+  TextureLoader,
+} from "three";
 import { v4 } from "uuid";
 import merge from "lodash.merge";
+import matcap1 from "../../assets/matcap/matcap1.png";
 export function isFunction(val: unknown): val is Function {
   return typeof val === "function";
 }
@@ -58,11 +66,25 @@ abstract class Component extends Group {
     this.generateElement();
   }
 
-  getDefaultMaterial() {
-    const material = new MeshStandardMaterial({
-      color: 0xddd692,
+  getDefaultMaterial(params?: {
+    textureSrc?: string;
+    materialColor?: number | string;
+  }) {
+    const { textureSrc, materialColor } = params || {};
+    const texture = new TextureLoader().load(textureSrc || matcap1);
+
+    const obj = this.userData.props?.[0];
+    const objMaterialColor = obj?.materialColor || "";
+    const material = new MeshMatcapMaterial({
       depthTest: this.getZIndex() ? false : true,
+      matcap: texture,
     });
+    if (Number(materialColor) || Number(objMaterialColor)) {
+      material.color = new Color(
+        Number(materialColor) || Number(objMaterialColor)
+      );
+    }
+
     return material;
   }
 
@@ -71,7 +93,9 @@ abstract class Component extends Group {
     return obj?.zIndex || 0;
   }
   _getDefaultProps(): any[] {
-    return merge(this.getDefaultProps(), [{ zIndex: 0, name: "" }]);
+    return merge(this.getDefaultProps(), [
+      { zIndex: 0, name: "", materialColor: "" },
+    ]);
   }
   getDefaultProps(): any[] {
     return [];

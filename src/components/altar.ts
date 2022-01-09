@@ -20,12 +20,12 @@ class Altar extends Component {
   }
 
   generatePedestal() {
-    const thickness = 1;
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const thickness = 4;
+    const cubeMaterial = this.getDefaultMaterial();
     var geometry = new BoxBufferGeometry(
-      unitWidth + 4,
+      unitWidth + 8,
       thickness,
-      unitWidth + 4
+      unitWidth + 8
     );
 
     const cubem = new Matrix4();
@@ -51,7 +51,7 @@ class Altar extends Component {
     );
     hcubeGeometry.applyMatrix4(hmeshm);
 
-    const cubeMaterial = new MeshLambertMaterial({ color: 0xb6ae71 });
+    const cubeMaterial = this.getDefaultMaterial();
     const hMesh = new Mesh(hcubeGeometry, cubeMaterial);
 
     const vcubeGeometry = hcubeGeometry.clone();

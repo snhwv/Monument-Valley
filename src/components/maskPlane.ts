@@ -29,7 +29,7 @@ class MaskPlane extends Component {
       height = unitWidth,
       offsetWidth = 0,
       offsetHeight = 0,
-      offsetZ = 0,
+      offsetZ = 0.01,
     } = obj;
     const geometry = new PlaneGeometry(width, height);
     const cubeMaterial = this.getDefaultMaterial();
@@ -43,6 +43,7 @@ class MaskPlane extends Component {
     geometry.applyMatrix4(cubem);
 
     const mesh = new Mesh(geometry, cubeMaterial);
+    this.userData.planeMesh = mesh;
     this.add(mesh);
   }
 }

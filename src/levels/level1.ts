@@ -1,4 +1,4 @@
-import { Object3D, Quaternion, Vector3 } from "three";
+import { MeshBasicMaterial, Object3D, Quaternion, Vector3 } from "three";
 import { getCompFromFlatedArrByName, Paths, scene } from "@env";
 import { animate } from "popmotion";
 import { ada, movingPath } from "@game";
@@ -22,10 +22,18 @@ export default class Level1 {
 
     movingPath.setAdaOn(initPath);
 
+    this.setSceneLook();
+
     this.hiddenMaskComponents();
     this.configAnimation();
     this.triggerAnimation();
     this.pathTriggerPoint();
+  }
+  setSceneLook() {
+    // 设置中间草地颜色
+    const center_grass = getCompFromFlatedArrByName("center_grass");
+    const material1 = new MeshBasicMaterial({ color: 0xc4d449 });
+    center_grass.userData.planeMesh.material = material1;
   }
   hiddenMaskComponents() {
     const mask_1 = getCompFromFlatedArrByName("mask_1");
@@ -119,7 +127,7 @@ export default class Level1 {
         const fromP = new Vector3().copy(cube.position);
         const toP = new Vector3()
           .copy(cube.position)
-          .add(new Vector3(0, unitWidth * 4, 0));
+          .add(new Vector3(0, unitWidth * 3, 0));
         animate({
           from: fromP,
           to: toP,
