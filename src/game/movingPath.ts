@@ -13,6 +13,8 @@ import { animate, keyframes, easeInOut, linear } from "popmotion";
 import Component from "@components/lib/recordable";
 import { unitWidth } from "@constants";
 
+const POSITION_PRECISION = 1;
+
 class MovingPath {
   currentPath!: Path;
   adaOnPath!: Path;
@@ -45,6 +47,10 @@ class MovingPath {
   move() {
     this.moveNext();
   }
+  reset() {
+    this.isMoving = false;
+    this.nextPath = null;
+  }
   moveNext() {
     const nextIndex = this.pathIndexList.shift();
     if (typeof nextIndex === "number") {
@@ -62,7 +68,11 @@ class MovingPath {
         adaPath
       ) as Vector3;
 
-      this.isConnect(adaPathPoint, nextPathPoint);
+      const isConnected = this.isConnect(adaPath, nextPath);
+      if (!isConnected) {
+        this.reset();
+        return;
+      }
 
       const ways = [
         adaPathPoint,
@@ -80,8 +90,7 @@ class MovingPath {
           ) {
             ada.setZIndex(0);
           }
-          this.isMoving = false;
-          this.nextPath = null;
+          this.reset();
           this.setAdaOn(nextPath);
           if (nextPath.getProps()?.[0]?.isTrigger) {
             nextPath?.onTrigger();
@@ -112,13 +121,16 @@ class MovingPath {
             );
           },
           onComplete: () => {
-            this.isConnect(adaPathPoint, nextPathPoint);
-
             if (nextPosition === adaPathPoint) {
+              // const isConnect = this.isConnect(adaPath, nextPath);
+              // if (isConnect) {
+              // }
               ways.shift();
               nextPath.attach(ada);
+              moveAdaToPoint();
+            } else {
+              moveAdaToPoint();
             }
-            moveAdaToPoint();
           },
         });
       };
@@ -127,9 +139,39 @@ class MovingPath {
       }
     }
   }
-  isConnect(point0: Vector3, point1: Vector3) {
+  isConnect(path0: Path, path1: Path) {
+    if (!(path0.getFirstProps()?.isJump && path1.getFirstProps()?.isJump)) {
+      return true;
+    }
+
+    const projectPlaneNormal = new Vector3().copy(camera.position).normalize();
+    const pathPoint0 = (
+      path0.userData.connectMap.get(path1) as Vector3
+    ).clone();
+    path0.localToWorld(pathPoint0);
+
+    const pathPoint1 = (
+      path1.userData.connectMap.get(path0) as Vector3
+    ).clone();
+    path1.localToWorld(pathPoint1);
+    const projectV0 = new Vector3()
+      .copy(pathPoint0)
+      .projectOnPlane(projectPlaneNormal)
+      .toArray()
+      .map((item) => Number(item.toFixed(POSITION_PRECISION)))
+      .toString();
+    const projectV1 = new Vector3()
+      .copy(pathPoint1)
+      .projectOnPlane(projectPlaneNormal)
+      .toArray()
+      .map((item) => Number(item.toFixed(POSITION_PRECISION)))
+      .toString();
+    console.log(projectV0);
+    console.log(projectV1);
+    console.log(projectV0 === projectV1);
+
     // 判断两点是否连接
-    return true;
+    return projectV0 === projectV1;
   }
 }
 

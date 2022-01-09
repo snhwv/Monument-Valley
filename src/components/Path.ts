@@ -75,8 +75,8 @@ class Path extends Component {
 
     const material = new MeshLambertMaterial({
       color: isStatic ? 0xffff00 : 0x0000ff,
-      transparent: true,
-      opacity: 0,
+      // transparent: true,
+      // opacity: 0,
     });
     const sphere = new Mesh(geometry, material);
 
@@ -115,8 +115,8 @@ class Path extends Component {
     const geometry = new BoxGeometry(unitWidth, 1, unitWidth);
     const material = new MeshLambertMaterial({
       color: isStatic ? 0xffff00 : 0x0000ff,
-      transparent: true,
-      opacity: 0,
+      // transparent: true,
+      // opacity: 0,
     });
     const sphere = new Mesh(geometry, material);
     sphere.position.add(new Vector3(0, -height / 2, 0));
