@@ -53,22 +53,33 @@ class ValveControl extends Rotable {
 
   onRotateBegin() {
     const endMaterial = this.userData.endMaterial as MeshMatcapMaterial;
-
-    endMaterial.color.set(new Color(0xffffff));
-    // animate({
-    //   from: 0xffffff,
-    //   to: 0xff0000,
-    //   duration: 2000,
-    //   ease: linear,
-    //   onUpdate: (latest) => {
-    //     endMaterial.color.set(new Color(latest));
-    //   },
-    //   onComplete: () => {},
-    // });
+    const plugMaterial1 = this.userData.plugMaterial1 as MeshMatcapMaterial;
+    const plugMaterial2 = this.userData.plugMaterial2 as MeshMatcapMaterial;
+    animate({
+      from: 1,
+      to: 0,
+      duration: 400,
+      onUpdate: (latest) => {
+        endMaterial.opacity = latest;
+        plugMaterial1.opacity = latest;
+        plugMaterial2.opacity = latest;
+      },
+    });
   }
   onRotateEnd() {
     const endMaterial = this.userData.endMaterial as MeshMatcapMaterial;
-    endMaterial.color.set(new Color(0xffffff));
+    const plugMaterial1 = this.userData.plugMaterial1 as MeshMatcapMaterial;
+    const plugMaterial2 = this.userData.plugMaterial2 as MeshMatcapMaterial;
+    animate({
+      from: 0,
+      to: 1,
+      duration: 400,
+      onUpdate: (latest) => {
+        endMaterial.opacity = latest;
+        plugMaterial1.opacity = latest;
+        plugMaterial2.opacity = latest;
+      },
+    });
   }
 
   // 中间的阀塞
@@ -91,6 +102,7 @@ class ValveControl extends Rotable {
 
     const geometry1 = new CircleGeometry(this.plugR, 32);
     const material1 = new MeshBasicMaterial({ color: 0xece4b2 });
+    this.userData.plugMaterial1 = material1;
     const circle = new Mesh(geometry1, material1);
 
     const circleM = new Matrix4();
@@ -104,6 +116,7 @@ class ValveControl extends Rotable {
     const geometry2 = geometry1.clone();
     geometry2.scale(0.5, 1, 0.5).translate(0, 0.01, 0);
     const material2 = new MeshBasicMaterial({ color: 0x6a6b39 });
+    this.userData.plugMaterial2 = material2;
     const circle2 = new Mesh(geometry2, material2);
     this.g.add(circle);
     this.g.add(circle2);
@@ -167,11 +180,10 @@ class ValveControl extends Rotable {
     );
     const endMaterial = this.getDefaultMaterial({
       textureSrc: matcap3,
-      materialColor: 0x7a806d
     });
 
     var endCylinder = new Mesh(endGeometry, endMaterial);
-
+    endMaterial.transparent = false;
     this.userData.endMaterial = endMaterial;
 
     for (let i = 0; i < 4; i++) {
