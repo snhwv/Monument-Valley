@@ -129,10 +129,6 @@ class ValveControl extends Rotable {
     this.g.add(cylinder);
   }
   // 阀杆
-  verticalCylinder!: Mesh;
-  horizontalCylinder!: Mesh;
-  endGeometry!: BufferGeometry;
-
   generateRod() {
     var rod = new Group();
     var geometry = new CylinderBufferGeometry(
@@ -142,24 +138,21 @@ class ValveControl extends Rotable {
       32
     );
     const cubeMaterial = this.getDefaultMaterial({ textureSrc: matcap2 });
-    const verticalGeo = geometry.clone();
+
+    var verticalCylinder = new Mesh(geometry, cubeMaterial);
 
     const vm = new Matrix4();
     vm.makeRotationX(Math.PI / 2);
-    verticalGeo.applyMatrix4(vm);
+    verticalCylinder.applyMatrix4(vm);
 
-    var verticalCylinder = new Mesh(verticalGeo, cubeMaterial);
+    var horizontalCylinder = new Mesh(geometry, cubeMaterial);
 
-    const horizontalGeo = geometry.clone();
+    this.userData.verticalCylinder = verticalCylinder;
+    this.userData.horizontalCylinder = horizontalCylinder;
 
     const hm = new Matrix4();
     hm.makeRotationZ(Math.PI / 2);
-    horizontalGeo.applyMatrix4(hm);
-
-    var horizontalCylinder = new Mesh(horizontalGeo, cubeMaterial);
-
-    this.verticalCylinder = verticalCylinder;
-    this.horizontalCylinder = horizontalCylinder;
+    horizontalCylinder.applyMatrix4(hm);
 
     rod.add(verticalCylinder);
     rod.add(horizontalCylinder);
@@ -170,7 +163,6 @@ class ValveControl extends Rotable {
       this.rodEndWidth,
       32
     );
-    this.endGeometry = endGeometry;
 
     const endm = new Matrix4();
     endGeometry.applyMatrix4(
@@ -198,55 +190,39 @@ class ValveControl extends Rotable {
     this.add(this.g);
   }
 
-  isShow = true;
-  ratio = 0.33;
-  //   hide() {
-  //     if (!this.isShow) {
-  //       return;
-  //     }
-  //     const mutation = { x: 1 };
-  //     let moveDistence = this.rodWidth;
-  //     this.isShow = false;
-  //     const tween = new TWEEN.Tween(mutation)
-  //       .to({ x: this.ratio }, 220)
-  //       .easing(TWEEN.Easing.Back.Out)
-  //       .onUpdate(() => {
-  //         this.verticalCylinder.scale.set(1, 1, mutation.x);
-  //         this.horizontalCylinder.scale.set(mutation.x, 1, 1);
+  disable() {
+    // 需要disabled掉点击旋转
+    const verticalCylinder = this.userData.verticalCylinder as Mesh;
+    const horizontalCylinder = this.userData.horizontalCylinder as Mesh;
 
-  //         this.endGeometry.translate(
-  //           0,
-  //           moveDistence - this.rodWidth * mutation.x,
-  //           0
-  //         );
-  //         moveDistence = this.rodWidth * mutation.x;
-  //       });
-  //     tween.start();
-  //   }
+    this.userData.disabled = true;
 
-  //   show() {
-  //     if (this.isShow) {
-  //       return;
-  //     }
-  //     const mutation = { x: 1 };
-  //     let moveDistence = this.rodWidth;
-  //     this.isShow = true;
-  //     const tween = new TWEEN.Tween(mutation)
-  //       .to({ x: this.ratio }, 220)
-  //       .easing(TWEEN.Easing.Back.Out)
-  //       .onUpdate(() => {
-  //         this.verticalCylinder.scale.set(1, 1, 1 + this.ratio - mutation.x);
-  //         this.horizontalCylinder.scale.set(1 + this.ratio - mutation.x, 1, 1);
+    animate({
+      from: 1,
+      to: 0.2,
+      duration: 400,
+      onUpdate: (latest) => {
+        verticalCylinder.scale.set(1, latest, 1);
+        horizontalCylinder.scale.set(1, latest, 1);
+      },
+    });
+  }
+  enable() {
+    const verticalCylinder = this.userData.verticalCylinder as Mesh;
+    const horizontalCylinder = this.userData.horizontalCylinder as Mesh;
 
-  //         this.endGeometry.translate(
-  //           0,
-  //           -(moveDistence - this.rodWidth * mutation.x),
-  //           0
-  //         );
-  //         moveDistence = this.rodWidth * mutation.x;
-  //       });
-  //     tween.start();
-  //   }
+    this.userData.disabled = false;
+
+    animate({
+      from: 0.2,
+      to: 1,
+      duration: 400,
+      onUpdate: (latest) => {
+        verticalCylinder.scale.set(1, latest, 1);
+        horizontalCylinder.scale.set(1, latest, 1);
+      },
+    });
+  }
 }
 (ValveControl as any).cnName = "控制点";
 export default ValveControl;

@@ -5,6 +5,7 @@ import { ada, movingPath } from "@game";
 import Site from "@components/site";
 import { unitWidth } from "@constants";
 import Component from "@components/lib/recordable";
+import ValveControl from "@components/valveControl";
 export default class Level1 {
   isTrigger1Trigged = false;
   isTrigger2Trigged = false;
@@ -94,6 +95,7 @@ export default class Level1 {
   triggerAnimation() {
     this.trigger1Animation();
     this.trigger2Animation();
+    this.trigger3Animation();
   }
   trigger1Animation() {
     const trigger_1: any = getCompFromFlatedArrByName("trigger_1");
@@ -184,6 +186,22 @@ export default class Level1 {
       this.showMask2Components();
     };
     // trigger_2.onTrigger = () => {};
+  }
+  trigger3Animation() {
+    const rotationControl = getCompFromFlatedArrByName(
+      "rotationControl"
+    ) as ValveControl;
+    const rotate_close: any = getCompFromFlatedArrByName("rotate_close");
+    const rotate_close1: any = getCompFromFlatedArrByName("rotate_close1");
+    if (!(rotationControl && rotate_close && rotate_close1)) {
+      return;
+    }
+    rotate_close.onTrigger = () => {
+      rotationControl.disable();
+    };
+    rotate_close1.onTrigger = () => {
+      rotationControl.disable();
+    };
   }
   pathTriggerPoint() {}
 }
