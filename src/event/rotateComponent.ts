@@ -25,7 +25,6 @@ export const setRotation: IpinterdownHander = ({ raycaster, next }) => {
         ? 1
         : -1;
     angle = dirction * angle;
-    // store.rotationComponent.rotateOnAxis(store.rotationComponent.up, angle);
     totalAngle += angle;
     (store.rotationComponent as any)?.onRotate(
       store.rotationComponent.userData.rotablePlane.normal,
@@ -58,6 +57,7 @@ export const setRotationPrevPoint: IpinterdownHander = ({
     target.projectOnPlane(mainGroupIntersect.userData.rotablePlane.normal);
 
     rotationPointer.copy(target);
+    (store.rotationComponent as any)?.onRotateBegin();
   }
   next();
 };
@@ -69,5 +69,6 @@ export const rotated: IpinterdownHander = () => {
     store.rotationComponent?.userData.rotablePlane.normal,
     totalAngle
   );
+  (store.rotationComponent as any)?.onRotateEnd();
   store.rotationComponent = null;
 };

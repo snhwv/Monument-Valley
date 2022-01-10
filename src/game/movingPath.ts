@@ -111,7 +111,7 @@ class MovingPath {
         animate({
           from: 0,
           to: 1,
-          duration: 1000,
+          duration: 100,
           ease: linear,
           onUpdate: (latest: any) => {
             const p = new Vector3().copy(subVector);
@@ -122,12 +122,16 @@ class MovingPath {
           },
           onComplete: () => {
             if (nextPosition === adaPathPoint) {
-              // const isConnect = this.isConnect(adaPath, nextPath);
-              // if (isConnect) {
-              // }
-              ways.shift();
-              nextPath.attach(ada);
-              moveAdaToPoint();
+              const isConnect = this.isConnect(adaPath, nextPath);
+              if (isConnect) {
+                const nextWay = ways.shift();
+                nextPath.attach(ada);
+                ada.position.copy(nextWay!);
+                moveAdaToPoint();
+              } else {
+                this.reset();
+                ada.position.copy(originPosition);
+              }
             } else {
               moveAdaToPoint();
             }
@@ -145,15 +149,20 @@ class MovingPath {
     }
 
     const projectPlaneNormal = new Vector3().copy(camera.position).normalize();
+
     const pathPoint0 = (
       path0.userData.connectMap.get(path1) as Vector3
-    ).clone();
-    path0.localToWorld(pathPoint0);
-
+    )?.clone();
     const pathPoint1 = (
       path1.userData.connectMap.get(path0) as Vector3
-    ).clone();
+    )?.clone();
+    if (!(pathPoint0 && pathPoint1)) {
+      return false;
+    }
+
+    path0.localToWorld(pathPoint0);
     path1.localToWorld(pathPoint1);
+
     const projectV0 = new Vector3()
       .copy(pathPoint0)
       .projectOnPlane(projectPlaneNormal)
@@ -166,9 +175,6 @@ class MovingPath {
       .toArray()
       .map((item) => Number(item.toFixed(POSITION_PRECISION)))
       .toString();
-    console.log(projectV0);
-    console.log(projectV1);
-    console.log(projectV0 === projectV1);
 
     // 判断两点是否连接
     return projectV0 === projectV1;

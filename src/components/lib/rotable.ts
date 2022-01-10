@@ -15,5 +15,7 @@ abstract class Rotable extends Component {
   }
   onRotate(axis: Vector3, angle: number) {}
   onRotated(totalangle: number) {}
+  abstract onRotateBegin(): void;
+  abstract onRotateEnd(): void;
 }
 export default Rotable;

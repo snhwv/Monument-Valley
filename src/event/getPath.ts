@@ -56,11 +56,13 @@ export const generateStaticMap = () => {
     pathList.forEach((path: Path) => {
       pathList.forEach((path1: Path) => {
         (path.userData.connectPointList as Set<Path>).add(path1);
-        const tar = new Vector3().fromArray(
-          key.split(",").map((item) => Number(item))
-        );
-        path.worldToLocal(tar);
-        (path.userData.connectMap as Map<Path, Vector3>).set(path1, tar);
+        if (path !== path1) {
+          const tar = new Vector3().fromArray(
+            key.split(",").map((item) => Number(item))
+          );
+          path.worldToLocal(tar);
+          (path.userData.connectMap as Map<Path, Vector3>).set(path1, tar);
+        }
       });
     });
   });
@@ -122,15 +124,18 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
       pathList.forEach((path: Path) => {
         pathList.forEach((path1: Path) => {
           (path.userData.connectPointList as Set<Path>).add(path1);
-          const tar = new Vector3().fromArray(
-            key.split(",").map((item) => Number(item))
-          );
-          path.worldToLocal(tar);
-          if (path.userData.connectMap) {
-            (path.userData.connectMap as Map<Path, Vector3>).set(path1, tar);
-          } else {
-            path.userData.connectMap = new Map();
-            (path.userData.connectMap as Map<Path, Vector3>).set(path1, tar);
+
+          if (path !== path1) {
+            const tar = new Vector3().fromArray(
+              key.split(",").map((item) => Number(item))
+            );
+            path.worldToLocal(tar);
+            if (path.userData.connectMap) {
+              (path.userData.connectMap as Map<Path, Vector3>).set(path1, tar);
+            } else {
+              path.userData.connectMap = new Map();
+              (path.userData.connectMap as Map<Path, Vector3>).set(path1, tar);
+            }
           }
         });
       });
@@ -157,31 +162,33 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
           mapv.push(item);
           mapv.map((path: Path) => {
             mapv.map((path1: Path) => {
-              const v: Vector3 | null = path.userData.pointPositionList.find(
-                (vect: Vector3) => {
-                  const projectV = new Vector3()
-                    .copy(vect)
-                    .projectOnPlane(projectPlaneNormal);
-                  const pkey = projectV
-                    .toArray()
-                    .map((item) => Number(item.toFixed(POSITION_PRECISION)))
-                    .toString();
-                  return pkey === key;
-                }
-              );
-              if (v) {
-                path.worldToLocal(v);
-                if (path.userData.connectMap) {
-                  (path.userData.connectMap as Map<Path, Vector3>).set(
-                    path1,
-                    v
-                  );
-                } else {
-                  path.userData.connectMap = new Map();
-                  (path.userData.connectMap as Map<Path, Vector3>).set(
-                    path1,
-                    v
-                  );
+              if (path !== path1) {
+                const v: Vector3 | null = path.userData.pointPositionList.find(
+                  (vect: Vector3) => {
+                    const projectV = new Vector3()
+                      .copy(vect)
+                      .projectOnPlane(projectPlaneNormal);
+                    const pkey = projectV
+                      .toArray()
+                      .map((item) => Number(item.toFixed(POSITION_PRECISION)))
+                      .toString();
+                    return pkey === key;
+                  }
+                );
+                if (v) {
+                  path.worldToLocal(v);
+                  if (path.userData.connectMap) {
+                    (path.userData.connectMap as Map<Path, Vector3>).set(
+                      path1,
+                      v
+                    );
+                  } else {
+                    path.userData.connectMap = new Map();
+                    (path.userData.connectMap as Map<Path, Vector3>).set(
+                      path1,
+                      v
+                    );
+                  }
                 }
               }
             });
@@ -189,7 +196,6 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
         }
       });
     });
-    // connectPath([...dynamicPathPointMap.values()]);
 
     dynamicPathPointMap.forEach((pathList: Path[], key: string) => {
       pathList.forEach((path: Path) => {

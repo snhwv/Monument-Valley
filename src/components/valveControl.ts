@@ -2,8 +2,10 @@ import { unitWidth } from "@constants";
 import {
   BufferGeometry,
   CircleGeometry,
+  Color,
   CylinderBufferGeometry,
   Group,
+  Material,
   Matrix4,
   Mesh,
   MeshBasicMaterial,
@@ -16,6 +18,7 @@ import Rotable from "./lib/rotable";
 import matcap2 from "../assets/matcap/matcap2.png";
 import matcap3 from "../assets/matcap/matcap3.png";
 import texture1 from "../assets/texture/texture1.png";
+import { animate, keyframes, easeInOut, linear } from "popmotion";
 
 // 控制杆
 class ValveControl extends Rotable {
@@ -47,6 +50,26 @@ class ValveControl extends Rotable {
   rodEndR = 3.4;
 
   plane!: Plane;
+
+  onRotateBegin() {
+    const endMaterial = this.userData.endMaterial as MeshMatcapMaterial;
+
+    endMaterial.color.set(new Color(0xffffff));
+    // animate({
+    //   from: 0xffffff,
+    //   to: 0xff0000,
+    //   duration: 2000,
+    //   ease: linear,
+    //   onUpdate: (latest) => {
+    //     endMaterial.color.set(new Color(latest));
+    //   },
+    //   onComplete: () => {},
+    // });
+  }
+  onRotateEnd() {
+    const endMaterial = this.userData.endMaterial as MeshMatcapMaterial;
+    endMaterial.color.set(new Color(0xffffff));
+  }
 
   // 中间的阀塞
   generatePlug() {
@@ -144,9 +167,12 @@ class ValveControl extends Rotable {
     );
     const endMaterial = this.getDefaultMaterial({
       textureSrc: matcap3,
+      materialColor: 0x7a806d
     });
 
     var endCylinder = new Mesh(endGeometry, endMaterial);
+
+    this.userData.endMaterial = endMaterial;
 
     for (let i = 0; i < 4; i++) {
       const mesh = endCylinder.clone();
