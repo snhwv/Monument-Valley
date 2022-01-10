@@ -29,6 +29,7 @@ class Path extends Component {
         isStatic: 1,
         isJump: 0,
         isTrigger: 0,
+        isStop: 0,
       },
     ];
   }

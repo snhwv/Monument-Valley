@@ -164,6 +164,8 @@ class ValveControl extends Rotable {
       32
     );
 
+    this.userData.endGeometry = endGeometry;
+
     const endm = new Matrix4();
     endGeometry.applyMatrix4(
       new Matrix4()
@@ -191,35 +193,54 @@ class ValveControl extends Rotable {
   }
 
   disable() {
+    if (this.userData.disabled) {
+      return;
+    }
     // 需要disabled掉点击旋转
     const verticalCylinder = this.userData.verticalCylinder as Mesh;
     const horizontalCylinder = this.userData.horizontalCylinder as Mesh;
-
     this.userData.disabled = true;
-
+    let moveDistence = this.rodWidth;
     animate({
       from: 1,
-      to: 0.2,
-      duration: 400,
+      to: 0.5,
+      duration: 200,
       onUpdate: (latest) => {
         verticalCylinder.scale.set(1, latest, 1);
         horizontalCylinder.scale.set(1, latest, 1);
+        this.userData.endGeometry.translate(
+          (this.rodWidth * latest - moveDistence) * 0.7,
+          0,
+          0
+        );
+        moveDistence = this.rodWidth * latest;
       },
     });
   }
   enable() {
+    console.log("enable");
+    if (!this.userData.disabled) {
+      return;
+    }
     const verticalCylinder = this.userData.verticalCylinder as Mesh;
     const horizontalCylinder = this.userData.horizontalCylinder as Mesh;
 
     this.userData.disabled = false;
 
+    let moveDistence = this.rodWidth;
     animate({
-      from: 0.2,
-      to: 1,
-      duration: 400,
+      from: 1,
+      to: 0.5,
+      duration: 200,
       onUpdate: (latest) => {
-        verticalCylinder.scale.set(1, latest, 1);
-        horizontalCylinder.scale.set(1, latest, 1);
+        verticalCylinder.scale.set(1, 1 - latest + 0.5, 1);
+        horizontalCylinder.scale.set(1, 1 - latest + 0.5, 1);
+        this.userData.endGeometry.translate(
+          -(this.rodWidth * latest - moveDistence) * 0.7,
+          0,
+          0
+        );
+        moveDistence = this.rodWidth * latest;
       },
     });
   }

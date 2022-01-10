@@ -193,7 +193,25 @@ export default class Level1 {
     ) as ValveControl;
     const rotate_close: any = getCompFromFlatedArrByName("rotate_close");
     const rotate_close1: any = getCompFromFlatedArrByName("rotate_close1");
-    if (!(rotationControl && rotate_close && rotate_close1)) {
+    const rotate_open: any = getCompFromFlatedArrByName("rotate_open");
+    const rotate_open1: any = getCompFromFlatedArrByName("rotate_open1");
+    const rotate_open2: any = getCompFromFlatedArrByName("rotate_open2");
+    const rotate_open3: any = getCompFromFlatedArrByName("rotate_open3");
+    const rotate_open4: any = getCompFromFlatedArrByName("rotate_open4");
+    const rotate_open5: any = getCompFromFlatedArrByName("rotate_open5");
+    if (
+      !(
+        rotationControl &&
+        rotate_close &&
+        rotate_close1 &&
+        rotate_open &&
+        rotate_open1 &&
+        rotate_open2 &&
+        rotate_open3 &&
+        rotate_open4 &&
+        rotate_open5
+      )
+    ) {
       return;
     }
     rotate_close.onTrigger = () => {
@@ -201,6 +219,24 @@ export default class Level1 {
     };
     rotate_close1.onTrigger = () => {
       rotationControl.disable();
+    };
+    rotate_open.onTrigger = () => {
+      rotationControl.enable();
+    };
+    rotate_open1.onTrigger = () => {
+      rotationControl.enable();
+    };
+    rotate_open2.onTrigger = () => {
+      rotationControl.enable();
+    };
+    rotate_open3.onTrigger = () => {
+      rotationControl.enable();
+    };
+    rotate_open4.onTrigger = () => {
+      rotationControl.enable();
+    };
+    rotate_open5.onTrigger = () => {
+      rotationControl.enable();
     };
   }
   pathTriggerPoint() {}

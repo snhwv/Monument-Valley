@@ -42,6 +42,9 @@ export const setRotationPrevPoint: IpinterdownHander = ({
   next,
 }) => {
   if (mainGroupIntersect instanceof Rotable) {
+    if (mainGroupIntersect.userData?.disabled) {
+      return;
+    }
     totalAngle = 0;
     store.isRotable = true;
     orbitControls.enabled = false;

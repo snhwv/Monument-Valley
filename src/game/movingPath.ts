@@ -94,6 +94,9 @@ class MovingPath {
           this.setAdaOn(nextPath);
           if (nextPath.getProps()?.[0]?.isTrigger) {
             nextPath?.onTrigger();
+            if (!nextPath.getProps()?.[0]?.isStop) {
+              this.moveNext();
+            }
           } else {
             this.moveNext();
           }
