@@ -1,4 +1,11 @@
-import { MeshBasicMaterial, Object3D, Quaternion, Vector3 } from "three";
+import {
+  BoxGeometry,
+  Mesh,
+  MeshBasicMaterial,
+  Object3D,
+  Quaternion,
+  Vector3,
+} from "three";
 import { getCompFromFlatedArrByName, Paths, scene } from "@env";
 import { animate } from "popmotion";
 import { ada, movingPath } from "@game";
@@ -6,6 +13,7 @@ import Site from "@components/site";
 import { unitWidth } from "@constants";
 import Component from "@components/lib/recordable";
 import ValveControl from "@components/valveControl";
+import { skew } from "@utils/index";
 export default class Level1 {
   isTrigger1Trigged = false;
   isTrigger2Trigged = false;
@@ -28,13 +36,22 @@ export default class Level1 {
     this.hiddenMaskComponents();
     this.configAnimation();
     this.triggerAnimation();
-    this.pathTriggerPoint();
   }
   setSceneLook() {
     // 设置中间草地颜色
     const center_grass = getCompFromFlatedArrByName("center_grass");
     const material1 = new MeshBasicMaterial({ color: 0xc4d449 });
     center_grass.userData.planeMesh.material = material1;
+
+    const cubeGeometry = new BoxGeometry(
+      unitWidth * 0.5,
+      unitWidth * 6,
+      unitWidth * 0.5
+    );
+    const cubeMaterial = new MeshBasicMaterial({ color: 0xece4b2 });
+    const mesh = new Mesh(cubeGeometry, cubeMaterial);
+    // scene.add(mesh);
+    // skew(mesh);
   }
   hiddenMaskComponents() {
     const mask_1 = getCompFromFlatedArrByName("mask_1");
@@ -151,7 +168,6 @@ export default class Level1 {
       };
       moveNext();
     };
-    // trigger_2.onTrigger = () => {};
   }
   trigger2Animation() {
     const trigger_2: any = getCompFromFlatedArrByName("trigger_2");
@@ -239,5 +255,4 @@ export default class Level1 {
       rotationControl.enable();
     };
   }
-  pathTriggerPoint() {}
 }
