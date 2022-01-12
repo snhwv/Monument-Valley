@@ -152,8 +152,8 @@ export const sceneInit = () => {
   canvasResizeHandler();
 
   // const mainGroupChildren = localStorage.getItem("mainGroupChildren");
-  const mainGroupChildren = data;
-  // const mainGroupChildren = '';
+  // const mainGroupChildren = data;
+  const mainGroupChildren = '';
   if (mainGroupChildren) {
     const parsedMainGroupChildren = JSON.parse(mainGroupChildren);
     const generateObj = (arr: any[], parent: any) => {
