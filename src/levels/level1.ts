@@ -1,14 +1,9 @@
 import {
-  BoxGeometry,
-  CylinderGeometry,
-  LatheGeometry,
-  Mesh,
   MeshBasicMaterial,
   MeshMatcapMaterial,
   Object3D,
   Quaternion,
   TextureLoader,
-  Vector2,
   Vector3,
 } from "three";
 import { getCompFromFlatedArrByName, Paths, scene } from "@env";
@@ -18,8 +13,7 @@ import Site from "@components/site";
 import { unitWidth } from "@constants";
 import Component from "@components/lib/recordable";
 import ValveControl from "@components/valveControl";
-import matcap1 from "../assets/matcap/1.png";
-import { skew } from "@utils/index";
+import matcap1 from "../assets/matcap/matcap1.png";
 
 const getDefaultMaterial = (params?: {
   textureSrc?: string;
@@ -44,9 +38,9 @@ export default class Level1 {
     this.initAda();
     this.setSceneLook();
 
-    // this.hiddenMaskComponents();
-    // this.configAnimation();
-    // this.triggerAnimation();
+    this.hiddenMaskComponents();
+    this.configAnimation();
+    this.triggerAnimation();
   }
   initAda() {
     const initPath = Paths.find(
@@ -63,95 +57,10 @@ export default class Level1 {
   }
   setSceneLook() {
     // 设置中间草地颜色
-    // const center_grass = getCompFromFlatedArrByName("center_grass");
-    // const material1 = new MeshBasicMaterial({ color: 0xc4d449 });
-    // center_grass.userData.planeMesh.material = material1;
+    const center_grass = getCompFromFlatedArrByName("center_grass");
+    const material1 = new MeshBasicMaterial({ color: 0xc4d449 });
+    center_grass.userData.planeMesh.material = material1;
 
-    // const geometry = new CylinderGeometry(5, 5, 20, 5, 4);
-    // const material = new MeshBasicMaterial({
-    //   color: 0xffff00,
-    //   wireframe: true,
-    // });
-    // const positionAttr = geometry.getAttribute("position");
-    // console.log(positionAttr.count);
-
-    // for (let i = 0; i < 40; i++) {
-    //   const x = positionAttr.getX(i) + (Math.random() - 0.5) * 1;
-    //   const y = positionAttr.getY(i) + (Math.random() - 0.5) * 1;
-    //   const z = positionAttr.getZ(i) + (Math.random() - 0.5) * 1;
-    //   if (!((i + 1) % 6)) {
-    //     console.log(i)
-    //     const x = positionAttr.getX(i - 5);
-    //     const y = positionAttr.getY(i - 5);
-    //     const z = positionAttr.getZ(i - 5);
-    //     positionAttr.setXYZ(i, x, y, z);
-    //   } else {
-    //     positionAttr.setXYZ(i, x, y, z);
-    //   }
-    // }
-    // positionAttr.needsUpdate = true;
-    // geometry.computeVertexNormals();
-
-    // const cylinder = new Mesh(geometry, material);
-    // cylinder.scale.set(16, 16, 16);
-    // console.log(geometry);
-    // scene.add(cylinder);
-
-    const pointsTrunc = [];
-
-    var ty;
-    ty = 0;
-    let yDivideNumber = 4;
-
-    const heightFactor = 0.5;
-    for (let i = 0; i < yDivideNumber; i++) {
-      const x = i;
-      // const x = (i + 1) * Math.sin((i * Math.PI) / yDivideNumber);
-      const scaleFactor = 0.2;
-      const y = -Math.pow(2, x * scaleFactor) * (i + 1);
-      ty = y;
-      pointsTrunc.push(new Vector2(x, y + 1));
-    }
-    // pointsTrunc.push(new Vector2(0, ty));
-    const pointsTruncLength = pointsTrunc.length;
-    // yDivideNumber += 1;
-    const geometry1 = new LatheGeometry(pointsTrunc, 6);
-    const material1 = getDefaultMaterial();
-
-    const positionAttr = geometry1.getAttribute("position");
-
-    const positionArr = Array.from(positionAttr.array);
-    console.log(pointsTrunc);
-    console.log(positionAttr);
-    console.log(pointsTruncLength);
-    for (let i = 0; i < positionAttr.count; i++) {
-      if (i % pointsTruncLength && (i + 1) % pointsTruncLength) {
-        // const x = positionArr[i * 3] + (Math.random() - 0.5) * 0.5;
-        // const y = positionArr[i * 3 + 1] + (Math.random() - 0.5) * 1;
-        // const z = positionArr[i * 3 + 2] + (Math.random() - 0.5) * 0.5;
-        // positionAttr.setXYZ(i, x, y, z);
-      }
-    }
-    // for (
-    //   let i = positionAttr.count - yDivideNumber - 1;
-    //   i < positionAttr.count;
-    //   i++
-    // ) {
-    //   const k = yDivideNumber + 1 - (positionAttr.count - i);
-    //   const x = positionAttr.getX(k);
-    //   const y = positionAttr.getY(k);
-    //   const z = positionAttr.getZ(k);
-
-    //   positionAttr.setXYZ(i, x, y, z);
-    // }
-    positionAttr.needsUpdate = true;
-    geometry1.computeVertexNormals();
-
-    console.log(geometry1.getAttribute("position"));
-
-    const lathe = new Mesh(geometry1, material1);
-    lathe.scale.set(1, 1, 1);
-    scene.add(lathe);
   }
   hiddenMaskComponents() {
     const mask_1 = getCompFromFlatedArrByName("mask_1");
