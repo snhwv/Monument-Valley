@@ -1,35 +1,23 @@
 import {
+  BoxGeometry,
+  DoubleSide,
+  Mesh,
   MeshBasicMaterial,
   MeshMatcapMaterial,
   Object3D,
+  PlaneGeometry,
   Quaternion,
+  ShaderMaterial,
   TextureLoader,
   Vector3,
 } from "three";
 import { getCompFromFlatedArrByName, Paths, scene } from "@env";
-import { animate } from "popmotion";
+import { animate, linear } from "popmotion";
 import { ada, movingPath } from "@game";
 import Site from "@components/site";
 import { unitWidth } from "@constants";
 import Component from "@components/lib/recordable";
 import ValveControl from "@components/valveControl";
-import matcap1 from "../assets/matcap/matcap1.png";
-
-const getDefaultMaterial = (params?: {
-  textureSrc?: string;
-  materialColor?: number | string;
-}) => {
-  const { textureSrc, materialColor } = params || {};
-  const texture = new TextureLoader().load(textureSrc || matcap1);
-
-  const material = new MeshMatcapMaterial({
-    matcap: texture,
-    flatShading: true,
-  });
-
-  return material;
-};
-
 export default class Level1 {
   isTrigger1Trigged = false;
   isTrigger2Trigged = false;

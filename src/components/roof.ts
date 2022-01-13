@@ -5,6 +5,9 @@ import {
   Matrix4,
   Mesh,
   MeshLambertMaterial,
+  OctahedronGeometry,
+  PlaneGeometry,
+  ShaderMaterial,
   Shape,
   Vector2,
   Vector3,
@@ -12,6 +15,7 @@ import {
 import { CSG } from "three-csg-ts";
 import Component from "./lib/recordable";
 import matcap2 from "../assets/matcap/matcap2.png";
+import { animate, linear } from "popmotion";
 
 // 顶
 class Roof extends Component {
@@ -26,6 +30,7 @@ class Roof extends Component {
     this.hatHeight = unitWidth * 2;
     this.generateHat();
     this.generatePedestal();
+    this.generateFlag();
   }
 
   generatePedestal() {
@@ -103,7 +108,81 @@ class Roof extends Component {
       new Mesh(horizontalGeometry, cubeMaterial)
     );
     this.add(result);
+
     // this.add(new Mesh(horizontalGeometry, cubeMaterial));
+  }
+
+  generateFlag() {
+    const uniforms = {
+      fogColor: { value: new Vector3(65 / 255, 187 / 255, 175 / 255) },
+      time: { value: 0.0 },
+      height: { value: 8.0 },
+      width: { value: 50.0 },
+    };
+
+    const width = 50;
+    const height = 8;
+    uniforms.width.value = width;
+    uniforms.height.value = height;
+    const geometry = new PlaneGeometry(width, height, 20, 2);
+    const material = new ShaderMaterial({
+      uniforms: uniforms,
+      vertexShader: `
+      uniform float time;
+      uniform float width;
+      varying vec3 v_position;
+			void main()
+			{
+        vec3 newPos = position;
+        float factor = (newPos.x + width / 2.0) / width;
+        newPos.z = sin(newPos.x / 4.0 + time) * 4.0 * factor;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( newPos, 1.0 );
+        v_position = position;
+			}
+`,
+      fragmentShader: `
+      uniform float time;
+			uniform vec3 fogColor;
+      varying vec3 v_position;
+      uniform float width;
+      uniform float height;
+
+			void main( void ) {
+        float factor = -v_position.x * (height/width);
+        if(v_position.y > factor) {
+          discard;
+        }
+
+				gl_FragColor =vec4( fogColor, 1.0 );
+
+			}`,
+    });
+
+    animate({
+      from: 0,
+      to: 1,
+      duration: 3000,
+      ease: linear,
+      repeat: Infinity,
+      onUpdate: () => {
+        uniforms["time"].value = (uniforms["time"].value - 0.1) % (Math.PI * 2);
+      },
+    });
+
+    const plane = new Mesh(geometry, material);
+    plane.translateX(width / 2);
+    plane.translateY(this.hatHeight + height - 2);
+
+    this.add(plane);
+
+    const cubeMaterial = this.getDefaultMaterial({ textureSrc: matcap2 });
+    const size = 2;
+    const geo = new OctahedronGeometry(size);
+    geo.translate(0, this.hatHeight + height + size * 2, 0);
+    geo.rotateY(Math.PI / 4);
+
+    const octMesh = new Mesh(geo, cubeMaterial);
+    this.add(octMesh);
   }
 }
 (Roof as any).cnName = "屋顶";
