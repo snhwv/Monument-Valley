@@ -1,6 +1,9 @@
+import { animate } from "popmotion";
 import {
   CubicBezierCurve,
+  DoubleSide,
   LatheGeometry,
+  Matrix4,
   Mesh,
   MeshMatcapMaterial,
   TextureLoader,
@@ -8,6 +11,7 @@ import {
 } from "three";
 import Component from "./lib/recordable";
 import matcap1 from "../assets/matcap/matcap4.png";
+import { skew } from "@utils/index";
 
 class Tree extends Component {
   constructor(...args: any) {
@@ -45,42 +49,31 @@ class Tree extends Component {
     const curve = new CubicBezierCurve(
       new Vector2(0, 0),
       new Vector2(width * 1, 0),
-      new Vector2(width * 1, height * 0.5),
-      new Vector2(width * bottomWidthFactor, height)
+      new Vector2(width * 1, -height * 0.5),
+      new Vector2(width * bottomWidthFactor, -height)
     );
 
     const pointArr = [];
     for (let i = 0; i < divide; i++) {
       pointArr.push(
-        // Math.pow(2, i) / Math.pow(2, divide)
-        curve.getPoint(i / (divide - 1)).multiplyScalar(10)
+        curve.getPoint(i / (divide - 1)).add(new Vector2(0, height))
       );
     }
-    console.log(height * 10);
-    // const points = curve.getPoints(50);
-    // const geometry = new BufferGeometry().setFromPoints(points);
+    const geometry = new LatheGeometry(pointArr, segments);
 
-    // const material = new LineBasicMaterial({ color: 0xff0000 });
-
-    // Create the final object to add to the scene
-    // const curveObject = new Line(geometry, material);
-    // this.add(curveObject);
-    const geometry1 = new LatheGeometry(pointArr, segments);
-    geometry1.rotateX(Math.PI);
     const material1 = this.getDefaultMaterial();
-    const positionAttr = geometry1.getAttribute("position");
+    const positionAttr = geometry.getAttribute("position");
 
     for (let i = 0; i < positionAttr.count; i++) {
-      const offsetFactor = - positionAttr.getY(i) / (height * 10);
+      const offsetFactor = -positionAttr.getY(i) / height;
       let x = positionAttr.getX(i) + xoffset * offsetFactor;
       let y = positionAttr.getY(i) + yoffset * offsetFactor;
       let z = positionAttr.getZ(i) + zoffset * offsetFactor;
-      console.log(offsetFactor);
 
       if (i % divide && (i + 1) % divide) {
-        x = x + (Math.random() - 0.5) * 8;
-        y = y + (Math.random() - 0.5) * 24;
-        z = z + (Math.random() - 0.5) * 8;
+        x = x + (Math.random() - 0.5) * 0.8;
+        y = y + (Math.random() - 0.5) * 2.4;
+        z = z + (Math.random() - 0.5) * 0.8;
       }
       positionAttr.setXYZ(i, x, y, z);
     }
@@ -93,11 +86,32 @@ class Tree extends Component {
       positionAttr.setXYZ(i, x, y, z);
     }
     positionAttr.needsUpdate = true;
-    geometry1.computeVertexNormals();
+    geometry.computeVertexNormals();
 
-    const lathe = new Mesh(geometry1, material1);
-    lathe.scale.set(0.1, 0.1, 0.1);
+    const lathe = new Mesh(geometry, material1);
+
+    skew(geometry);
     this.add(lathe);
+    // this.animateTree();
+  }
+
+  animateTree() {
+    // const fromP = new Vector3().copy(this.position);
+    // const toP = new Vector3()
+    //   .copy(this.position)
+    //   .add(new Vector3(0, -(this.getFirstProps()?.siteHeight || 0), 0));
+    skew(this);
+    // animate({
+    //   from: 0,
+    //   to: 1,
+    //   duration: 200,
+    //   repeat: Infinity,
+    //   repeatType: "mirror",
+    //   onUpdate: (latest: any) => {
+    //     // skew(this);
+    //     // this.position.copy(latest);
+    //   },
+    // });
   }
 
   getDefaultMaterial(params?: {
@@ -112,6 +126,7 @@ class Tree extends Component {
       // depthTest: this.getZIndex() ? false : true,
       matcap: texture,
       flatShading: true,
+      side: DoubleSide,
     });
 
     return material;

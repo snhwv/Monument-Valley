@@ -88,8 +88,6 @@ abstract class Component extends Group {
       );
     }
     material.onBeforeCompile = function (shader) {
-      // console.log(shader.vertexShader);
-      console.log(obj?.shadowOffset);
       shader.vertexShader = `#define MATCAP
       varying vec3 vViewPosition;
       varying vec4 vPosition;
