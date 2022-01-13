@@ -2,6 +2,7 @@ import { unitWidth } from "@constants";
 import {
   BoxGeometry,
   ExtrudeGeometry,
+  Group,
   Matrix4,
   Mesh,
   Shape,
@@ -116,7 +117,14 @@ class Door extends Component {
 
       subRes = CSG.subtract(subRes, doorItem);
     }
-    this.add(subRes);
+    const g = new Group();
+
+    const gubem = new Matrix4();
+    gubem.makeTranslation(0, -height / 2, 0);
+    g.applyMatrix4(gubem);
+
+    g.add(subRes);
+    this.add(g);
   }
 }
 (Door as any).cnName = "门窗";
