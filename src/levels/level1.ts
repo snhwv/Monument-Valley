@@ -60,7 +60,6 @@ export default class Level1 {
     const center_grass = getCompFromFlatedArrByName("center_grass");
     const material1 = new MeshBasicMaterial({ color: 0xc4d449 });
     center_grass.userData.planeMesh.material = material1;
-
   }
   hiddenMaskComponents() {
     const mask_1 = getCompFromFlatedArrByName("mask_1");
@@ -180,6 +179,7 @@ export default class Level1 {
   }
   trigger2Animation() {
     const trigger_2: any = getCompFromFlatedArrByName("trigger_2");
+    const center_tree: any = getCompFromFlatedArrByName("center_tree");
     const site_2 = getCompFromFlatedArrByName("site_2") as Site;
     trigger_2.onTrigger = () => {
       if (this.isTrigger2Trigged) {
@@ -192,22 +192,35 @@ export default class Level1 {
 
       site_2.onTrigger();
 
-      const centerMove: any = getCompFromFlatedArrByName("centerMove");
+      const centerMove = getCompFromFlatedArrByName("centerMove") as Component;
 
-      const fromP = new Vector3().copy(centerMove.position);
-      const toP = new Vector3()
-        .copy(centerMove.position)
-        .add(new Vector3(0, unitWidth * 6, 0));
-      animate({
-        from: fromP,
-        to: toP,
-        duration: 200,
-        onUpdate: (latest: any) => {
-          centerMove.position.copy(latest);
-        },
-        // onComplete: moveNext,
-      });
+      const movePositionOffsetList = [unitWidth * 3, unitWidth * 3];
+      const move = () => {
+        const next = movePositionOffsetList.shift();
+        if (!next) {
+          return;
+        }
 
+        const fromP = new Vector3().copy(centerMove.position);
+        const toP = new Vector3()
+          .copy(centerMove.position)
+          .add(new Vector3(0, next, 0));
+        animate({
+          from: fromP,
+          to: toP,
+          duration: 200,
+          onUpdate: (latest: any) => {
+            centerMove.position.copy(latest);
+          },
+          onComplete: () => {
+            if (movePositionOffsetList.length) {
+              center_tree && centerMove && centerMove.attach(center_tree);
+            }
+            move();
+          },
+        });
+      };
+      move();
       this.showMask2Components();
     };
     // trigger_2.onTrigger = () => {};
