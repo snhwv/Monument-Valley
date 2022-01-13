@@ -89,29 +89,25 @@ class Tree extends Component {
     geometry.computeVertexNormals();
 
     const lathe = new Mesh(geometry, material1);
-
-    skew(geometry);
+    this.userData.geometry = geometry;
     this.add(lathe);
-    // this.animateTree();
+    this.animateTree();
   }
 
   animateTree() {
-    // const fromP = new Vector3().copy(this.position);
-    // const toP = new Vector3()
-    //   .copy(this.position)
-    //   .add(new Vector3(0, -(this.getFirstProps()?.siteHeight || 0), 0));
-    skew(this);
-    // animate({
-    //   from: 0,
-    //   to: 1,
-    //   duration: 200,
-    //   repeat: Infinity,
-    //   repeatType: "mirror",
-    //   onUpdate: (latest: any) => {
-    //     // skew(this);
-    //     // this.position.copy(latest);
-    //   },
-    // });
+    let total = 0.1;
+    let lastMove = 0;
+    animate({
+      from: 0,
+      to: 1,
+      duration: 3000,
+      repeat: Infinity,
+      repeatType: "mirror",
+      onUpdate: (latest: any) => {
+        skew(total * latest - lastMove, this.userData.geometry);
+        lastMove = total * latest;
+      },
+    });
   }
 
   getDefaultMaterial(params?: {
@@ -121,9 +117,7 @@ class Tree extends Component {
     const { textureSrc } = params || {};
     const texture = new TextureLoader().load(textureSrc || matcap1);
 
-    const obj = this.userData.props?.[0];
     const material = new MeshMatcapMaterial({
-      // depthTest: this.getZIndex() ? false : true,
       matcap: texture,
       flatShading: true,
       side: DoubleSide,

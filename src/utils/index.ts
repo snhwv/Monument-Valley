@@ -1,8 +1,6 @@
 import { BufferGeometry, Matrix4, Object3D } from "three";
 
-export function skew(object: Object3D | BufferGeometry) {
-
-  const factor = 0.2;
+export function skew(factor: number = 0.2, object: Object3D | BufferGeometry) {
 
   var Syx = factor,
     Szx = 0,
