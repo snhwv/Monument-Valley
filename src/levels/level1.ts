@@ -6,14 +6,14 @@ import Site from "@components/site";
 import { unitWidth } from "@constants";
 import Component from "@components/lib/recordable";
 import ValveControl from "@components/valveControl";
-import data from "../data";
+import levelData1 from "../levelData/levelData1";
 import Level from "./lib/level";
 export default class Level1 extends Level {
   isTrigger1Trigged = false;
   isTrigger2Trigged = false;
 
   init() {
-    this.loadDataScene(data);
+    this.loadDataScene(levelData1);
     this.initAda();
     this.setSceneLook();
 
