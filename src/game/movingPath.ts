@@ -77,7 +77,7 @@ class MovingPath {
       const ways = [
         adaPathPoint,
         nextPathPoint,
-        new Vector3(0, -unitWidth / 2, 0),
+        new Vector3(0, 0, 0),
       ];
 
       const moveAdaToPoint = () => {

@@ -13,7 +13,7 @@ export const transformInit = () => {
   setTranslationSnap(unitWidth / 2);
   // setTranslationSnap(unitWidth / 2 / 2 / 2 / 2);
   // setTranslationSnap(unitWidth / 2 / 2 / 2);
-  setRotationSnap(Math.PI / 2);
+  setRotationSnap(Math.PI / 4);
   // setScaleSnap(1 / 2 / 2 / 2);
   // setScaleSnap(1 / 2 / 2);
   setScaleSnap(1);

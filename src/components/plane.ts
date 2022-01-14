@@ -19,7 +19,7 @@ class Plane extends Component {
   generatePlane() {
     const obj = this.userData.props?.[0];
 
-    const height = obj?.height;
+    const height = obj?.height || 4;
     const cubeGeometry = new BoxGeometry(unitWidth, height, unitWidth);
     const cubeMaterial = this.getDefaultMaterial();
 

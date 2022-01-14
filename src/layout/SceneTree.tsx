@@ -28,7 +28,7 @@ const getTreeDataItem = (object: any): any => {
 const addTo = (parent: Object3D, child: Object3D) => {
   if (!parent.children.includes(child)) {
     child.parent?.remove?.(child);
-    parent.add(child);
+    parent.attach(child);
   }
 };
 

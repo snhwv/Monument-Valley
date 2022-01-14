@@ -30,6 +30,7 @@ class Path extends Component {
         isJump: 0,
         isTrigger: 0,
         isStop: 0,
+        isStair: 0,
       },
     ];
   }
@@ -50,11 +51,19 @@ class Path extends Component {
     const isStatic = obj?.isStatic;
 
     this.userData.isStatic = isStatic;
+    const stairHalfWidth = Math.sqrt(Math.pow(width / 2, 2) * 2);
 
+    const isStair = obj?.isStair;
     right && this.generateConnectPoint(new Vector3(width / 2, 0, 0));
     left && this.generateConnectPoint(new Vector3(-width / 2, 0, 0));
-    top && this.generateConnectPoint(new Vector3(0, 0, -width / 2));
-    bottom && this.generateConnectPoint(new Vector3(0, 0, width / 2));
+    top &&
+      this.generateConnectPoint(
+        new Vector3(0, 0, isStair ? -stairHalfWidth : -unitWidth / 2)
+      );
+    bottom &&
+      this.generateConnectPoint(
+        new Vector3(0, 0, isStair ? stairHalfWidth : unitWidth / 2)
+      );
     this.generatePath();
     this.updatePointPositionList();
   }
@@ -76,12 +85,12 @@ class Path extends Component {
 
     const material = new MeshLambertMaterial({
       color: isStatic ? 0xffff00 : 0x0000ff,
-      transparent: true,
-      opacity: 0,
+      // transparent: true,
+      // opacity: 0,
     });
     const sphere = new Mesh(geometry, material);
 
-    sphere.position.add(offset).add(new Vector3(0, -height / 2, 0));
+    sphere.position.add(offset).add(new Vector3(0, 0, 0));
 
     this.add(sphere);
 
@@ -113,14 +122,15 @@ class Path extends Component {
     const height = obj?.height;
     const isStatic = obj?.isStatic;
 
-    const geometry = new BoxGeometry(unitWidth, 4, unitWidth);
+    const geometry = new SphereGeometry(unitWidth / 4, 32, 32);
+    // const geometry = new BoxGeometry(unitWidth, 4, unitWidth);
     const material = new MeshLambertMaterial({
       color: isStatic ? 0xffff00 : 0x0000ff,
-      transparent: true,
-      opacity: 0,
+      // transparent: true,
+      // opacity: 0,
     });
     const sphere = new Mesh(geometry, material);
-    sphere.position.add(new Vector3(0, -height / 2, 0));
+    sphere.position.add(new Vector3(0, 0, 0));
 
     this.userData.pathCenter = sphere;
     this.add(sphere);
