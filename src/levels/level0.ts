@@ -17,7 +17,7 @@ export default class Level0 extends Level {
     this.initAda();
 
     this.configAnimation();
-    // this.triggerAnimation();
+    this.triggerAnimation();
   }
   initAda() {
     const initPath = Paths.find(
@@ -40,11 +40,13 @@ export default class Level0 extends Level {
       return;
     }
     rotationControl.onRotate = (axis: Vector3, angle: number) => {
+      axis = new Vector3(1, 0, 0);
       if (centerRotable) {
-        centerRotable.rotateOnAxis(new Vector3(1, 0, 0), angle);
+        centerRotable.rotateOnAxis(axis, angle);
       }
     };
     rotationControl.onRotated = (axis: Vector3, totalAngle: number) => {
+      axis = new Vector3(1, 0, 0);
       const left = totalAngle % (Math.PI / 2);
       let addonAngle = 0;
       if (centerRotable) {
@@ -85,21 +87,13 @@ export default class Level0 extends Level {
     const rotate_close1: any = getCompFromFlatedArrByName("rotate_close1");
     const rotate_open: any = getCompFromFlatedArrByName("rotate_open");
     const rotate_open1: any = getCompFromFlatedArrByName("rotate_open1");
-    const rotate_open2: any = getCompFromFlatedArrByName("rotate_open2");
-    const rotate_open3: any = getCompFromFlatedArrByName("rotate_open3");
-    const rotate_open4: any = getCompFromFlatedArrByName("rotate_open4");
-    const rotate_open5: any = getCompFromFlatedArrByName("rotate_open5");
     if (
       !(
         rotationControl &&
         rotate_close &&
         rotate_close1 &&
         rotate_open &&
-        rotate_open1 &&
-        rotate_open2 &&
-        rotate_open3 &&
-        rotate_open4 &&
-        rotate_open5
+        rotate_open1
       )
     ) {
       return;
@@ -114,18 +108,6 @@ export default class Level0 extends Level {
       rotationControl.enable();
     };
     rotate_open1.onTrigger = () => {
-      rotationControl.enable();
-    };
-    rotate_open2.onTrigger = () => {
-      rotationControl.enable();
-    };
-    rotate_open3.onTrigger = () => {
-      rotationControl.enable();
-    };
-    rotate_open4.onTrigger = () => {
-      rotationControl.enable();
-    };
-    rotate_open5.onTrigger = () => {
       rotationControl.enable();
     };
   }
