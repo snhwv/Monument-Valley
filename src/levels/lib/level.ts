@@ -6,8 +6,8 @@ import { Group, Matrix4 } from "three";
 export default class Level {
   constructor() {}
   loadDataScene(data: string) {
-    // const mainGroupChildren = localStorage.getItem("mainGroupChildren");
-    const mainGroupChildren = data;
+    const mainGroupChildren = localStorage.getItem("mainGroupChildren");
+    // const mainGroupChildren = data;
     // const mainGroupChildren = '';
     if (mainGroupChildren) {
       const parsedMainGroupChildren = JSON.parse(mainGroupChildren);
@@ -20,11 +20,6 @@ export default class Level {
             const matrix = new Matrix4();
             matrix.elements = item.matrix.elements;
             comp.applyMatrix4(matrix);
-            if (comp.constructor.name === "Path") {
-              const cubem = new Matrix4();
-              cubem.makeTranslation(0, -8, 0);
-              comp.applyMatrix4(cubem);
-            }
           };
 
           const component: Group = new (componentMap as any)[item.type](

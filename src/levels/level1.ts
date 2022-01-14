@@ -17,7 +17,7 @@ export default class Level1 extends Level {
     this.initAda();
     this.setSceneLook();
 
-    // this.hiddenMaskComponents();
+    this.hiddenMaskComponents();
     this.configAnimation();
     this.triggerAnimation();
   }

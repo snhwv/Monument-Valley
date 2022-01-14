@@ -12,10 +12,10 @@ function Three() {
     tick();
     eventInit();
 
-    // const level0 = new Level0();
-    // level0.init();
-    const level1 = new Level1();
-    level1.init();
+    const level0 = new Level0();
+    level0.init();
+    // const level1 = new Level1();
+    // level1.init();
     generateStaticMap();
   }, []);
   return <canvas data-canvas ref={ref} className={"full canvas"}></canvas>;
