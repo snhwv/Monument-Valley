@@ -9,9 +9,17 @@ class Plane extends Component {
   generateElement(): void {
     this.generatePlane();
   }
-
+  getDefaultProps() {
+    return [
+      {
+        height: 4,
+      },
+    ];
+  }
   generatePlane() {
-    const height = 4;
+    const obj = this.userData.props?.[0];
+
+    const height = obj?.height;
     const cubeGeometry = new BoxGeometry(unitWidth, height, unitWidth);
     const cubeMaterial = this.getDefaultMaterial();
 

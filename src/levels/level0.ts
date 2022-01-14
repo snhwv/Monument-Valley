@@ -6,20 +6,20 @@ import Site from "@components/site";
 import { unitWidth } from "@constants";
 import Component from "@components/lib/recordable";
 import ValveControl from "@components/valveControl";
-import data from "../data";
+import level0Data from "../levelData/level0Data";
 import Level from "./lib/level";
-export default class Level1 extends Level {
+export default class Level0 extends Level {
   isTrigger1Trigged = false;
   isTrigger2Trigged = false;
 
   init() {
-    this.loadDataScene(data);
-    this.initAda();
-    this.setSceneLook();
+    this.loadDataScene(level0Data);
+    // this.initAda();
+    // this.setSceneLook();
 
-    this.hiddenMaskComponents();
-    this.configAnimation();
-    this.triggerAnimation();
+    // this.hiddenMaskComponents();
+    // this.configAnimation();
+    // this.triggerAnimation();
   }
   initAda() {
     const initPath = Paths.find(

@@ -11,7 +11,6 @@ import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { SAOPass } from "three/examples/jsm/postprocessing/SAOPass";
 
-import data from "../data";
 // import { gui } from "./dat";
 
 export let canvas: HTMLCanvasElement;
@@ -46,7 +45,6 @@ export const camera = new THREE.OrthographicCamera(
 );
 camera.position.set(200, 200, 200);
 scene.add(camera);
-
 
 export const canvasResizeHandler = () => {
   const rects = getCanvasRect();
@@ -148,39 +146,8 @@ export const sceneInit = () => {
   // gui.add( ssaoPass, 'kernelRadius' ).min( 0 ).max( 32 );
   // gui.add( ssaoPass, 'minDistance' ).min( 0.001 ).max( 0.02 );
   // gui.add( ssaoPass, 'maxDistance' ).min( 0.01 ).max( 0.3 );
-  
+
   canvasResizeHandler();
-
-  // const mainGroupChildren = localStorage.getItem("mainGroupChildren");
-  const mainGroupChildren = data;
-  // const mainGroupChildren = '';
-  if (mainGroupChildren) {
-    const parsedMainGroupChildren = JSON.parse(mainGroupChildren);
-    const generateObj = (arr: any[], parent: any) => {
-      arr.map((item: any) => {
-        const onCreate = (comp: Group) => {
-          comp.parent?.remove(comp);
-          parent.add(comp);
-
-          const matrix = new Matrix4();
-          matrix.elements = item.matrix.elements;
-          comp.applyMatrix4(matrix);
-        };
-
-        const component: Group = new (componentMap as any)[item.type](
-          item.userData.props[0],
-          item.userData.props[1],
-          onCreate
-        );
-
-        if (item.children?.length) {
-          generateObj(item.children, component);
-        }
-      });
-    };
-    generateObj(parsedMainGroupChildren, mainGroup);
-    updateSceneTree();
-  }
 };
 
 const floorGeometry = new THREE.BoxGeometry(300, 2, 300);

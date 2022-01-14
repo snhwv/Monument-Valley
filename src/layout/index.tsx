@@ -17,7 +17,12 @@ function Layout() {
           >
             <SceneTree></SceneTree>
           </TabPane>
-          <TabPane tab="Tab 2" key="2">
+          <TabPane
+            tab="Tab 2"
+            key="2"
+            className={"fullHeight"}
+            style={{ overflow: "auto" }}
+          >
             <ComponentList></ComponentList>
           </TabPane>
         </Tabs>
