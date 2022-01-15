@@ -9,7 +9,7 @@ export const directionalLight2 = new DirectionalLight(0xffffff, 0.5);
 directionalLight.position.set(78.63, 119.62, 38.87);
 directionalLight1.position.set(0, -100, 0);
 directionalLight2.position.set(100, 0, -500);
-scene.add(directionalLight);
+// scene.add(directionalLight);
 // scene.add(directionalLight1);
 // scene.add(directionalLight2);
 

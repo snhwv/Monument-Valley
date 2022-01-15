@@ -1,23 +1,46 @@
-import { MeshBasicMaterial, Object3D, Quaternion, Vector3 } from "three";
+import { Color, MeshBasicMaterial, Object3D, Quaternion, Vector3 } from "three";
 import { getCompFromFlatedArrByName, Paths, scene } from "@env";
 import { animate } from "popmotion";
 import { ada, movingPath } from "@game";
-import Site from "@components/site";
-import { unitWidth } from "@constants";
 import Component from "@components/lib/recordable";
 import ValveControl from "@components/valveControl";
 import levelData0 from "../levelData/levelData0";
 import Level from "./lib/level";
+import matcap_level0_0 from "../assets/matcap/matcap_level0_0.png";
+import matcap_level0_1 from "../assets/matcap/matcap_level0_1.png";
+import matcap_level0_2 from "../assets/matcap/matcap_level0_2.png";
+import matcap_level0_3 from "../assets/matcap/matcap_level0_3.png";
+import level0_texture0 from "../assets/texture/level0_texture0.png";
+import Cube from "@components/cube";
 export default class Level0 extends Level {
   isTrigger1Trigged = false;
   isTrigger2Trigged = false;
 
   init() {
+    scene.background = new Color(0x273540);
+    Component.defaultMatcap = matcap_level0_0;
     this.loadDataScene(levelData0);
     this.initAda();
 
+    this.setSceneLook();
     this.configAnimation();
     this.triggerAnimation();
+  }
+  setSceneLook() {
+    const rotate_cube = getCompFromFlatedArrByName("rotate_cube") as Cube;
+    rotate_cube.setMatcap(matcap_level0_1);
+    const rotate_cube1 = getCompFromFlatedArrByName("rotate_cube1") as Cube;
+    rotate_cube1.setMatcap(matcap_level0_1);
+    const rotationControl = getCompFromFlatedArrByName(
+      "rotationControl"
+    ) as ValveControl;
+    rotationControl.setProgramProps({
+      plugTexture: level0_texture0,
+      rodEndTexture: matcap_level0_2,
+      rodTexture: matcap_level0_3,
+      largeCircleColor: 0x4a5960,
+      smallCircleColor: 0x2c2c38,
+    });
   }
   initAda() {
     const initPath = Paths.find(

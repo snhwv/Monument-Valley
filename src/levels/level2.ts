@@ -8,20 +8,18 @@ import Component from "@components/lib/recordable";
 import ValveControl from "@components/valveControl";
 import levelData1 from "../levelData/levelData1";
 import Level from "./lib/level";
-import matcap1 from "../assets/matcap/matcap1.png";
-export default class Level1 extends Level {
+export default class Level2 extends Level {
   isTrigger1Trigged = false;
   isTrigger2Trigged = false;
 
   init() {
-    Component.defaultMatcap = matcap1;
-    this.loadDataScene(levelData1);
-    this.initAda();
-    this.setSceneLook();
+    this.loadDataScene('');
+    // this.initAda();
+    // this.setSceneLook();
 
-    this.hiddenMaskComponents();
-    this.configAnimation();
-    this.triggerAnimation();
+    // this.hiddenMaskComponents();
+    // this.configAnimation();
+    // this.triggerAnimation();
   }
   initAda() {
     const initPath = Paths.find(
@@ -37,7 +35,6 @@ export default class Level1 extends Level {
     movingPath.setAdaOn(initPath);
   }
   setSceneLook() {
-    
     // 设置中间草地颜色
     const center_grass = getCompFromFlatedArrByName("center_grass");
     const material1 = new MeshBasicMaterial({ color: 0xc4d449 });

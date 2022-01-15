@@ -66,12 +66,14 @@ abstract class Component extends Group {
     this.generateElement();
   }
 
+  static defaultMatcap = matcap1;
+
   getDefaultMaterial(params?: {
     textureSrc?: string;
     materialColor?: number | string;
   }) {
     const { textureSrc, materialColor } = params || {};
-    const texture = new TextureLoader().load(textureSrc || matcap1);
+    const texture = new TextureLoader().load(textureSrc || Component.defaultMatcap);
 
     const obj = this.userData.props?.[0];
     const objMaterialColor = obj?.materialColor || "";

@@ -9,9 +9,14 @@ class Cube extends Component {
   generateElement() {
     this.generateCube();
   }
+  matcap?: string;
+  setMatcap(matcap: string) {
+    this.matcap = matcap;
+    this.changeProps(...this.userData.props);
+  }
   generateCube() {
     const cubeGeometry = new BoxGeometry(unitWidth, unitWidth, unitWidth);
-    const cubeMaterial = this.getDefaultMaterial();
+    const cubeMaterial = this.getDefaultMaterial({ textureSrc: this.matcap });
     this.add(new Mesh(cubeGeometry, cubeMaterial));
   }
 }

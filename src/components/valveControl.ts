@@ -37,6 +37,11 @@ class ValveControl extends Rotable {
     this.rodEndWidth = 6;
     this.rodEndR = 3.4;
 
+    this.plugTexture = this.plugTexture || texture1;
+    this.largeCircleColor = this.largeCircleColor || 0xece4b2;
+    this.smallCircleColor = this.smallCircleColor || 0x6a6b39;
+    this.rodTexture = this.rodTexture || matcap2;
+    this.rodEndTexture = this.rodEndTexture || matcap3;
     this.generatePlug();
     this.generateRod();
   }
@@ -50,6 +55,33 @@ class ValveControl extends Rotable {
   rodEndR = 3.4;
 
   plane!: Plane;
+
+  plugTexture = texture1;
+  rodTexture = matcap2;
+  rodEndTexture = matcap3;
+  largeCircleColor = 0xece4b2;
+  smallCircleColor = 0x6a6b39;
+
+  setProgramProps({
+    plugTexture,
+    rodTexture,
+    rodEndTexture,
+    largeCircleColor,
+    smallCircleColor,
+  }: {
+    plugTexture?: string;
+    rodTexture?: string;
+    rodEndTexture?: string;
+    largeCircleColor?: number;
+    smallCircleColor?: number;
+  }) {
+    this.plugTexture = plugTexture || this.plugTexture;
+    this.rodTexture = rodTexture || this.rodTexture;
+    this.rodEndTexture = rodEndTexture || this.rodEndTexture;
+    this.largeCircleColor = largeCircleColor || this.largeCircleColor;
+    this.smallCircleColor = smallCircleColor || this.smallCircleColor;
+    this.changeProps(...this.userData.props);
+  }
 
   onRotateBegin() {
     const endMaterial = this.userData.endMaterial as MeshMatcapMaterial;
@@ -84,7 +116,7 @@ class ValveControl extends Rotable {
 
   // 中间的阀塞
   generatePlug() {
-    const texture = new TextureLoader().load(texture1);
+    const texture = new TextureLoader().load(this.plugTexture);
 
     const material = new MeshMatcapMaterial({
       depthTest: this.getZIndex() ? false : true,
@@ -101,7 +133,7 @@ class ValveControl extends Rotable {
     );
 
     const geometry1 = new CircleGeometry(this.plugR, 32);
-    const material1 = new MeshBasicMaterial({ color: 0xece4b2 });
+    const material1 = new MeshBasicMaterial({ color: this.largeCircleColor });
     this.userData.plugMaterial1 = material1;
     const circle = new Mesh(geometry1, material1);
 
@@ -115,7 +147,7 @@ class ValveControl extends Rotable {
 
     const geometry2 = geometry1.clone();
     geometry2.scale(0.5, 1, 0.5).translate(0, 0.01, 0);
-    const material2 = new MeshBasicMaterial({ color: 0x6a6b39 });
+    const material2 = new MeshBasicMaterial({ color: this.smallCircleColor });
     this.userData.plugMaterial2 = material2;
     const circle2 = new Mesh(geometry2, material2);
     this.g.add(circle);
@@ -137,7 +169,10 @@ class ValveControl extends Rotable {
       this.rodWidth * 2,
       32
     );
-    const cubeMaterial = this.getDefaultMaterial({ textureSrc: matcap2 });
+    console.log(this.rodTexture);
+    const cubeMaterial = this.getDefaultMaterial({
+      textureSrc: this.rodTexture,
+    });
 
     var verticalCylinder = new Mesh(geometry, cubeMaterial);
 
@@ -173,7 +208,7 @@ class ValveControl extends Rotable {
         .multiply(endm.makeRotationZ(Math.PI / 2))
     );
     const endMaterial = this.getDefaultMaterial({
-      textureSrc: matcap3,
+      textureSrc: this.rodEndTexture,
     });
 
     var endCylinder = new Mesh(endGeometry, endMaterial);
