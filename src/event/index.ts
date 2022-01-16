@@ -14,6 +14,7 @@ import { IpinterdownHander, store } from "./store";
 import { crudComponents } from "./crudComponent";
 import { setTransformControl } from "./setTransformControl";
 import { rotated, setRotation, setRotationPrevPoint } from "./rotateComponent";
+import { moved, setMove, setMovePrevPoint } from "./moveComponent";
 
 const setPointer = (event: any) => {
   const rect = getCanvasRect();
@@ -90,13 +91,14 @@ const raycaster = new Raycaster();
 
 const pointerdownHandlerArr: IpinterdownHander[] = [
   setRotationPrevPoint,
+  setMovePrevPoint,
   crudComponents,
   setTransformControl,
   setPaths,
 ];
-const pointermoveHandlerArr: IpinterdownHander[] = [setRotation];
+const pointermoveHandlerArr: IpinterdownHander[] = [setRotation, setMove];
 
-const pointerupHandlerArr: IpinterdownHander[] = [rotated];
+const pointerupHandlerArr: IpinterdownHander[] = [rotated, moved];
 
 const getComponentParent = (object: Object3D): any => {
   if (componentTypes.includes(object?.constructor?.name)) {

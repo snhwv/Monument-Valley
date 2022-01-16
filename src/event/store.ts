@@ -4,12 +4,16 @@ export const store: {
   isShiftDown: boolean;
   isCtrlDown: boolean;
   isRotable: boolean;
+  isMoveable: boolean;
   rotationComponent: Group | null;
+  moveComponent: Group | null;
 } = {
   isShiftDown: false,
   isCtrlDown: false,
   isRotable: false,
+  isMoveable: false,
   rotationComponent: null,
+  moveComponent: null,
 };
 
 export type IpinterdownHander = (event: {

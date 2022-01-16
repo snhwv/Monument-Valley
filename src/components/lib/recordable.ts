@@ -44,7 +44,6 @@ abstract class Component extends Group {
   }
 
   changeProps(...args: any) {
-    args = JSON.parse(JSON.stringify(args));
     const childrenLength = this.children.length;
 
     for (let i = 0; i < childrenLength; i++) {

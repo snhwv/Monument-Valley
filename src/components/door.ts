@@ -44,6 +44,7 @@ class Door extends Component {
         doorNumber: 1,
         curveSegments: 1,
         width: unitWidth,
+        width1: unitWidth,
         doorTop: unitWidth / 4,
         doorBottom: 0,
         doorWidth: unitWidth / 4,
@@ -60,6 +61,7 @@ class Door extends Component {
     const obj = this.userData.props?.[0];
 
     const width = obj?.width;
+    const width1 = obj?.width1;
     const doorWidth = obj?.doorWidth;
     const doorTop = obj?.doorTop;
     const doorBottom = obj?.doorBottom;
@@ -69,7 +71,7 @@ class Door extends Component {
 
     const height = obj?.height;
 
-    const cubeGeometry = new BoxGeometry(width, height, width);
+    const cubeGeometry = new BoxGeometry(width, height, width1);
     const cubeMaterial = this.getDefaultMaterial();
     const cube = new Mesh(cubeGeometry, cubeMaterial);
 

@@ -80,7 +80,8 @@ class ValveControl extends Rotable {
     this.rodEndTexture = rodEndTexture || this.rodEndTexture;
     this.largeCircleColor = largeCircleColor || this.largeCircleColor;
     this.smallCircleColor = smallCircleColor || this.smallCircleColor;
-    this.changeProps(...this.userData.props);
+
+    this.changeProps(...JSON.parse(JSON.stringify(this.userData.props)));
   }
 
   onRotateBegin() {

@@ -12,7 +12,8 @@ class Cube extends Component {
   matcap?: string;
   setMatcap(matcap: string) {
     this.matcap = matcap;
-    this.changeProps(...this.userData.props);
+    this.changeProps(...JSON.parse(JSON.stringify(this.userData.props)));
+    // this.changeProps(...this.userData.props);
   }
   generateCube() {
     const cubeGeometry = new BoxGeometry(unitWidth, unitWidth, unitWidth);

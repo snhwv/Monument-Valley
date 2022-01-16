@@ -63,7 +63,7 @@ export const setRotationPrevPoint: IpinterdownHander = ({
   next();
 };
 
-export const rotated: IpinterdownHander = () => {
+export const rotated: IpinterdownHander = ({ next }) => {
   store.isRotable = false;
   orbitControls.enabled = true;
   (store.rotationComponent as any)?.onRotated(
@@ -72,4 +72,5 @@ export const rotated: IpinterdownHander = () => {
   );
   (store.rotationComponent as any)?.onRotateEnd();
   store.rotationComponent = null;
+  next();
 };

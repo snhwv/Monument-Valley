@@ -40,7 +40,7 @@ export const camera = new THREE.OrthographicCamera(
   sizes.width / 2,
   sizes.height / 2,
   sizes.height / -2,
-  100,
+  10,
   10000
 );
 camera.position.set(200, 200, 200);

@@ -1,4 +1,4 @@
-import { MeshBasicMaterial, Object3D, Quaternion, Vector3 } from "three";
+import { Color, MeshBasicMaterial, Object3D, Quaternion, Vector3 } from "three";
 import { getCompFromFlatedArrByName, Paths, scene } from "@env";
 import { animate } from "popmotion";
 import { ada, movingPath } from "@game";
@@ -7,19 +7,20 @@ import { unitWidth } from "@constants";
 import Component from "@components/lib/recordable";
 import ValveControl from "@components/valveControl";
 import levelData1 from "../levelData/levelData1";
+import matcap_level0_2 from "../assets/matcap/matcap_level0_2.png";
 import Level from "./lib/level";
+import MoveControl from "@components/moveControl";
 export default class Level2 extends Level {
   isTrigger1Trigged = false;
   isTrigger2Trigged = false;
 
   init() {
-    this.loadDataScene('');
-    // this.initAda();
-    // this.setSceneLook();
+    this.loadDataScene("");
+    this.initAda();
+    this.setSceneLook();
 
-    // this.hiddenMaskComponents();
-    // this.configAnimation();
-    // this.triggerAnimation();
+    this.configAnimation();
+    this.triggerAnimation();
   }
   initAda() {
     const initPath = Paths.find(
@@ -35,62 +36,151 @@ export default class Level2 extends Level {
     movingPath.setAdaOn(initPath);
   }
   setSceneLook() {
-    // 设置中间草地颜色
-    const center_grass = getCompFromFlatedArrByName("center_grass");
-    const material1 = new MeshBasicMaterial({ color: 0xc4d449 });
-    center_grass.userData.planeMesh.material = material1;
-  }
-  hiddenMaskComponents() {
-    const mask_1 = getCompFromFlatedArrByName("mask_1");
-    const mask_2 = getCompFromFlatedArrByName("mask_2");
-    mask_1.visible = false;
-    mask_2.visible = false;
-  }
-  showMask1Components() {
-    const mask_1 = getCompFromFlatedArrByName("mask_1");
-    mask_1.visible = true;
-  }
-  showMask2Components() {
-    const mask_2 = getCompFromFlatedArrByName("mask_2");
-    mask_2.visible = true;
+    scene.background = new Color(0xfeffbd);
+    const moveControl0 = getCompFromFlatedArrByName(
+      "moveControl0"
+    ) as MoveControl;
+    const moveControl1 = getCompFromFlatedArrByName(
+      "moveControl0"
+    ) as MoveControl;
+    const moveControl2 = getCompFromFlatedArrByName(
+      "moveControl0"
+    ) as MoveControl;
+    moveControl0.setProgramProps({
+      plugMatcap: matcap_level0_2,
+    });
+    moveControl1.setProgramProps({
+      plugMatcap: matcap_level0_2,
+    });
+    moveControl2.setProgramProps({
+      plugMatcap: matcap_level0_2,
+    });
   }
   configAnimation() {
-    const rotationControl: any = getCompFromFlatedArrByName("rotationControl");
-    const centerRotable: Object3D | undefined =
-      getCompFromFlatedArrByName("centerRotable");
-    if (!(rotationControl && centerRotable)) {
+    this.configAnimation0();
+    this.configAnimation1();
+    this.configAnimation2();
+  }
+  configAnimation0() {
+    const moveControl0: any = getCompFromFlatedArrByName("moveControl0");
+    const moveGroup0 = getCompFromFlatedArrByName("moveGroup0") as MoveControl;
+    if (!(moveControl0 && moveGroup0)) {
       return;
     }
-    rotationControl.onRotate = (axis: Vector3, angle: number) => {
-      if (centerRotable) {
-        centerRotable.rotateOnAxis(axis, angle);
+    moveControl0.onMove = (axis: Vector3, dl: Vector3) => {
+      if (moveGroup0) {
+        dl.projectOnVector(new Vector3(0, 0, 1));
+        const newP = new Vector3().copy(moveGroup0.position).add(dl);
+        newP.clamp(
+          new Vector3(newP.x, newP.y, -unitWidth * 8.5),
+          new Vector3(newP.x, newP.y, -unitWidth * 2.5)
+        );
+        moveGroup0.position.copy(newP);
       }
     };
-    rotationControl.onRotated = (axis: Vector3, totalAngle: number) => {
-      const left = totalAngle % (Math.PI / 2);
-      let addonAngle = 0;
-      if (centerRotable) {
-        if (Math.abs(left) > Math.PI / 4) {
-          addonAngle = Math.PI / 2 - Math.abs(left);
-        } else {
-          addonAngle = -Math.abs(left);
-        }
-        addonAngle *= totalAngle > 0 ? 1 : -1;
+    moveControl0.onMoved = (axis: Vector3, totalMovement: Vector3) => {
+      if (moveGroup0) {
+        const moveInitWorldPosition = moveControl0.moveInitWorldPosition!;
+        const newWorldP = new Vector3();
+        moveControl0.getWorldPosition(newWorldP);
+        const gWorldP = new Vector3();
+        moveGroup0.getWorldPosition(gWorldP);
+        const subVector = newWorldP.sub(moveInitWorldPosition);
+        const newZ = Math.round(subVector.z / unitWidth) * unitWidth;
 
-        const caliQuat = new Quaternion();
-        caliQuat.setFromAxisAngle(axis, addonAngle);
-
-        const endQuat = centerRotable.quaternion.clone();
-        const startQuat = centerRotable.quaternion.clone();
-        endQuat.premultiply(caliQuat);
+        const targetV = new Vector3()
+          .copy(moveGroup0.position)
+          .sub(subVector)
+          .add(new Vector3(0, 0, newZ));
         animate({
-          from: startQuat,
-          to: endQuat,
+          from: moveGroup0.position,
+          to: targetV,
           duration: 200,
-          onUpdate: (latest: any) => {
-            centerRotable.quaternion.copy(
-              new Quaternion().set(latest._x, latest._y, latest._z, latest._w)
-            );
+          onUpdate: (latest) => {
+            moveGroup0.position.copy(latest);
+          },
+        });
+      }
+    };
+  }
+  configAnimation1() {
+    const moveControl1: any = getCompFromFlatedArrByName("moveControl1");
+    const moveGroup1 = getCompFromFlatedArrByName("moveGroup1") as MoveControl;
+    if (!(moveControl1 && moveGroup1)) {
+      return;
+    }
+    moveControl1.onMove = (axis: Vector3, dl: Vector3) => {
+      if (moveGroup1) {
+        dl.projectOnVector(new Vector3(0, 0, 1));
+        const newP = new Vector3().copy(moveGroup1.position).add(dl);
+        newP.clamp(
+          new Vector3(newP.x, newP.y, -unitWidth * 8.5),
+          new Vector3(newP.x, newP.y, -unitWidth * 0.5)
+        );
+        moveGroup1.position.copy(newP);
+      }
+    };
+    moveControl1.onMoved = (axis: Vector3, totalMovement: Vector3) => {
+      if (moveGroup1) {
+        const moveInitWorldPosition = moveControl1.moveInitWorldPosition!;
+        const newWorldP = new Vector3();
+        moveControl1.getWorldPosition(newWorldP);
+        const gWorldP = new Vector3();
+        moveGroup1.getWorldPosition(gWorldP);
+        const subVector = newWorldP.sub(moveInitWorldPosition);
+        const newZ = Math.round(subVector.z / unitWidth) * unitWidth;
+
+        const targetV = new Vector3()
+          .copy(moveGroup1.position)
+          .sub(subVector)
+          .add(new Vector3(0, 0, newZ));
+        animate({
+          from: moveGroup1.position,
+          to: targetV,
+          duration: 200,
+          onUpdate: (latest) => {
+            moveGroup1.position.copy(latest);
+          },
+        });
+      }
+    };
+  }
+  configAnimation2() {
+    const moveControl2: any = getCompFromFlatedArrByName("moveControl2");
+    const moveGroup2 = getCompFromFlatedArrByName("moveGroup2") as MoveControl;
+    if (!(moveControl2 && moveGroup2)) {
+      return;
+    }
+    moveControl2.onMove = (axis: Vector3, dl: Vector3) => {
+      if (moveGroup2) {
+        dl.projectOnVector(new Vector3(0, 1, 0));
+        const newP = new Vector3().copy(moveGroup2.position).add(dl);
+        newP.clamp(
+          new Vector3(newP.x, -unitWidth * 4, newP.z),
+          new Vector3(newP.x, 0, newP.z)
+        );
+        moveGroup2.position.copy(newP);
+      }
+    };
+    moveControl2.onMoved = (axis: Vector3, totalMovement: Vector3) => {
+      if (moveGroup2) {
+        const moveInitWorldPosition = moveControl2.moveInitWorldPosition!;
+        const newWorldP = new Vector3();
+        moveControl2.getWorldPosition(newWorldP);
+        const gWorldP = new Vector3();
+        moveGroup2.getWorldPosition(gWorldP);
+        const subVector = newWorldP.sub(moveInitWorldPosition);
+        const newY = Math.round(subVector.y / unitWidth) * unitWidth;
+        const targetV = new Vector3()
+          .copy(moveGroup2.position)
+          .sub(subVector)
+          .add(new Vector3(0, newY, 0));
+        animate({
+          from: moveGroup2.position,
+          to: targetV,
+          duration: 200,
+          onUpdate: (latest) => {
+            moveGroup2.position.copy(latest);
           },
         });
       }
@@ -98,62 +188,19 @@ export default class Level2 extends Level {
   }
   triggerAnimation() {
     this.trigger1Animation();
-    this.trigger2Animation();
-    this.trigger3Animation();
+    // this.trigger2Animation();
+    // this.trigger3Animation();
   }
   trigger1Animation() {
-    const trigger_1: any = getCompFromFlatedArrByName("trigger_1");
-    const site_1 = getCompFromFlatedArrByName("site_1") as Site;
-    trigger_1.onTrigger = () => {
-      if (this.isTrigger1Trigged) {
+    const tp0: any = getCompFromFlatedArrByName("tp0");
+    const tp0_target: any = getCompFromFlatedArrByName("tp0_target");
+    tp0.onTrigger = () => {
+      if (!tp0_target) {
         return;
       }
-      if (!site_1) {
-        return;
-      }
-      this.isTrigger1Trigged = true;
-      site_1.onTrigger();
-
-      const movableCube_1: any = getCompFromFlatedArrByName("movableCube_1");
-      const movableCube_2: any = getCompFromFlatedArrByName("movableCube_2");
-      const movableCube_3: any = getCompFromFlatedArrByName("movableCube_3");
-      const movableCube_4: any = getCompFromFlatedArrByName("movableCube_4");
-      const movableCube_5: any = getCompFromFlatedArrByName("movableCube_5");
-      const movableCube_6: any = getCompFromFlatedArrByName("movableCube_6");
-      const cubes = [
-        movableCube_1,
-        movableCube_2,
-        movableCube_3,
-        movableCube_4,
-        movableCube_5,
-        movableCube_6,
-      ];
-
-      const moveCube = (cube: Component) => {
-        const fromP = new Vector3().copy(cube.position);
-        const toP = new Vector3()
-          .copy(cube.position)
-          .add(new Vector3(0, unitWidth * 3, 0));
-        animate({
-          from: fromP,
-          to: toP,
-          duration: 200,
-          onUpdate: (latest: any) => {
-            cube.position.copy(latest);
-          },
-          onComplete: moveNext,
-        });
-      };
-
-      const moveNext = () => {
-        const nextCube = cubes.shift();
-        if (nextCube) {
-          moveCube(nextCube);
-        } else {
-          this.showMask1Components();
-        }
-      };
-      moveNext();
+      // tp0_target.getWorldPosition(ada.position);
+      movingPath.setAdaOn(tp0_target);
+      ada.position.copy(new Vector3());
     };
   }
   trigger2Animation() {
@@ -200,7 +247,7 @@ export default class Level2 extends Level {
         });
       };
       move();
-      this.showMask2Components();
+      // this.showMask2Components();
     };
     // trigger_2.onTrigger = () => {};
   }
