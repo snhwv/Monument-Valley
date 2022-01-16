@@ -44,6 +44,7 @@ abstract class Component extends Group {
   }
 
   changeProps(...args: any) {
+    args = JSON.parse(JSON.stringify(args));
     const childrenLength = this.children.length;
 
     for (let i = 0; i < childrenLength; i++) {
@@ -73,7 +74,9 @@ abstract class Component extends Group {
     materialColor?: number | string;
   }) {
     const { textureSrc, materialColor } = params || {};
-    const texture = new TextureLoader().load(textureSrc || Component.defaultMatcap);
+    const texture = new TextureLoader().load(
+      textureSrc || Component.defaultMatcap
+    );
 
     const obj = this.userData.props?.[0];
     const objMaterialColor = obj?.materialColor || "";

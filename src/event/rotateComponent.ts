@@ -1,5 +1,5 @@
-import { orbitControls } from "@env";
-import { Vector3 } from "three";
+import { orbitControls, scene } from "@env";
+import { ArrowHelper, Vector3 } from "three";
 import Rotable from "@components/lib/rotable";
 import { IpinterdownHander, store } from "./store";
 const rotationPointer = new Vector3();
@@ -13,7 +13,7 @@ export const setRotation: IpinterdownHander = ({ raycaster, next }) => {
       target
     );
 
-    target.projectOnPlane(store.rotationComponent.userData.rotablePlane.normal);
+    target.sub((store.rotationComponent as any).worldPosition);
 
     let angle = rotationPointer.angleTo(target);
 
@@ -57,9 +57,7 @@ export const setRotationPrevPoint: IpinterdownHander = ({
       target
     );
 
-    target.projectOnPlane(mainGroupIntersect.userData.rotablePlane.normal);
-
-    rotationPointer.copy(target);
+    rotationPointer.subVectors(target, mainGroupIntersect.worldPosition);
     (store.rotationComponent as any)?.onRotateBegin();
   }
   next();
