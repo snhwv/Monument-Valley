@@ -8,13 +8,14 @@ import Component from "@components/lib/recordable";
 import ValveControl from "@components/valveControl";
 import levelData1 from "../levelData/levelData1";
 import matcap_level0_2 from "../assets/matcap/matcap_level0_2.png";
+import matcap_level2_0 from "../assets/matcap/matcap_level2_0.png";
 import Level from "./lib/level";
 import MoveControl from "@components/moveControl";
 export default class Level2 extends Level {
   isTrigger1Trigged = false;
-  isTrigger2Trigged = false;
 
   init() {
+    Component.defaultMatcap = matcap_level2_0;
     this.loadDataScene("");
     this.initAda();
     this.setSceneLook();
@@ -37,24 +38,25 @@ export default class Level2 extends Level {
   }
   setSceneLook() {
     scene.background = new Color(0xfeffbd);
-    const moveControl0 = getCompFromFlatedArrByName(
-      "moveControl0"
-    ) as MoveControl;
-    const moveControl1 = getCompFromFlatedArrByName(
-      "moveControl0"
-    ) as MoveControl;
-    const moveControl2 = getCompFromFlatedArrByName(
-      "moveControl0"
-    ) as MoveControl;
-    moveControl0.setProgramProps({
-      plugMatcap: matcap_level0_2,
-    });
-    moveControl1.setProgramProps({
-      plugMatcap: matcap_level0_2,
-    });
-    moveControl2.setProgramProps({
-      plugMatcap: matcap_level0_2,
-    });
+    // const moveControl0 = getCompFromFlatedArrByName(
+    //   "moveControl0"
+    // ) as MoveControl;
+    // const moveControl1 = getCompFromFlatedArrByName(
+    //   "moveControl0"
+    // ) as MoveControl;
+    // const moveControl2 = getCompFromFlatedArrByName(
+    //   "moveControl0"
+    // ) as MoveControl;
+    // matcap_level2_0
+    // moveControl0.setProgramProps({
+    //   plugMatcap: matcap_level0_2,
+    // });
+    // moveControl1.setProgramProps({
+    //   plugMatcap: matcap_level0_2,
+    // });
+    // moveControl2.setProgramProps({
+    //   plugMatcap: matcap_level0_2,
+    // });
   }
   configAnimation() {
     this.configAnimation0();
@@ -188,8 +190,7 @@ export default class Level2 extends Level {
   }
   triggerAnimation() {
     this.trigger1Animation();
-    // this.trigger2Animation();
-    // this.trigger3Animation();
+    this.trigger2Animation();
   }
   trigger1Animation() {
     const tp0: any = getCompFromFlatedArrByName("tp0");
@@ -198,109 +199,34 @@ export default class Level2 extends Level {
       if (!tp0_target) {
         return;
       }
-      // tp0_target.getWorldPosition(ada.position);
       movingPath.setAdaOn(tp0_target);
       ada.position.copy(new Vector3());
     };
   }
   trigger2Animation() {
-    const trigger_2: any = getCompFromFlatedArrByName("trigger_2");
-    const center_tree: any = getCompFromFlatedArrByName("center_tree");
-    const site_2 = getCompFromFlatedArrByName("site_2") as Site;
-    trigger_2.onTrigger = () => {
-      if (this.isTrigger2Trigged) {
+    const trigger0: any = getCompFromFlatedArrByName("trigger0");
+    const rotable0 = getCompFromFlatedArrByName("rotable0");
+    const rotable1 = getCompFromFlatedArrByName("rotable1");
+    const site0 = getCompFromFlatedArrByName("site0") as Site;
+    trigger0.onTrigger = () => {
+      if (this.isTrigger1Trigged) {
         return;
       }
-      if (!site_2) {
+      if (!site0) {
         return;
       }
-      this.isTrigger2Trigged = true;
+      this.isTrigger1Trigged = true;
 
-      site_2.onTrigger();
-
-      const centerMove = getCompFromFlatedArrByName("centerMove") as Component;
-
-      const movePositionOffsetList = [unitWidth * 3, unitWidth * 3];
-      const move = () => {
-        const next = movePositionOffsetList.shift();
-        if (!next) {
-          return;
-        }
-
-        const fromP = new Vector3().copy(centerMove.position);
-        const toP = new Vector3()
-          .copy(centerMove.position)
-          .add(new Vector3(0, next, 0));
-        animate({
-          from: fromP,
-          to: toP,
-          duration: 200,
-          onUpdate: (latest: any) => {
-            centerMove.position.copy(latest);
-          },
-          onComplete: () => {
-            if (movePositionOffsetList.length) {
-              center_tree && centerMove && centerMove.attach(center_tree);
-            }
-            move();
-          },
-        });
-      };
-      move();
-      // this.showMask2Components();
-    };
-    // trigger_2.onTrigger = () => {};
-  }
-  trigger3Animation() {
-    const rotationControl = getCompFromFlatedArrByName(
-      "rotationControl"
-    ) as ValveControl;
-    const rotate_close: any = getCompFromFlatedArrByName("rotate_close");
-    const rotate_close1: any = getCompFromFlatedArrByName("rotate_close1");
-    const rotate_open: any = getCompFromFlatedArrByName("rotate_open");
-    const rotate_open1: any = getCompFromFlatedArrByName("rotate_open1");
-    const rotate_open2: any = getCompFromFlatedArrByName("rotate_open2");
-    const rotate_open3: any = getCompFromFlatedArrByName("rotate_open3");
-    const rotate_open4: any = getCompFromFlatedArrByName("rotate_open4");
-    const rotate_open5: any = getCompFromFlatedArrByName("rotate_open5");
-    if (
-      !(
-        rotationControl &&
-        rotate_close &&
-        rotate_close1 &&
-        rotate_open &&
-        rotate_open1 &&
-        rotate_open2 &&
-        rotate_open3 &&
-        rotate_open4 &&
-        rotate_open5
-      )
-    ) {
-      return;
-    }
-    rotate_close.onTrigger = () => {
-      rotationControl.disable();
-    };
-    rotate_close1.onTrigger = () => {
-      rotationControl.disable();
-    };
-    rotate_open.onTrigger = () => {
-      rotationControl.enable();
-    };
-    rotate_open1.onTrigger = () => {
-      rotationControl.enable();
-    };
-    rotate_open2.onTrigger = () => {
-      rotationControl.enable();
-    };
-    rotate_open3.onTrigger = () => {
-      rotationControl.enable();
-    };
-    rotate_open4.onTrigger = () => {
-      rotationControl.enable();
-    };
-    rotate_open5.onTrigger = () => {
-      rotationControl.enable();
+      site0.onTrigger();
+      animate({
+        from: 0,
+        to: Math.PI / 2,
+        duration: 200,
+        onUpdate: (latest: any) => {
+          rotable0.rotation.y = -latest;
+          rotable1.rotation.y = latest;
+        },
+      });
     };
   }
 }

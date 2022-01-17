@@ -1,20 +1,25 @@
 import { unitWidth } from "@constants";
 import {
   BoxBufferGeometry,
+  Color,
   ExtrudeGeometry,
   Matrix4,
   Mesh,
   MeshLambertMaterial,
+  MeshMatcapMaterial,
   OctahedronGeometry,
   PlaneGeometry,
   ShaderMaterial,
+  ShaderMaterialParameters,
   Shape,
+  TextureLoader,
   Vector2,
   Vector3,
 } from "three";
 import { CSG } from "three-csg-ts";
 import Component from "./lib/recordable";
 import matcap2 from "../assets/matcap/matcap2.png";
+import texture1 from "../assets/texture/texture1.png";
 import { animate, linear } from "popmotion";
 
 // 顶
@@ -29,7 +34,6 @@ class FlatRoof extends Component {
   generateElement(): void {
     this.hatHeight = unitWidth * 2;
     this.generateHat();
-    this.generatePedestal();
     this.generateFlag();
   }
 
@@ -53,12 +57,49 @@ class FlatRoof extends Component {
 
   generateHat() {
     var shape = new Shape();
-    const p1 = new Vector2(-unitWidth, 18);
-    const p2 = new Vector2(0, 10);
-    const p3 = new Vector2(0, this.hatHeight);
+    const p1 = new Vector2(
+      unitWidth * 1.5 - unitWidth * 0.1,
+      unitWidth * 2 - unitWidth / 8 - unitWidth * 0.5
+    );
+    const p2 = new Vector2(
+      unitWidth * 1.5 - unitWidth * 0.44,
+      unitWidth * 2 - unitWidth / 8 - unitWidth * 0.32
+    );
 
-    shape.moveTo(-unitWidth * 0.4, 0);
-    shape.bezierCurveTo(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+    shape.moveTo(0, unitWidth * 3.5);
+    shape.lineTo(3, unitWidth * 3.5 - unitWidth);
+    shape.lineTo(0, unitWidth * 3.5 - unitWidth);
+
+    shape.lineTo(4, unitWidth * 2.5 - 4);
+
+    shape.lineTo(0, unitWidth * 2);
+    shape.lineTo(unitWidth / 8, unitWidth * 2 - unitWidth / 8);
+    shape.bezierCurveTo(
+      p1.x,
+      p1.y,
+      p2.x,
+      p2.y,
+      unitWidth * 1.5,
+      unitWidth * 2 - unitWidth
+    );
+
+    const p3 = new Vector2(unitWidth * 3 - 8, 8);
+    const p4 = new Vector2(unitWidth * 3, 8);
+    shape.bezierCurveTo(p3.x, p3.y, p4.x, p4.y, unitWidth * 3, 0);
+
+    shape.lineTo(-unitWidth * 3, 0);
+
+    const reflectP3 = new Vector2().copy(p3).multiply(new Vector2(-1, 1));
+    const reflectP4 = new Vector2().copy(p4).multiply(new Vector2(-1, 1));
+
+    shape.bezierCurveTo(
+      reflectP4.x,
+      reflectP4.y,
+      reflectP3.x,
+      reflectP3.y,
+      -unitWidth * 1.5,
+      unitWidth * 2 - unitWidth
+    );
     const reflectP1 = new Vector2().copy(p1).multiply(new Vector2(-1, 1));
     const reflectP2 = new Vector2().copy(p2).multiply(new Vector2(-1, 1));
 
@@ -67,32 +108,29 @@ class FlatRoof extends Component {
       reflectP2.y,
       reflectP1.x,
       reflectP1.y,
-      unitWidth * 0.4,
-      0
+      -unitWidth / 8,
+      unitWidth * 2 - unitWidth / 8
     );
 
-    shape.lineTo(-unitWidth * 0.4, 0);
-
-    const depth = unitWidth * 2;
+    shape.lineTo(0, unitWidth * 2);
+    shape.lineTo(-4, unitWidth * 2.5 - 4);
+    shape.lineTo(0, unitWidth * 3.5 - unitWidth);
+    shape.lineTo(-3, unitWidth * 3.5 - unitWidth);
+    shape.lineTo(0, unitWidth * 3.5);
+    const depth = unitWidth * 6;
     var extrudeSettings = {
       depth,
       bevelEnabled: false,
-      curveSegments: 8,
+      curveSegments: 12,
     };
 
     var verticalGeometry = new ExtrudeGeometry(shape, extrudeSettings);
 
     const cubem = new Matrix4();
-    const scaleFactor = 1.3;
+    const scaleFactor = 1;
     cubem
       .makeScale(scaleFactor, scaleFactor, scaleFactor)
-      .premultiply(
-        new Matrix4().makeTranslation(
-          0,
-          -unitWidth / 2 + 1,
-          -unitWidth * scaleFactor
-        )
-      );
+      .premultiply(new Matrix4().makeTranslation(0, 0, -unitWidth * 3));
     verticalGeometry.applyMatrix4(cubem);
 
     var horizontalGeometry = verticalGeometry.clone();
@@ -107,24 +145,68 @@ class FlatRoof extends Component {
       new Mesh(verticalGeometry, cubeMaterial),
       new Mesh(horizontalGeometry, cubeMaterial)
     );
+    result.scale.set(1 / 6, 1 / 3, 1 / 6);
     this.add(result);
 
+    // this.add(new Mesh(verticalGeometry, cubeMaterial));
     // this.add(new Mesh(horizontalGeometry, cubeMaterial));
   }
 
   generateFlag() {
-    const uniforms = {
+    const width = 26;
+    const height = 2;
+    const geometry = new PlaneGeometry(width, height, 20, 2);
+    const material = this.getFlagMaterial({
       fogColor: { value: new Vector3(65 / 255, 187 / 255, 175 / 255) },
       time: { value: 0.0 },
-      height: { value: 8.0 },
-      width: { value: 50.0 },
-    };
+      height: { value: 2.0 },
+      width: { value: 26.0 },
+    });
+    const material1 = this.getFlagMaterial({
+      fogColor: { value: new Vector3(65 / 255, 187 / 255, 175 / 255) },
+      time: { value: 1.0 },
+      height: { value: 2.0 },
+      width: { value: 26.0 },
+    });
 
-    const width = 50;
-    const height = 8;
-    uniforms.width.value = width;
-    uniforms.height.value = height;
-    const geometry = new PlaneGeometry(width, height, 20, 2);
+    const plane = new Mesh(geometry, material);
+    plane.translateX(width / 2);
+    plane.translateY(unitWidth + 3);
+
+    const planeTwo = plane.clone();
+    planeTwo.translateY(2);
+
+    planeTwo.material = material1;
+
+    animate({
+      from: 0,
+      to: 1,
+      duration: 3000,
+      ease: linear,
+      repeat: Infinity,
+      onUpdate: () => {
+        material.uniforms["time"].value =
+          (material.uniforms["time"].value - 0.1) % (Math.PI * 2);
+        material1.uniforms["time"].value =
+          (material1.uniforms["time"].value - 0.1) % (Math.PI * 2);
+      },
+    });
+
+    this.add(plane);
+    this.add(planeTwo);
+
+    const cubeMaterial = this.getDefaultMaterial({ textureSrc: matcap2 });
+    const size = 1;
+    const geo = new OctahedronGeometry(size);
+    geo.translate(0, unitWidth + 7, 0);
+    geo.rotateY(Math.PI / 4);
+
+    const octMesh = new Mesh(geo, cubeMaterial);
+    this.add(octMesh);
+  }
+
+  getFlagMaterial(uniforms: ShaderMaterialParameters["uniforms"]) {
+   
     const material = new ShaderMaterial({
       uniforms: uniforms,
       vertexShader: `
@@ -157,32 +239,7 @@ class FlatRoof extends Component {
 
 			}`,
     });
-
-    animate({
-      from: 0,
-      to: 1,
-      duration: 3000,
-      ease: linear,
-      repeat: Infinity,
-      onUpdate: () => {
-        uniforms["time"].value = (uniforms["time"].value - 0.1) % (Math.PI * 2);
-      },
-    });
-
-    const plane = new Mesh(geometry, material);
-    plane.translateX(width / 2);
-    plane.translateY(this.hatHeight + height - 2);
-
-    this.add(plane);
-
-    const cubeMaterial = this.getDefaultMaterial({ textureSrc: matcap2 });
-    const size = 2;
-    const geo = new OctahedronGeometry(size);
-    geo.translate(0, this.hatHeight + height + size * 2, 0);
-    geo.rotateY(Math.PI / 4);
-
-    const octMesh = new Mesh(geo, cubeMaterial);
-    this.add(octMesh);
+    return material;
   }
 }
 (FlatRoof as any).cnName = "平屋顶";
