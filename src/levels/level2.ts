@@ -10,13 +10,15 @@ import levelData1 from "../levelData/levelData1";
 import matcap_level0_2 from "../assets/matcap/matcap_level0_2.png";
 import matcap_level2_0 from "../assets/matcap/matcap_level2_0.png";
 import Level from "./lib/level";
+import levelData2 from "../levelData/levelData2";
 import MoveControl from "@components/moveControl";
 export default class Level2 extends Level {
   isTrigger1Trigged = false;
 
   init() {
     Component.defaultMatcap = matcap_level2_0;
-    this.loadDataScene("");
+    Component.FOG_COLOR = new Vector3(1, 1, 190 / 255);
+    this.loadDataScene(levelData2);
     this.initAda();
     this.setSceneLook();
 

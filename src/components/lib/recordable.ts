@@ -3,10 +3,9 @@ import { updateSceneTree } from "../../layout/SceneTree";
 import {
   Color,
   Group,
-  MeshLambertMaterial,
   MeshMatcapMaterial,
-  MeshStandardMaterial,
   TextureLoader,
+  Vector3,
 } from "three";
 import { v4 } from "uuid";
 import merge from "lodash.merge";
@@ -67,6 +66,9 @@ abstract class Component extends Group {
   }
 
   static defaultMatcap = matcap1;
+  static FOG_COLOR?: Vector3 = new Vector3(1.0, 0, 0);
+  static FOG_LINEAR_FACTOR: number = 32.01;
+  static FOG_LINEAR_OFFSET: number = -0.01;
 
   getDefaultMaterial(params?: {
     textureSrc?: string;
@@ -86,6 +88,17 @@ abstract class Component extends Group {
     material.defines["SHOW_SHADOW"] = !!obj?.showShadow;
     material.defines["SHADOW_OFFSET"] = obj?.shadowOffset || 0.8;
     material.defines["SHADOW_SLOPE"] = obj?.slope || 0.2;
+
+    if (Component.FOG_COLOR) {
+      material.defines["FOG_COLOR"] = 1;
+      material.defines["FOG_COLOR_R"] = Component.FOG_COLOR.x;
+      material.defines["FOG_COLOR_G"] = Component.FOG_COLOR.y;
+      material.defines["FOG_COLOR_B"] = Component.FOG_COLOR.z;
+
+      material.defines["FOG_LINEAR_FACTOR"] = Component.FOG_LINEAR_FACTOR;
+      material.defines["FOG_LINEAR_OFFSET"] = Component.FOG_LINEAR_OFFSET;
+    }
+
     if (Number(materialColor) || Number(objMaterialColor)) {
       material.color = new Color(
         Number(materialColor) || Number(objMaterialColor)
@@ -95,6 +108,7 @@ abstract class Component extends Group {
       shader.vertexShader = `#define MATCAP
       varying vec3 vViewPosition;
       varying vec4 vPosition;
+      varying vec4 vglobalPosition;
       #include <common>
       #include <uv_pars_vertex>
       #include <color_pars_vertex>
@@ -124,6 +138,7 @@ abstract class Component extends Group {
         #include <fog_vertex>
         vViewPosition = - mvPosition.xyz;
         vPosition = vec4( position, 1.0 );
+        vglobalPosition = modelMatrix * vec4( position, 1.0 );
       }`;
       shader.fragmentShader = `#define MATCAP
       uniform vec3 diffuse;
@@ -131,6 +146,7 @@ abstract class Component extends Group {
       uniform sampler2D matcap;
       varying vec3 vViewPosition;
       varying vec4 vPosition;
+      varying vec4 vglobalPosition;
       #include <common>
       #include <dithering_pars_fragment>
       #include <color_pars_fragment>
@@ -173,7 +189,16 @@ abstract class Component extends Group {
         #else
           float factor = 1.0;
         #endif
+        
         vec3 outgoingLight = diffuseColor.rgb * matcapColor.rgb * vec3(factor,factor,factor);
+
+        #ifdef FOG_COLOR
+        vec3 bottomColor = vec3(FOG_COLOR_R, FOG_COLOR_G, FOG_COLOR_B);
+        vec3 subColor = outgoingLight - bottomColor;
+
+        outgoingLight = bottomColor + subColor * clamp(0.0, (vglobalPosition.y + FOG_LINEAR_OFFSET) / FOG_LINEAR_FACTOR , 1.0);
+        #endif
+        
         #include <output_fragment>
         #include <tonemapping_fragment>
         #include <encodings_fragment>
