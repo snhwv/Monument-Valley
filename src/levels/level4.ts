@@ -12,21 +12,18 @@ import matcap_level2_0 from "../assets/matcap/matcap_level2_0.png";
 import Level from "./lib/level";
 import levelData3 from "../levelData/levelData3";
 import MoveControl from "@components/moveControl";
-export default class Level3 extends Level {
+export default class Level4 extends Level {
   isTrigger1Trigged = false;
 
   init() {
     Component.defaultMatcap = matcap_level2_0;
-    Component.FOG_COLOR = new Vector3(7 / 255, 7 / 255, 7 / 255);
-    // Component.FOG_COLOR = undefined;
-    Component.FOG_LINEAR_OFFSET = unitWidth * 4 + 0.01;
-    Component.FOG_LINEAR_FACTOR = 90.001;
-    this.loadDataScene(levelData3);
+    Component.FOG_COLOR = undefined;
+    this.loadDataScene('');
     this.initAda();
-    this.setSceneLook();
+    // this.setSceneLook();
 
-    this.configAnimation();
-    this.triggerAnimation();
+    // this.configAnimation();
+    // this.triggerAnimation();
   }
   initAda() {
     const initPath = Paths.find(
@@ -42,7 +39,7 @@ export default class Level3 extends Level {
     movingPath.setAdaOn(initPath);
   }
   setSceneLook() {
-    scene.background = new Color(0x070707);
+    scene.background = new Color(0xfeffbd);
     // const moveControl0 = getCompFromFlatedArrByName(
     //   "moveControl0"
     // ) as MoveControl;
@@ -147,10 +144,10 @@ export default class Level3 extends Level {
         const newP1 = new Vector3().copy(triggerMoveGroup1.position).sub(dl);
         newP.clamp(
           new Vector3(newP.x, -unitWidth * 2, newP.z),
-          new Vector3(newP.x, unitWidth * 7, newP.z)
+          new Vector3(newP.x, unitWidth * 6, newP.z)
         );
         newP1.clamp(
-          new Vector3(newP1.x, -unitWidth * 7, newP1.z),
+          new Vector3(newP1.x, -unitWidth * 6, newP1.z),
           new Vector3(newP1.x, unitWidth * 2, newP1.z)
         );
         moveGroup1.position.copy(newP);
@@ -195,8 +192,7 @@ export default class Level3 extends Level {
   }
   triggerAnimation() {
     this.trigger1Animation();
-    this.trigger2Animation();
-    this.trigger3Animation();
+    // this.trigger2Animation();
   }
   trigger1Animation() {
     const trigger0: any = getCompFromFlatedArrByName("trigger0");
@@ -245,87 +241,34 @@ export default class Level3 extends Level {
           trigger0MoveGroup2.position.copy(latest);
         },
       });
+      // movingPath.setAdaOn(tp0_target);
+      // ada.position.copy(new Vector3());
     };
   }
   trigger2Animation() {
-    const trigger1: any = getCompFromFlatedArrByName("trigger1");
-    const trigger0MoveGroup0: any =
-      getCompFromFlatedArrByName("trigger0MoveGroup0");
-    const trigger0MoveGroup1: any =
-      getCompFromFlatedArrByName("trigger0MoveGroup1");
-    const trigger0MoveGroup3: any =
-      getCompFromFlatedArrByName("trigger0MoveGroup3");
-    trigger1.onTrigger = () => {
-      if (!(trigger0MoveGroup0 && trigger0MoveGroup1 && trigger0MoveGroup3)) {
+    const trigger0: any = getCompFromFlatedArrByName("trigger0");
+    const rotable0 = getCompFromFlatedArrByName("rotable0");
+    const rotable1 = getCompFromFlatedArrByName("rotable1");
+    const site0 = getCompFromFlatedArrByName("site0") as Site;
+    trigger0.onTrigger = () => {
+      if (this.isTrigger1Trigged) {
         return;
       }
-      const target0 = new Vector3()
-        .copy(trigger0MoveGroup0.position)
-        .add(new Vector3(0, -unitWidth * 15, 0));
-      animate({
-        from: trigger0MoveGroup0.position,
-        to: target0,
-        duration: 200,
-        onUpdate: (latest) => {
-          trigger0MoveGroup0.position.copy(latest);
-        },
-      });
-
-      const target1 = new Vector3()
-        .copy(trigger0MoveGroup1.position)
-        .add(new Vector3(0, -unitWidth * 14, 0));
-      animate({
-        from: trigger0MoveGroup1.position,
-        to: target1,
-        duration: 200,
-        onUpdate: (latest) => {
-          trigger0MoveGroup1.position.copy(latest);
-        },
-      });
-
-      const target2 = new Vector3()
-        .copy(trigger0MoveGroup3.position)
-        .add(new Vector3(0, -unitWidth * 14, 0));
-      animate({
-        from: trigger0MoveGroup3.position,
-        to: target2,
-        duration: 200,
-        onUpdate: (latest) => {
-          trigger0MoveGroup3.position.copy(latest);
-        },
-      });
-    };
-  }
-  trigger3Animation() {
-    const trigger2: any = getCompFromFlatedArrByName("trigger2");
-    const fallCube0: any = getCompFromFlatedArrByName("fallCube0");
-    const fallCube1: any = getCompFromFlatedArrByName("fallCube1");
-    const fallCube2: any = getCompFromFlatedArrByName("fallCube2");
-    const fallCube3: any = getCompFromFlatedArrByName("fallCube3");
-    const fallCube4: any = getCompFromFlatedArrByName("fallCube4");
-    trigger2.onTrigger = () => {
-      if (!(fallCube0 && fallCube1 && fallCube2 && fallCube3 && fallCube4)) {
+      if (!site0) {
         return;
       }
-      const fall = (fallCube: Object3D, delay: number) => {
-        const target0 = new Vector3()
-          .copy(fallCube.position)
-          .add(new Vector3(0, -unitWidth * 15, 0));
-        animate({
-          from: fallCube.position,
-          to: target0,
-          elapsed: delay,
-          duration: 200,
-          onUpdate: (latest) => {
-            fallCube.position.copy(latest);
-          },
-        });
-      };
-      fall(fallCube0, -0);
-      fall(fallCube1, -200);
-      fall(fallCube2, -400);
-      fall(fallCube3, -600);
-      fall(fallCube4, -800);
+      this.isTrigger1Trigged = true;
+
+      site0.onTrigger();
+      animate({
+        from: 0,
+        to: Math.PI / 2,
+        duration: 200,
+        onUpdate: (latest: any) => {
+          rotable0.rotation.y = -latest;
+          rotable1.rotation.y = latest;
+        },
+      });
     };
   }
 }
