@@ -6,8 +6,8 @@ import { Group, Matrix4 } from "three";
 export default class Level {
   constructor() {}
   loadDataScene(data: string) {
-    const mainGroupChildren = localStorage.getItem("mainGroupChildren");
-    // const mainGroupChildren = data;
+    // const mainGroupChildren = localStorage.getItem("mainGroupChildren");
+    const mainGroupChildren = data;
     // const mainGroupChildren = '';
     if (mainGroupChildren) {
       const parsedMainGroupChildren = JSON.parse(mainGroupChildren);

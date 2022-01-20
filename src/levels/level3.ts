@@ -14,6 +14,9 @@ import levelData3 from "../levelData/levelData3";
 import MoveControl from "@components/moveControl";
 export default class Level3 extends Level {
   isTrigger1Trigged = false;
+  isTrigger2Trigged = false;
+  isTrigger3Trigged = false;
+  isTrigger4Trigged = false;
 
   init() {
     Component.defaultMatcap = matcap_level2_0;
@@ -43,25 +46,8 @@ export default class Level3 extends Level {
   }
   setSceneLook() {
     scene.background = new Color(0x070707);
-    // const moveControl0 = getCompFromFlatedArrByName(
-    //   "moveControl0"
-    // ) as MoveControl;
-    // const moveControl1 = getCompFromFlatedArrByName(
-    //   "moveControl0"
-    // ) as MoveControl;
-    // const moveControl2 = getCompFromFlatedArrByName(
-    //   "moveControl0"
-    // ) as MoveControl;
-    // matcap_level2_0
-    // moveControl0.setProgramProps({
-    //   plugMatcap: matcap_level0_2,
-    // });
-    // moveControl1.setProgramProps({
-    //   plugMatcap: matcap_level0_2,
-    // });
-    // moveControl2.setProgramProps({
-    //   plugMatcap: matcap_level0_2,
-    // });
+    const triggerPath = getCompFromFlatedArrByName("triggerPath");
+    triggerPath.visible = false;
   }
   configAnimation() {
     this.configAnimation0();
@@ -197,6 +183,7 @@ export default class Level3 extends Level {
     this.trigger1Animation();
     this.trigger2Animation();
     this.trigger3Animation();
+    this.trigger4Animation();
   }
   trigger1Animation() {
     const trigger0: any = getCompFromFlatedArrByName("trigger0");
@@ -207,6 +194,10 @@ export default class Level3 extends Level {
     const trigger0MoveGroup2: any =
       getCompFromFlatedArrByName("trigger0MoveGroup2");
     trigger0.onTrigger = () => {
+      if (this.isTrigger1Trigged) {
+        return;
+      }
+      this.isTrigger1Trigged = true;
       if (!(trigger0MoveGroup0 && trigger0MoveGroup1 && trigger0MoveGroup2)) {
         return;
       }
@@ -236,7 +227,7 @@ export default class Level3 extends Level {
 
       const target2 = new Vector3()
         .copy(trigger0MoveGroup2.position)
-        .add(new Vector3(0, unitWidth * 29, 0));
+        .add(new Vector3(0, unitWidth * 43, 0));
       animate({
         from: trigger0MoveGroup2.position,
         to: target2,
@@ -256,6 +247,10 @@ export default class Level3 extends Level {
     const trigger0MoveGroup3: any =
       getCompFromFlatedArrByName("trigger0MoveGroup3");
     trigger1.onTrigger = () => {
+      if (this.isTrigger2Trigged) {
+        return;
+      }
+      this.isTrigger2Trigged = true;
       if (!(trigger0MoveGroup0 && trigger0MoveGroup1 && trigger0MoveGroup3)) {
         return;
       }
@@ -304,6 +299,10 @@ export default class Level3 extends Level {
     const fallCube3: any = getCompFromFlatedArrByName("fallCube3");
     const fallCube4: any = getCompFromFlatedArrByName("fallCube4");
     trigger2.onTrigger = () => {
+      if (this.isTrigger3Trigged) {
+        return;
+      }
+      this.isTrigger3Trigged = true;
       if (!(fallCube0 && fallCube1 && fallCube2 && fallCube3 && fallCube4)) {
         return;
       }
@@ -326,6 +325,29 @@ export default class Level3 extends Level {
       fall(fallCube2, -400);
       fall(fallCube3, -600);
       fall(fallCube4, -800);
+    };
+  }
+  trigger4Animation() {
+    const trigger2: any = getCompFromFlatedArrByName("trigger3");
+    const rotateStair = getCompFromFlatedArrByName("rotateStair");
+    const triggerPath = getCompFromFlatedArrByName("triggerPath");
+    trigger2.onTrigger = () => {
+      if (this.isTrigger4Trigged) {
+        return;
+      }
+      this.isTrigger4Trigged = true;
+      if (!rotateStair) {
+        return;
+      }
+      triggerPath.visible = true;
+      animate({
+        from: 0,
+        to: Math.PI,
+        duration: 200,
+        onUpdate: (latest) => {
+          rotateStair.rotation.z = latest;
+        },
+      });
     };
   }
 }

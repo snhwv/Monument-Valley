@@ -5,7 +5,7 @@ import { createMGraph, Floyd, getPath, MGraph } from "@utils/floyd";
 import { Object3D, Vector3 } from "three";
 import { IpinterdownHander } from "./store";
 
-function generateMGraph() {
+function generateMGraph(Paths: Path[]) {
   const nodes = Paths;
   const graph: any[][] = [];
   const nodesLength = nodes.length;
@@ -80,13 +80,18 @@ const connectPath = (PathArrList: Path[][]) => {
   });
 };
 
-export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
-  let obj = mainGroupIntersect as Object3D | null;
+const isVisible = (obj: Object3D | null) => {
   let visible = true;
   while (obj) {
     visible = visible && obj.visible;
     obj = obj.parent;
   }
+  return visible;
+};
+
+export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
+  let obj = mainGroupIntersect as Object3D | null;
+  let visible = isVisible(obj);
 
   if (
     mainGroupIntersect &&
@@ -96,11 +101,16 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
     pathPointMap = new Map([...staticPathPointMap.entries()]);
 
     const dynamicPointArrList: Path[][] = [];
-    Paths.filter((item) => !item.userData.isStatic).forEach((item) => {
+
+    const filteredPaths = Paths.filter((item) => {
+      return !item.userData.isStatic && isVisible(obj);
+    });
+
+    filteredPaths.forEach((item) => {
       item.updatePointPositionList();
     });
     // 静态节点与动态节点的连接（采用硬性位置），要兼容静态节点连接方式（连接点所在世界三维空间位置）
-    Paths.filter((item) => !item.userData.isStatic).forEach((item) => {
+    filteredPaths.forEach((item) => {
       item.userData.connectPointList = new Set();
       item.userData.pointPositionList.forEach((v: Vector3) => {
         const key = v
@@ -145,7 +155,7 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
 
     // 动态节点与动态节点的连接（采用相机投影位置），视差连接
     dynamicPathPointMap.clear();
-    Paths.filter((item) => !item.userData.isStatic).forEach((item) => {
+    filteredPaths.forEach((item) => {
       item.userData.pointPositionList.forEach((v: Vector3) => {
         const projectV = new Vector3()
           .copy(v)
@@ -206,7 +216,7 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
     });
 
     const G = new MGraph(Paths.length);
-    createMGraph(generateMGraph(), G);
+    createMGraph(generateMGraph(Paths), G);
     Floyd(G);
     let index = 0;
     if (!movingPath.isMoving) {
