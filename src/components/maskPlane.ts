@@ -36,8 +36,8 @@ class MaskPlane extends Component {
 
     const cubem = new Matrix4();
     cubem.makeTranslation(
-      unitWidth - width / 2 + offsetWidth,
-      unitWidth - height / 2 + offsetHeight,
+      unitWidth - width / 2 + offsetWidth + 0.0001,
+      unitWidth - height / 2 + offsetHeight + 0.0001,
       offsetZ
     );
     geometry.applyMatrix4(cubem);

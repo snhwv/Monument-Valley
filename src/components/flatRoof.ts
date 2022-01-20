@@ -34,7 +34,6 @@ class FlatRoof extends Component {
   generateElement(): void {
     this.hatHeight = unitWidth * 2;
     this.generateHat();
-    this.generateFlag();
   }
 
   generatePedestal() {
@@ -148,98 +147,6 @@ class FlatRoof extends Component {
     result.scale.set(1 / 6, 1 / 3, 1 / 6);
     this.add(result);
 
-    // this.add(new Mesh(verticalGeometry, cubeMaterial));
-    // this.add(new Mesh(horizontalGeometry, cubeMaterial));
-  }
-
-  generateFlag() {
-    const width = 26;
-    const height = 2;
-    const geometry = new PlaneGeometry(width, height, 20, 2);
-    const material = this.getFlagMaterial({
-      fogColor: { value: new Vector3(65 / 255, 187 / 255, 175 / 255) },
-      time: { value: 0.0 },
-      height: { value: 2.0 },
-      width: { value: 26.0 },
-    });
-    const material1 = this.getFlagMaterial({
-      fogColor: { value: new Vector3(65 / 255, 187 / 255, 175 / 255) },
-      time: { value: 1.0 },
-      height: { value: 2.0 },
-      width: { value: 26.0 },
-    });
-
-    const plane = new Mesh(geometry, material);
-    plane.translateX(width / 2);
-    plane.translateY(unitWidth + 3);
-
-    const planeTwo = plane.clone();
-    planeTwo.translateY(2);
-
-    planeTwo.material = material1;
-
-    animate({
-      from: 0,
-      to: 1,
-      duration: 3000,
-      ease: linear,
-      repeat: Infinity,
-      onUpdate: () => {
-        material.uniforms["time"].value =
-          (material.uniforms["time"].value - 0.1) % (Math.PI * 2);
-        material1.uniforms["time"].value =
-          (material1.uniforms["time"].value - 0.1) % (Math.PI * 2);
-      },
-    });
-
-    this.add(plane);
-    this.add(planeTwo);
-
-    const cubeMaterial = this.getDefaultMaterial({ textureSrc: matcap2 });
-    const size = 1;
-    const geo = new OctahedronGeometry(size);
-    geo.translate(0, unitWidth + 7, 0);
-    geo.rotateY(Math.PI / 4);
-
-    const octMesh = new Mesh(geo, cubeMaterial);
-    this.add(octMesh);
-  }
-
-  getFlagMaterial(uniforms: ShaderMaterialParameters["uniforms"]) {
-   
-    const material = new ShaderMaterial({
-      uniforms: uniforms,
-      vertexShader: `
-      uniform float time;
-      uniform float width;
-      varying vec3 v_position;
-			void main()
-			{
-        vec3 newPos = position;
-        float factor = (newPos.x + width / 2.0) / width;
-        newPos.z = sin(newPos.x / 4.0 + time) * 4.0 * factor;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4( newPos, 1.0 );
-        v_position = position;
-			}
-`,
-      fragmentShader: `
-      uniform float time;
-			uniform vec3 fogColor;
-      varying vec3 v_position;
-      uniform float width;
-      uniform float height;
-
-			void main( void ) {
-        float factor = -v_position.x * (height/width);
-        if(v_position.y > factor) {
-          discard;
-        }
-
-				gl_FragColor =vec4( fogColor, 1.0 );
-
-			}`,
-    });
-    return material;
   }
 }
 (FlatRoof as any).cnName = "平屋顶";
