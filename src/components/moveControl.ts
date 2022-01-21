@@ -50,7 +50,6 @@ class MoveControl extends Moveable {
     this.plugMatcap = plugMatcap || this.plugMatcap;
     this.changeProps(...JSON.parse(JSON.stringify(this.userData.props)));
   }
-  // 中间的阀塞
   generatePlug() {
     const obj = this.userData.props?.[0];
 

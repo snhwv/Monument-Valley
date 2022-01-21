@@ -103,7 +103,7 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
     const dynamicPointArrList: Path[][] = [];
 
     const filteredPaths = Paths.filter((item) => {
-      return !item.userData.isStatic && isVisible(obj);
+      return !item.userData.isStatic && isVisible(item);
     });
 
     filteredPaths.forEach((item) => {

@@ -73,6 +73,16 @@ class Path extends Component {
     material.color = new Color(color || 0xff0000);
   }
 
+  showMaterial(isShow: boolean) {
+    const { connectMaterial, mainMaterial } = this.userData || {};
+    if (connectMaterial) {
+      connectMaterial.opacity = Number(isShow);
+    }
+    if (mainMaterial) {
+      mainMaterial.opacity = Number(isShow);
+    }
+  }
+
   generateConnectPoint(offset: Vector3) {
     const obj = this.userData.props?.[0];
 
@@ -88,6 +98,9 @@ class Path extends Component {
       // transparent: true,
       // opacity: 0,
     });
+
+    // this.userData.connectMaterial = this.userData.connectMaterial || material;
+
     const sphere = new Mesh(geometry, material);
 
     sphere.position.add(offset).add(new Vector3(0, 0, 0));
@@ -129,6 +142,7 @@ class Path extends Component {
       // transparent: true,
       // opacity: 0,
     });
+    // this.userData.mainMaterial = material;
     const sphere = new Mesh(geometry, material);
     sphere.position.add(new Vector3(0, 0, 0));
 

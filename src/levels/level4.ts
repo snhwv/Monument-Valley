@@ -1,4 +1,11 @@
-import { Color, MeshBasicMaterial, Object3D, Quaternion, Vector3 } from "three";
+import {
+  Color,
+  Euler,
+  MeshBasicMaterial,
+  Object3D,
+  Quaternion,
+  Vector3,
+} from "three";
 import { getCompFromFlatedArrByName, Paths, scene } from "@env";
 import { animate } from "popmotion";
 import { ada, movingPath } from "@game";
@@ -18,12 +25,12 @@ export default class Level4 extends Level {
   init() {
     Component.defaultMatcap = matcap_level2_0;
     Component.FOG_COLOR = undefined;
-    this.loadDataScene('');
+    this.loadDataScene("");
     this.initAda();
-    // this.setSceneLook();
+    this.setSceneLook();
 
-    // this.configAnimation();
-    // this.triggerAnimation();
+    this.configAnimation();
+    this.triggerAnimation();
   }
   initAda() {
     const initPath = Paths.find(
@@ -40,9 +47,13 @@ export default class Level4 extends Level {
   }
   setSceneLook() {
     scene.background = new Color(0xfeffbd);
-    // const moveControl0 = getCompFromFlatedArrByName(
-    //   "moveControl0"
-    // ) as MoveControl;
+
+    const stairRotablePathGroup0 = getCompFromFlatedArrByName(
+      "stairRotablePathGroup0"
+    );
+    const triggerPathGroup0 = getCompFromFlatedArrByName("triggerPathGroup0");
+    stairRotablePathGroup0.visible = false;
+    triggerPathGroup0.visible = false;
     // const moveControl1 = getCompFromFlatedArrByName(
     //   "moveControl0"
     // ) as MoveControl;
@@ -65,126 +76,99 @@ export default class Level4 extends Level {
     this.configAnimation1();
   }
   configAnimation0() {
-    const moveControl0: any = getCompFromFlatedArrByName("moveControl0");
-    const moveGroup0 = getCompFromFlatedArrByName("moveGroup0") as MoveControl;
-    const triggerMoveGroup0 = getCompFromFlatedArrByName(
-      "triggerMoveGroup0"
-    ) as MoveControl;
-    if (!(moveControl0 && moveGroup0 && triggerMoveGroup0)) {
+    const rotationControl0: any =
+      getCompFromFlatedArrByName("rotationControl0");
+    const centerRotable0: Object3D | undefined =
+      getCompFromFlatedArrByName("centerRotable0");
+    if (!(rotationControl0 && centerRotable0)) {
       return;
     }
-    moveControl0.onMove = (axis: Vector3, dl: Vector3) => {
-      if (moveGroup0) {
-        dl.projectOnVector(new Vector3(0, 1, 0));
-        const newP = new Vector3().copy(moveGroup0.position).add(dl);
-
-        const newP1 = new Vector3().copy(triggerMoveGroup0.position).sub(dl);
-        newP.clamp(
-          new Vector3(newP.x, -unitWidth * 5, newP.z),
-          new Vector3(newP.x, unitWidth * 2, newP.z)
-        );
-        newP1.clamp(
-          new Vector3(newP1.x, -unitWidth * 2, newP1.z),
-          new Vector3(newP1.x, unitWidth * 5, newP1.z)
-        );
-        moveGroup0.position.copy(newP);
-        triggerMoveGroup0.position.copy(newP1);
+    rotationControl0.onRotate = (axis: Vector3, angle: number) => {
+      if (centerRotable0) {
+        centerRotable0.rotateOnAxis(axis, angle);
       }
     };
-    moveControl0.onMoved = (axis: Vector3, totalMovement: Vector3) => {
-      if (moveGroup0) {
-        const moveInitWorldPosition = moveControl0.moveInitWorldPosition!;
-        const newWorldP = new Vector3();
-        moveControl0.getWorldPosition(newWorldP);
-        const subVector = newWorldP.sub(moveInitWorldPosition);
-        const newY = Math.round(subVector.y / unitWidth) * unitWidth;
+    rotationControl0.onRotated = (axis: Vector3, totalAngle: number) => {
+      const left = totalAngle % (Math.PI / 2);
+      let addonAngle = 0;
+      if (centerRotable0) {
+        if (Math.abs(left) > Math.PI / 4) {
+          addonAngle = Math.PI / 2 - Math.abs(left);
+        } else {
+          addonAngle = -Math.abs(left);
+        }
+        addonAngle *= totalAngle > 0 ? 1 : -1;
 
-        const targetV = new Vector3()
-          .copy(moveGroup0.position)
-          .sub(subVector)
-          .add(new Vector3(0, newY, 0));
-        animate({
-          from: moveGroup0.position,
-          to: targetV,
-          duration: 200,
-          onUpdate: (latest) => {
-            moveGroup0.position.copy(latest);
-          },
-        });
+        const caliQuat = new Quaternion();
+        caliQuat.setFromAxisAngle(axis, addonAngle);
 
-        const targetV1 = new Vector3()
-          .copy(triggerMoveGroup0.position)
-          .add(subVector)
-          .sub(new Vector3(0, newY, 0));
+        const endQuat = centerRotable0.quaternion.clone();
+        const startQuat = centerRotable0.quaternion.clone();
+        endQuat.premultiply(caliQuat);
         animate({
-          from: triggerMoveGroup0.position,
-          to: targetV1,
+          from: startQuat,
+          to: endQuat,
           duration: 200,
-          onUpdate: (latest) => {
-            triggerMoveGroup0.position.copy(latest);
+          onUpdate: (latest: any) => {
+            centerRotable0.quaternion.copy(
+              new Quaternion().set(latest._x, latest._y, latest._z, latest._w)
+            );
           },
         });
       }
     };
   }
   configAnimation1() {
-    const moveControl1: any = getCompFromFlatedArrByName("moveControl1");
-    const moveGroup1 = getCompFromFlatedArrByName("moveGroup1") as MoveControl;
-    const triggerMoveGroup1 = getCompFromFlatedArrByName(
-      "triggerMoveGroup1"
-    ) as MoveControl;
-    if (!(moveControl1 && moveGroup1 && triggerMoveGroup1)) {
+    const rotationControl1: any =
+      getCompFromFlatedArrByName("rotationControl1");
+    const stairRotable: Object3D | undefined =
+      getCompFromFlatedArrByName("stairRotable");
+    if (!(rotationControl1 && stairRotable)) {
       return;
     }
-    moveControl1.onMove = (axis: Vector3, dl: Vector3) => {
-      if (moveGroup1) {
-        dl.projectOnVector(new Vector3(0, 1, 0));
-        const newP = new Vector3().copy(moveGroup1.position).add(dl);
-
-        const newP1 = new Vector3().copy(triggerMoveGroup1.position).sub(dl);
-        newP.clamp(
-          new Vector3(newP.x, -unitWidth * 2, newP.z),
-          new Vector3(newP.x, unitWidth * 6, newP.z)
-        );
-        newP1.clamp(
-          new Vector3(newP1.x, -unitWidth * 6, newP1.z),
-          new Vector3(newP1.x, unitWidth * 2, newP1.z)
-        );
-        moveGroup1.position.copy(newP);
-        triggerMoveGroup1.position.copy(newP1);
+    rotationControl1.onRotate = (axis: Vector3, angle: number) => {
+      if (stairRotable) {
+        stairRotable.rotateOnAxis(axis, angle);
       }
     };
-    moveControl1.onMoved = (axis: Vector3, totalMovement: Vector3) => {
-      if (moveGroup1) {
-        const moveInitWorldPosition = moveControl1.moveInitWorldPosition!;
-        const newWorldP = new Vector3();
-        moveControl1.getWorldPosition(newWorldP);
-        const subVector = newWorldP.sub(moveInitWorldPosition);
-        const newY = Math.round(subVector.y / unitWidth) * unitWidth;
+    rotationControl1.onRotated = (axis: Vector3, totalAngle: number) => {
+      const left = totalAngle % (Math.PI / 2);
+      let addonAngle = 0;
+      if (stairRotable) {
+        if (Math.abs(left) > Math.PI / 4) {
+          addonAngle = Math.PI / 2 - Math.abs(left);
+        } else {
+          addonAngle = -Math.abs(left);
+        }
+        addonAngle *= totalAngle > 0 ? 1 : -1;
 
-        const targetV = new Vector3()
-          .copy(moveGroup1.position)
-          .sub(subVector)
-          .add(new Vector3(0, newY, 0));
+        const caliQuat = new Quaternion();
+        caliQuat.setFromAxisAngle(axis, addonAngle);
+
+        const endQuat = stairRotable.quaternion.clone();
+        const startQuat = stairRotable.quaternion.clone();
+        endQuat.premultiply(caliQuat);
         animate({
-          from: moveGroup1.position,
-          to: targetV,
+          from: startQuat,
+          to: endQuat,
           duration: 200,
-          onUpdate: (latest) => {
-            moveGroup1.position.copy(latest);
+          onUpdate: (latest: any) => {
+            stairRotable.quaternion.copy(
+              new Quaternion().set(latest._x, latest._y, latest._z, latest._w)
+            );
           },
-        });
-
-        const targetV1 = new Vector3()
-          .copy(triggerMoveGroup1.position)
-          .add(subVector)
-          .sub(new Vector3(0, newY, 0));
-        animate({
-          from: triggerMoveGroup1.position,
-          to: targetV1,
-          duration: 200,
-          onUpdate: (latest) => {
-            triggerMoveGroup1.position.copy(latest);
+          onComplete: () => {
+            const up = stairRotable.up.clone();
+            stairRotable.localToWorld(up);
+            up.sub(stairRotable.position);
+            const stairRotablePathGroup0 = getCompFromFlatedArrByName(
+              "stairRotablePathGroup0"
+            );
+            if (Number(up.y.toFixed(1)) === 1) {
+              stairRotablePathGroup0.visible = true;
+            } else {
+              stairRotablePathGroup0.visible = false;
+            }
           },
         });
       }
@@ -192,63 +176,45 @@ export default class Level4 extends Level {
   }
   triggerAnimation() {
     this.trigger1Animation();
-    // this.trigger2Animation();
+    this.trigger2Animation();
   }
+
   trigger1Animation() {
-    const trigger0: any = getCompFromFlatedArrByName("trigger0");
-    const trigger0MoveGroup0: any =
-      getCompFromFlatedArrByName("trigger0MoveGroup0");
-    const trigger0MoveGroup1: any =
-      getCompFromFlatedArrByName("trigger0MoveGroup1");
-    const trigger0MoveGroup2: any =
-      getCompFromFlatedArrByName("trigger0MoveGroup2");
-    trigger0.onTrigger = () => {
-      if (!(trigger0MoveGroup0 && trigger0MoveGroup1 && trigger0MoveGroup2)) {
-        return;
-      }
-      const target0 = new Vector3()
-        .copy(trigger0MoveGroup0.position)
-        .add(new Vector3(0, unitWidth * 15, 0));
-      animate({
-        from: trigger0MoveGroup0.position,
-        to: target0,
-        duration: 200,
-        onUpdate: (latest) => {
-          trigger0MoveGroup0.position.copy(latest);
-        },
-      });
-
-      const target1 = new Vector3()
-        .copy(trigger0MoveGroup1.position)
-        .add(new Vector3(0, unitWidth * 14, 0));
-      animate({
-        from: trigger0MoveGroup1.position,
-        to: target1,
-        duration: 200,
-        onUpdate: (latest) => {
-          trigger0MoveGroup1.position.copy(latest);
-        },
-      });
-
-      const target2 = new Vector3()
-        .copy(trigger0MoveGroup2.position)
-        .add(new Vector3(0, unitWidth * 29, 0));
-      animate({
-        from: trigger0MoveGroup2.position,
-        to: target2,
-        duration: 200,
-        onUpdate: (latest) => {
-          trigger0MoveGroup2.position.copy(latest);
-        },
-      });
-      // movingPath.setAdaOn(tp0_target);
-      // ada.position.copy(new Vector3());
+    const rotationControl1 = getCompFromFlatedArrByName(
+      "rotationControl1"
+    ) as ValveControl;
+    const rotate_close: any = getCompFromFlatedArrByName("rotate_close");
+    const rotate_close1: any = getCompFromFlatedArrByName("rotate_close1");
+    const rotate_open: any = getCompFromFlatedArrByName("rotate_open");
+    const rotate_open1: any = getCompFromFlatedArrByName("rotate_open1");
+    if (
+      !(
+        rotationControl1 &&
+        rotate_close &&
+        rotate_close1 &&
+        rotate_open &&
+        rotate_open1
+      )
+    ) {
+      return;
+    }
+    rotate_close.onTrigger = () => {
+      rotationControl1.disable();
+    };
+    rotate_close1.onTrigger = () => {
+      rotationControl1.disable();
+    };
+    rotate_open.onTrigger = () => {
+      rotationControl1.enable();
+    };
+    rotate_open1.onTrigger = () => {
+      rotationControl1.enable();
     };
   }
   trigger2Animation() {
     const trigger0: any = getCompFromFlatedArrByName("trigger0");
-    const rotable0 = getCompFromFlatedArrByName("rotable0");
-    const rotable1 = getCompFromFlatedArrByName("rotable1");
+    const triggerCubeGroup0 = getCompFromFlatedArrByName("triggerCubeGroup0");
+    const triggerPathGroup0 = getCompFromFlatedArrByName("triggerPathGroup0");
     const site0 = getCompFromFlatedArrByName("site0") as Site;
     trigger0.onTrigger = () => {
       if (this.isTrigger1Trigged) {
@@ -265,8 +231,10 @@ export default class Level4 extends Level {
         to: Math.PI / 2,
         duration: 200,
         onUpdate: (latest: any) => {
-          rotable0.rotation.y = -latest;
-          rotable1.rotation.y = latest;
+          triggerCubeGroup0.rotation.z = latest;
+        },
+        onComplete: () => {
+          triggerPathGroup0.visible = true;
         },
       });
     };

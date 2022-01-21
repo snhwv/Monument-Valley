@@ -1,10 +1,14 @@
 import { transformControls } from "@env";
 import { setTreeExpandedKeys } from "../layout/SceneTree";
-import { IpinterdownHander } from "./store";
+import { IpinterdownHander, store } from "./store";
 export const setTransformControl: IpinterdownHander = ({
   mainGroupIntersect,
   next,
 }) => {
+  if (!store.isTransform) {
+    next();
+    return;
+  }
   if (transformControls.dragging) {
     next();
     return;

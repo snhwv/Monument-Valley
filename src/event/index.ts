@@ -89,13 +89,14 @@ function onPointerMove(event: any) {
 const pointer = new Vector2();
 const raycaster = new Raycaster();
 
-const pointerdownHandlerArr: IpinterdownHander[] = [
+let pointerdownHandlerArr: IpinterdownHander[] = [
   setRotationPrevPoint,
   setMovePrevPoint,
   crudComponents,
   setTransformControl,
   setPaths,
 ];
+
 const pointermoveHandlerArr: IpinterdownHander[] = [setRotation, setMove];
 
 const pointerupHandlerArr: IpinterdownHander[] = [rotated, moved];

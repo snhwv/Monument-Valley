@@ -1,8 +1,9 @@
-import { flatedComponents, mainGroup, transformControls } from "@env";
+import { flatedComponents, mainGroup, Paths, transformControls } from "@env";
 import { Button, Col, Row, TreeProps } from "antd";
 
 import { Tree } from "antd";
 import { useRef, useState } from "react";
+import { store } from "../event/store";
 import { Object3D } from "three";
 import EditModal from "./components/EditModal";
 
@@ -50,6 +51,7 @@ const SceneTree = () => {
   const [gData, setGData] = useState([...mainGroup.children]);
   const [expandedKeys, setExpandedKeys] = useState<any>([]);
   const [selectKeys, setSelectKeys] = useState<any>([]);
+  const [isDev, setIsDev] = useState<any>(true);
   updateSceneTree = () => {
     const treeData = generateTree(getTreeDataItem);
     setGData(treeData);
@@ -170,9 +172,19 @@ const SceneTree = () => {
   const onExpand: TreeProps["onExpand"] = (expandedKeys) => {
     setExpandedKeys(expandedKeys);
   };
+  const showDev = () => {
+    Paths.forEach((path) => {
+      path.showMaterial(!isDev);
+    });
+    setIsDev(!isDev);
+    store.isTransform = !isDev;
+    transformControls.detach();
+    // disableTransformControl(!isDev);
+  };
   return (
     <>
       <Button onClick={save}>保存</Button>
+      <Button onClick={showDev}>dev</Button>
       <Tree
         className="draggable-tree"
         //   defaultExpandedKeys={expandedKeys}
