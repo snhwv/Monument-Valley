@@ -27,6 +27,7 @@ class Pillar extends Component {
       {
         width: unitWidth,
         pillarWidth: 1.6,
+        number: 4,
       },
     ];
   }
@@ -43,6 +44,8 @@ class Pillar extends Component {
   generatePillar() {
     const cubeMaterial = this.getDefaultMaterial();
 
+    const obj = this.userData.props?.[0];
+    const number = obj?.number;
     const cubeGeometry = new BoxGeometry(
       this.pillarWidth,
       unitWidth,
@@ -59,7 +62,7 @@ class Pillar extends Component {
 
     var endCylinder = new Mesh(cubeGeometry, cubeMaterial);
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < number; i++) {
       const mesh = endCylinder.clone();
 
       const meshm = new Matrix4();

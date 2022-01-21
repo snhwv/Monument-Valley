@@ -15,6 +15,8 @@ class Cylinder extends Component {
       {
         r: unitWidth / 2,
         height: unitWidth,
+        thetaLength: 8,
+        radialSegments: 32,
       },
     ];
   }
@@ -23,8 +25,19 @@ class Cylinder extends Component {
     const obj = this.userData.props?.[0];
     const r = obj?.r;
     const height = obj?.height;
+    const thetaLength = obj?.thetaLength;
+    const radialSegments = obj?.radialSegments;
 
-    const geometry = new CylinderGeometry(r, r, height, 32);
+    const geometry = new CylinderGeometry(
+      r,
+      r,
+      height,
+      radialSegments,
+      1,
+      false,
+      0,
+      (thetaLength * Math.PI) / 4
+    );
     const material = this.getDefaultMaterial();
 
     const cubem = new Matrix4();

@@ -1,11 +1,5 @@
 import { unitWidth } from "@constants";
-import {
-  ExtrudeGeometry,
-  Matrix4,
-  Mesh,
-  MeshLambertMaterial,
-  Shape,
-} from "three";
+import { ExtrudeGeometry, Matrix4, Mesh, Shape } from "three";
 import Component from "./lib/recordable";
 
 // 桥墩
@@ -16,11 +10,19 @@ class Pier extends Component {
   generateElement() {
     this.generatePier();
   }
+  getDefaultProps() {
+    return [
+      {
+        pillarWidth: 4,
+      },
+    ];
+  }
 
   generatePier() {
+    const obj = this.userData.props?.[0];
     const heartShape = new Shape();
 
-    const pillarWidth = 4;
+    const pillarWidth = obj?.pillarWidth;
 
     heartShape.moveTo(-unitWidth / 2, unitWidth / 2);
 
