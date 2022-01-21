@@ -1,13 +1,15 @@
-import { Color, MeshBasicMaterial, Object3D, Quaternion, Vector3 } from "three";
-import { getCompFromFlatedArrByName, Paths, scene } from "@env";
+import { Color, Object3D, Vector3 } from "three";
+import {
+  camera,
+  getCompFromFlatedArrByName,
+  orbitControls,
+  Paths,
+  scene,
+} from "@env";
 import { animate } from "popmotion";
 import { ada, movingPath } from "@game";
-import Site from "@components/site";
 import { unitWidth } from "@constants";
 import Component from "@components/lib/recordable";
-import ValveControl from "@components/valveControl";
-import levelData1 from "../levelData/levelData1";
-import matcap_level0_2 from "../assets/matcap/matcap_level0_2.png";
 import matcap_level2_0 from "../assets/matcap/matcap_level2_0.png";
 import Level from "./lib/level";
 import levelData3 from "../levelData/levelData3";
@@ -287,6 +289,24 @@ export default class Level3 extends Level {
         duration: 200,
         onUpdate: (latest) => {
           trigger0MoveGroup3.position.copy(latest);
+        },
+      });
+
+      const target3 = new Vector3(0, unitWidth * 14, 0);
+      const oldCameraPosition = camera.position.clone();
+      animate({
+        from: new Vector3(),
+        to: target3,
+        duration: 200,
+        elapsed: -200,
+        onUpdate: (latest) => {
+          camera.position.copy(
+            new Vector3().copy(oldCameraPosition).add(latest)
+          );
+          console.log(new Vector3().copy(oldCameraPosition).add(latest));
+          console.log(new Vector3().copy(latest));
+          orbitControls.target.copy(new Vector3().copy(latest));
+          orbitControls.update();
         },
       });
     };

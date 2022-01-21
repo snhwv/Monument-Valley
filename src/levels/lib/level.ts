@@ -1,10 +1,15 @@
 import { componentMap } from "@components";
-import { mainGroup } from "@env";
+import { camera, mainGroup } from "@env";
 import { updateSceneTree } from "../../layout/SceneTree";
-import { Group, Matrix4 } from "three";
+import { Group, Matrix4, Vector3 } from "three";
+import Component from "@components/lib/recordable";
 
 export default class Level {
-  constructor() {}
+  constructor() {
+    Component.FOG_COLOR = undefined;
+    camera.position.set(200, 200, 200);
+    camera.lookAt(new Vector3());
+  }
   loadDataScene(data: string) {
     // const mainGroupChildren = localStorage.getItem("mainGroupChildren");
     const mainGroupChildren = data;

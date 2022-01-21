@@ -1,5 +1,5 @@
 import Path from "@components/Path";
-import { camera, Paths } from "@env";
+import { camera, orbitControls, Paths } from "@env";
 import { movingPath } from "@game";
 import { createMGraph, Floyd, getPath, MGraph } from "@utils/floyd";
 import { Object3D, Vector3 } from "three";
@@ -151,7 +151,10 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
       });
     });
 
-    const projectPlaneNormal = new Vector3().copy(camera.position).normalize();
+    const projectPlaneNormal = new Vector3()
+      .copy(camera.position)
+      .sub(orbitControls.target)
+      .normalize();
 
     // 动态节点与动态节点的连接（采用相机投影位置），视差连接
     dynamicPathPointMap.clear();

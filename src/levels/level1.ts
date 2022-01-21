@@ -15,7 +15,6 @@ export default class Level1 extends Level {
 
   init() {
     Component.defaultMatcap = matcap1;
-    Component.FOG_COLOR = undefined;
     this.loadDataScene(levelData1);
     this.initAda();
     this.setSceneLook();
