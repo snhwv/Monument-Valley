@@ -74,6 +74,7 @@ export default class Level4 extends Level {
   configAnimation() {
     this.configAnimation0();
     this.configAnimation1();
+    // this.configAnimation2();
   }
   configAnimation0() {
     const rotationControl0: any =
@@ -169,6 +170,49 @@ export default class Level4 extends Level {
             } else {
               stairRotablePathGroup0.visible = false;
             }
+          },
+        });
+      }
+    };
+  }
+  configAnimation2() {
+    const rotationControl0: any =
+      getCompFromFlatedArrByName("rotationControl0");
+    const centerRotable0: Object3D | undefined =
+      getCompFromFlatedArrByName("centerRotable0");
+    if (!(rotationControl0 && centerRotable0)) {
+      return;
+    }
+    rotationControl0.onRotate = (axis: Vector3, angle: number) => {
+      if (centerRotable0) {
+        centerRotable0.rotateOnAxis(axis, angle);
+      }
+    };
+    rotationControl0.onRotated = (axis: Vector3, totalAngle: number) => {
+      const left = totalAngle % (Math.PI / 2);
+      let addonAngle = 0;
+      if (centerRotable0) {
+        if (Math.abs(left) > Math.PI / 4) {
+          addonAngle = Math.PI / 2 - Math.abs(left);
+        } else {
+          addonAngle = -Math.abs(left);
+        }
+        addonAngle *= totalAngle > 0 ? 1 : -1;
+
+        const caliQuat = new Quaternion();
+        caliQuat.setFromAxisAngle(axis, addonAngle);
+
+        const endQuat = centerRotable0.quaternion.clone();
+        const startQuat = centerRotable0.quaternion.clone();
+        endQuat.premultiply(caliQuat);
+        animate({
+          from: startQuat,
+          to: endQuat,
+          duration: 200,
+          onUpdate: (latest: any) => {
+            centerRotable0.quaternion.copy(
+              new Quaternion().set(latest._x, latest._y, latest._z, latest._w)
+            );
           },
         });
       }

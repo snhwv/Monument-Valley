@@ -20,6 +20,8 @@ class Site extends Component {
   getDefaultProps() {
     return [
       {
+        width: unitWidth * 0.8,
+        radius: unitWidth / 8,
         siteHeight: unitWidth / 10,
       },
     ];
@@ -43,12 +45,12 @@ class Site extends Component {
     const obj = this.userData.props?.[0];
 
     const siteHeight = obj?.siteHeight;
+    const width = obj?.width;
+    const radius = obj?.radius;
+    
     const cubeMaterial = this.getDefaultMaterial();
 
     const heartShape = new Shape();
-
-    const width = unitWidth * 0.8;
-    const radius = unitWidth / 8;
 
     heartShape.moveTo(-width / 2 + radius, width / 2);
 

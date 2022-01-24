@@ -8,11 +8,11 @@ import {
   MeshBasicMaterial,
   Vector3,
 } from "three";
-import Moveable from "./lib/moveable";
 import matcap2 from "../assets/matcap/matcap2.png";
 import { animate } from "popmotion";
+import Activeable from "./lib/activeable";
 
-class MoveControl extends Moveable {
+class PlugGroup extends Activeable {
   constructor(...args: any) {
     super(...args);
   }
@@ -103,12 +103,8 @@ class MoveControl extends Moveable {
 
     this.add(gs);
   }
-  moveInitWorldPosition?: Vector3;
 
-  onMoveBegin() {
-    this.moveInitWorldPosition = new Vector3();
-    this.getWorldPosition(this.moveInitWorldPosition);
-
+  onActive() {
     const plugMaterial1 = this.userData.plugMaterial1 as MeshBasicMaterial;
 
     const obj = this.userData.props?.[0];
@@ -129,7 +125,7 @@ class MoveControl extends Moveable {
       },
     });
   }
-  onMoveEnd() {
+  onDeActive() {
     const plugMaterial1 = this.userData.plugMaterial1 as MeshBasicMaterial;
 
     const obj = this.userData.props?.[0];
@@ -149,15 +145,7 @@ class MoveControl extends Moveable {
         );
       },
     });
-    // animate({
-    //   from: 0,
-    //   to: 1,
-    //   duration: 400,
-    //   onUpdate: (latest) => {
-    //     plugMaterial1.opacity = latest;
-    //   },
-    // });
   }
 }
-(MoveControl as any).cnName = "移动控制";
-export default MoveControl;
+(PlugGroup as any).cnName = "按钮组";
+export default PlugGroup;
