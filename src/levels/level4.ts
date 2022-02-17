@@ -17,15 +17,17 @@ import levelData1 from "../levelData/levelData1";
 import matcap_level0_2 from "../assets/matcap/matcap_level0_2.png";
 import matcap_level2_0 from "../assets/matcap/matcap_level2_0.png";
 import Level from "./lib/level";
-import levelData3 from "../levelData/levelData3";
+import levelData4 from "../levelData/levelData4";
 import MoveControl from "@components/moveControl";
 export default class Level4 extends Level {
   isTrigger1Trigged = false;
+  isTrigger2Trigged = false;
+  isTrigger3Trigged = false;
 
   init() {
     Component.defaultMatcap = matcap_level2_0;
     Component.FOG_COLOR = undefined;
-    this.loadDataScene("");
+    this.loadDataScene(levelData4);
     this.initAda();
     this.setSceneLook();
 
@@ -74,7 +76,8 @@ export default class Level4 extends Level {
   configAnimation() {
     this.configAnimation0();
     this.configAnimation1();
-    // this.configAnimation2();
+    this.configAnimation2();
+    this.configAnimation3();
   }
   configAnimation0() {
     const rotationControl0: any =
@@ -176,22 +179,22 @@ export default class Level4 extends Level {
     };
   }
   configAnimation2() {
-    const rotationControl0: any =
-      getCompFromFlatedArrByName("rotationControl0");
-    const centerRotable0: Object3D | undefined =
-      getCompFromFlatedArrByName("centerRotable0");
-    if (!(rotationControl0 && centerRotable0)) {
+    const rotationControl2: any =
+      getCompFromFlatedArrByName("rotationControl2");
+    const centerRotable2: Object3D | undefined =
+      getCompFromFlatedArrByName("centerRotable2");
+    if (!(rotationControl2 && centerRotable2)) {
       return;
     }
-    rotationControl0.onRotate = (axis: Vector3, angle: number) => {
-      if (centerRotable0) {
-        centerRotable0.rotateOnAxis(axis, angle);
+    rotationControl2.onRotate = (axis: Vector3, angle: number) => {
+      if (centerRotable2) {
+        centerRotable2.rotateOnAxis(axis, angle);
       }
     };
-    rotationControl0.onRotated = (axis: Vector3, totalAngle: number) => {
+    rotationControl2.onRotated = (axis: Vector3, totalAngle: number) => {
       const left = totalAngle % (Math.PI / 2);
       let addonAngle = 0;
-      if (centerRotable0) {
+      if (centerRotable2) {
         if (Math.abs(left) > Math.PI / 4) {
           addonAngle = Math.PI / 2 - Math.abs(left);
         } else {
@@ -202,17 +205,59 @@ export default class Level4 extends Level {
         const caliQuat = new Quaternion();
         caliQuat.setFromAxisAngle(axis, addonAngle);
 
-        const endQuat = centerRotable0.quaternion.clone();
-        const startQuat = centerRotable0.quaternion.clone();
+        const endQuat = centerRotable2.quaternion.clone();
+        const startQuat = centerRotable2.quaternion.clone();
         endQuat.premultiply(caliQuat);
         animate({
           from: startQuat,
           to: endQuat,
           duration: 200,
           onUpdate: (latest: any) => {
-            centerRotable0.quaternion.copy(
+            centerRotable2.quaternion.copy(
               new Quaternion().set(latest._x, latest._y, latest._z, latest._w)
             );
+          },
+        });
+      }
+    };
+  }
+  configAnimation3() {
+    const moveControl0: any = getCompFromFlatedArrByName("moveControl0");
+    const moveGroup0 = getCompFromFlatedArrByName("moveGroup0") as MoveControl;
+
+    if (!(moveControl0 && moveGroup0)) {
+      return;
+    }
+    moveControl0.onMove = (axis: Vector3, dl: Vector3) => {
+      if (moveGroup0) {
+        dl.projectOnVector(new Vector3(1, 0, 0));
+        const newP = new Vector3().copy(moveGroup0.position).add(dl);
+
+        newP.clamp(
+          new Vector3(-unitWidth * 3, newP.y, newP.z),
+          new Vector3(0, newP.y, newP.z)
+        );
+        moveGroup0.position.copy(newP);
+      }
+    };
+    moveControl0.onMoved = (axis: Vector3, totalMovement: Vector3) => {
+      if (moveGroup0) {
+        const moveInitWorldPosition = moveControl0.moveInitWorldPosition!;
+        const newWorldP = new Vector3();
+        moveControl0.getWorldPosition(newWorldP);
+        const subVector = newWorldP.sub(moveInitWorldPosition);
+        const newX = Math.round(subVector.x / unitWidth) * unitWidth;
+
+        const targetV = new Vector3()
+          .copy(moveGroup0.position)
+          .sub(subVector)
+          .add(new Vector3(newX, 0, 0));
+        animate({
+          from: moveGroup0.position,
+          to: targetV,
+          duration: 200,
+          onUpdate: (latest) => {
+            moveGroup0.position.copy(latest);
           },
         });
       }
@@ -221,6 +266,10 @@ export default class Level4 extends Level {
   triggerAnimation() {
     this.trigger1Animation();
     this.trigger2Animation();
+    this.trigger3Animation();
+    this.trigger4Animation();
+    this.trigger5Animation();
+    this.trigger6Animation();
   }
 
   trigger1Animation() {
@@ -279,6 +328,198 @@ export default class Level4 extends Level {
         },
         onComplete: () => {
           triggerPathGroup0.visible = true;
+        },
+      });
+    };
+  }
+  trigger3Animation() {
+    const trigger1: any = getCompFromFlatedArrByName("trigger1");
+    const tp0_target: any = getCompFromFlatedArrByName("tp0_target");
+    trigger1.onTrigger = () => {
+      if (!tp0_target) {
+        return;
+      }
+      movingPath.setAdaOn(tp0_target);
+      ada.position.copy(new Vector3());
+
+      const bridge0: any = getCompFromFlatedArrByName("bridge0");
+      const bridge1: any = getCompFromFlatedArrByName("bridge1");
+      const bridge2: any = getCompFromFlatedArrByName("bridge2");
+      const bridge3: any = getCompFromFlatedArrByName("bridge3");
+      const bridge4: any = getCompFromFlatedArrByName("bridge4");
+      const bridge5: any = getCompFromFlatedArrByName("bridge5");
+      const bridge6: any = getCompFromFlatedArrByName("bridge6");
+      const bridge7: any = getCompFromFlatedArrByName("bridge7");
+      const bridge8: any = getCompFromFlatedArrByName("bridge8");
+      const bridge9: any = getCompFromFlatedArrByName("bridge9");
+      const bridge10: any = getCompFromFlatedArrByName("bridge10");
+      const bridge11: any = getCompFromFlatedArrByName("bridge11");
+
+      if (
+        !(
+          bridge0 &&
+          bridge1 &&
+          bridge2 &&
+          bridge3 &&
+          bridge4 &&
+          bridge5 &&
+          bridge6 &&
+          bridge7 &&
+          bridge8 &&
+          bridge9 &&
+          bridge10 &&
+          bridge11
+        )
+      ) {
+        return;
+      }
+      const fall = (bridge: Object3D, delay: number) => {
+        const target0 = new Vector3()
+          .copy(bridge.position)
+          .add(new Vector3(0, unitWidth * 4, 0));
+        animate({
+          from: bridge.position,
+          to: target0,
+          elapsed: delay,
+          duration: 200,
+          onUpdate: (latest) => {
+            bridge.position.copy(latest);
+          },
+        });
+      };
+      fall(bridge0, -0);
+      fall(bridge1, -200);
+      fall(bridge2, -400);
+      fall(bridge3, -600);
+      fall(bridge4, -800);
+      fall(bridge5, -1000);
+      fall(bridge6, -1200);
+      fall(bridge7, -1400);
+      fall(bridge8, -1600);
+      fall(bridge9, -1800);
+      fall(bridge10, -2000);
+      fall(bridge11, -2200);
+    };
+  }
+  trigger4Animation() {
+    const trigger2: any = getCompFromFlatedArrByName("trigger2");
+    trigger2.onTrigger = () => {
+      const bridge0: any = getCompFromFlatedArrByName("bridge0");
+      const bridge1: any = getCompFromFlatedArrByName("bridge1");
+      const bridge2: any = getCompFromFlatedArrByName("bridge2");
+      const bridge3: any = getCompFromFlatedArrByName("bridge3");
+      const bridge4: any = getCompFromFlatedArrByName("bridge4");
+      const bridge5: any = getCompFromFlatedArrByName("bridge5");
+      const bridge6: any = getCompFromFlatedArrByName("bridge6");
+      const bridge7: any = getCompFromFlatedArrByName("bridge7");
+      const bridge8: any = getCompFromFlatedArrByName("bridge8");
+      const bridge9: any = getCompFromFlatedArrByName("bridge9");
+      const bridge10: any = getCompFromFlatedArrByName("bridge10");
+      const bridge11: any = getCompFromFlatedArrByName("bridge11");
+
+      if (
+        !(
+          bridge0 &&
+          bridge1 &&
+          bridge2 &&
+          bridge3 &&
+          bridge4 &&
+          bridge5 &&
+          bridge6 &&
+          bridge7 &&
+          bridge8 &&
+          bridge9 &&
+          bridge10 &&
+          bridge11
+        )
+      ) {
+        return;
+      }
+      const fall = (bridge: Object3D, delay: number) => {
+        const target0 = new Vector3()
+          .copy(bridge.position)
+          .add(new Vector3(0, -unitWidth * 4, 0));
+        animate({
+          from: bridge.position,
+          to: target0,
+          elapsed: delay,
+          duration: 200,
+          onUpdate: (latest) => {
+            bridge.position.copy(latest);
+          },
+        });
+      };
+      fall(bridge0, -2200);
+      fall(bridge1, -2000);
+      fall(bridge2, -1800);
+      fall(bridge3, -1600);
+      fall(bridge4, -1400);
+      fall(bridge5, -1200);
+      fall(bridge6, -1000);
+      fall(bridge7, -800);
+      fall(bridge8, -600);
+      fall(bridge9, -400);
+      fall(bridge10, -200);
+      fall(bridge11, -0);
+    };
+  }
+  trigger5Animation() {
+    const trigger3: any = getCompFromFlatedArrByName("trigger3");
+    const triggerCubeGroup1 = getCompFromFlatedArrByName("triggerCubeGroup1");
+    const site1 = getCompFromFlatedArrByName("site1") as Site;
+    trigger3.onTrigger = () => {
+      if (this.isTrigger2Trigged) {
+        return;
+      }
+      if (!site1) {
+        return;
+      }
+      this.isTrigger2Trigged = true;
+
+      site1.onTrigger();
+      animate({
+        from: 0,
+        to: -Math.PI / 2,
+        duration: 200,
+        onUpdate: (latest: any) => {
+          triggerCubeGroup1.rotation.z = latest;
+        },
+      });
+    };
+  }
+  trigger6Animation() {
+    const trigger4: any = getCompFromFlatedArrByName("trigger4");
+    const triggerCubeGroup2 = getCompFromFlatedArrByName("triggerCubeGroup2");
+    const triggerCubeGroup3 = getCompFromFlatedArrByName("triggerCubeGroup3");
+    const site2 = getCompFromFlatedArrByName("site2") as Site;
+    trigger4.onTrigger = () => {
+      if (this.isTrigger3Trigged) {
+        return;
+      }
+      if (!site2) {
+        return;
+      }
+      this.isTrigger3Trigged = true;
+
+      site2.onTrigger();
+      animate({
+        from: 0,
+        to: -Math.PI,
+        duration: 200,
+        onUpdate: (latest: any) => {
+          triggerCubeGroup2.rotation.z = latest;
+        },
+      });
+
+      const newP = new Vector3()
+        .copy(triggerCubeGroup3.position)
+        .add(new Vector3(0, -unitWidth * 2, 0));
+      animate({
+        from: triggerCubeGroup3.position,
+        to: newP,
+        duration: 200,
+        onUpdate: (latest: any) => {
+          triggerCubeGroup3.position.copy(latest);
         },
       });
     };

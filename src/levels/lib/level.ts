@@ -11,8 +11,8 @@ export default class Level {
     camera.lookAt(new Vector3());
   }
   loadDataScene(data: string) {
-    const mainGroupChildren = localStorage.getItem("mainGroupChildren");
-    // const mainGroupChildren = data;
+    // const mainGroupChildren = localStorage.getItem("mainGroupChildren");
+    const mainGroupChildren = data;
     // const mainGroupChildren = '';
     if (mainGroupChildren) {
       const parsedMainGroupChildren = JSON.parse(mainGroupChildren);

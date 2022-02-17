@@ -22,7 +22,7 @@ class Pier extends Component {
     const obj = this.userData.props?.[0];
     const heartShape = new Shape();
 
-    const pillarWidth = obj?.pillarWidth;
+    const pillarWidth = obj?.pillarWidth === 0 ? 0 : obj?.pillarWidth || 4;
 
     heartShape.moveTo(-unitWidth / 2, unitWidth / 2);
 

@@ -1,4 +1,5 @@
 import merge from "lodash.merge";
+import { BoxGeometry, Mesh } from "three";
 import Activeable from "./lib/activeable";
 import Rotable from "./lib/rotable";
 

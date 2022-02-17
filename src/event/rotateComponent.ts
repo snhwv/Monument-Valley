@@ -1,5 +1,5 @@
 import { orbitControls, scene } from "@env";
-import { ArrowHelper, Vector3 } from "three";
+import { ArrowHelper, Object3D, Vector3 } from "three";
 import Rotable from "@components/lib/rotable";
 import { IpinterdownHander, store } from "./store";
 const rotationPointer = new Vector3();
@@ -36,12 +36,23 @@ export const setRotation: IpinterdownHander = ({ raycaster, next }) => {
   next();
 };
 
+const getRotableParent = (obj: any) => {
+  let parent = obj;
+  while (parent) {
+    if (parent instanceof Rotable) {
+      return parent;
+    }
+    parent = parent.parent;
+  }
+  return parent;
+};
 export const setRotationPrevPoint: IpinterdownHander = ({
   mainGroupIntersect,
   raycaster,
   next,
 }) => {
-  if (mainGroupIntersect instanceof Rotable) {
+  mainGroupIntersect = getRotableParent(mainGroupIntersect);
+  if (mainGroupIntersect) {
     if (mainGroupIntersect.userData?.disabled) {
       return;
     }
@@ -49,15 +60,18 @@ export const setRotationPrevPoint: IpinterdownHander = ({
     store.isRotable = true;
     orbitControls.enabled = false;
 
-    store.rotationComponent = mainGroupIntersect;
-    mainGroupIntersect.generateRotablePlane();
+    store.rotationComponent = mainGroupIntersect as any;
+    (mainGroupIntersect as any).generateRotablePlane();
     const target = new Vector3();
     raycaster.ray.intersectPlane(
       mainGroupIntersect.userData.rotablePlane,
       target
     );
 
-    rotationPointer.subVectors(target, mainGroupIntersect.worldPosition);
+    rotationPointer.subVectors(
+      target,
+      (mainGroupIntersect as any).worldPosition
+    );
     (store.rotationComponent as any)?.onRotateBegin();
   }
   next();

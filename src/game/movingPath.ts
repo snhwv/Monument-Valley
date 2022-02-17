@@ -74,11 +74,9 @@ class MovingPath {
         return;
       }
 
-      const ways = [
-        adaPathPoint,
-        nextPathPoint,
-        new Vector3(0, 0, 0),
-      ];
+      const nextPathCenter = nextPath.getPathPointerCenter();
+      console.log(nextPathCenter);
+      const ways = [adaPathPoint, nextPathPoint, nextPathCenter];
 
       const moveAdaToPoint = () => {
         const nextPosition = ways.shift();

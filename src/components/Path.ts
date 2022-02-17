@@ -31,6 +31,9 @@ class Path extends Component {
         isTrigger: 0,
         isStop: 0,
         isStair: 0,
+        R: 0,
+        index: 0,
+        circleDivide: 16,
       },
     ];
   }
@@ -50,12 +53,35 @@ class Path extends Component {
     const right = obj?.right;
     const isStatic = obj?.isStatic;
 
+    const R = obj?.R;
+    const circleDivide = obj?.circleDivide;
+    const index = obj?.index;
+
     this.userData.isStatic = isStatic;
     const stairHalfWidth = Math.sqrt(Math.pow(width / 2, 2) * 2);
 
     const isStair = obj?.isStair;
-    right && this.generateConnectPoint(new Vector3(width / 2, 0, 0));
-    left && this.generateConnectPoint(new Vector3(-width / 2, 0, 0));
+
+    if (R) {
+      const rightPosition = new Vector3().setFromCylindricalCoords(
+        R,
+        (index * Math.PI * 2) / circleDivide +
+          (Math.PI * 2) / (circleDivide * 2),
+        0
+      );
+      const leftPosition = new Vector3().setFromCylindricalCoords(
+        R,
+        (index * Math.PI * 2) / circleDivide -
+          (Math.PI * 2) / (circleDivide * 2),
+        0
+      );
+      right && this.generateConnectPoint(rightPosition);
+      left && this.generateConnectPoint(leftPosition);
+    } else {
+      right && this.generateConnectPoint(new Vector3(width / 2, 0, 0));
+      left && this.generateConnectPoint(new Vector3(-width / 2, 0, 0));
+    }
+
     top &&
       this.generateConnectPoint(
         new Vector3(0, 0, isStair ? -stairHalfWidth : -unitWidth / 2)
@@ -64,7 +90,13 @@ class Path extends Component {
       this.generateConnectPoint(
         new Vector3(0, 0, isStair ? stairHalfWidth : unitWidth / 2)
       );
-    this.generatePath();
+
+    const pathPosition = new Vector3().setFromCylindricalCoords(
+      R,
+      (index * Math.PI * 2) / circleDivide,
+      0
+    );
+    this.generatePath(pathPosition);
     this.updatePointPositionList();
   }
 
@@ -129,7 +161,7 @@ class Path extends Component {
     this.userData.connectPointList = new Set();
   }
 
-  generatePath() {
+  generatePath(offset: Vector3 = new Vector3(0, 0, 0)) {
     const obj = this.userData.props?.[0];
 
     const height = obj?.height;
@@ -144,10 +176,16 @@ class Path extends Component {
     });
     // this.userData.mainMaterial = material;
     const sphere = new Mesh(geometry, material);
-    sphere.position.add(new Vector3(0, 0, 0));
+    sphere.position.add(offset);
 
     this.userData.pathCenter = sphere;
     this.add(sphere);
+  }
+
+  getPathPointerCenter() {
+    const pathCenter = this.userData.pathCenter;
+    console.log(pathCenter.position);
+    return pathCenter.position;
   }
 }
 (Path as any).cnName = "路径";
