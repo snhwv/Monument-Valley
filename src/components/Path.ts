@@ -1,6 +1,7 @@
 import { unitWidth } from "@constants";
 import { Paths } from "@env";
 import {
+  ArrowHelper,
   BoxGeometry,
   Color,
   Matrix4,
@@ -34,6 +35,7 @@ class Path extends Component {
         R: 0,
         index: 0,
         circleDivide: 16,
+        upInvert: 0,
       },
     ];
   }
@@ -167,6 +169,8 @@ class Path extends Component {
     const height = obj?.height;
     const isStatic = obj?.isStatic;
 
+    const upInvert = obj?.upInvert;
+
     const geometry = new SphereGeometry(unitWidth / 4, 32, 32);
     // const geometry = new BoxGeometry(unitWidth, 4, unitWidth);
     const material = new MeshLambertMaterial({
@@ -179,6 +183,28 @@ class Path extends Component {
     sphere.position.add(offset);
 
     this.userData.pathCenter = sphere;
+
+    let up = new Vector3(0, 1, 0);
+    if (offset.lengthSq()) {
+      up = offset.negate().normalize();
+    }
+    if (upInvert) {
+      up = up.negate();
+    }
+
+    const dir = up;
+    sphere.up.copy(up);
+
+    //normalize the direction vector (convert to vector of length 1)
+    dir.normalize();
+
+    const origin = new Vector3(0, 0, 0);
+    const length = 40;
+    const hex = 0xffff00;
+
+    const arrowHelper = new ArrowHelper(dir, origin, length, hex);
+    sphere.add(arrowHelper);
+
     this.add(sphere);
   }
 

@@ -1,11 +1,13 @@
 import { unitWidth } from "@constants";
 import {
+  ArrowHelper,
   BoxGeometry,
   Group,
   Material,
   Matrix4,
   Mesh,
   MeshLambertMaterial,
+  Vector3,
 } from "three";
 
 class Ada extends Group {
@@ -15,6 +17,16 @@ class Ada extends Group {
     this.generateElement();
   }
   generateElement() {
+    const dir = new Vector3(0,1,0);
+
+    dir.normalize();
+
+    const origin = new Vector3(0, 0, 0);
+    const length = 40;
+    const hex = 0xffff00;
+
+    const arrowHelper = new ArrowHelper(dir, origin, length, hex);
+    this.add(arrowHelper);
     this.generateCube();
   }
   generateCube() {
