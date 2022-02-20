@@ -26,7 +26,7 @@ class Ada extends Group {
     const hex = 0xffff00;
 
     const arrowHelper = new ArrowHelper(dir, origin, length, hex);
-    this.add(arrowHelper);
+    // this.add(arrowHelper);
     this.generateCube();
   }
   generateCube() {

@@ -18,6 +18,7 @@ export default class Level2 extends Level {
   init() {
     Component.defaultMatcap = matcap_level2_0;
     Component.FOG_COLOR = new Vector3(1, 1, 190 / 255);
+    Component.FOG_LINEAR_OFFSET = unitWidth * 5 + 0.01;
     this.loadDataScene(levelData2);
     this.initAda();
     this.setSceneLook();

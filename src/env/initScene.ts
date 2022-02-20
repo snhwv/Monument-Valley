@@ -40,8 +40,8 @@ export const camera = new THREE.OrthographicCamera(
   sizes.width / 2,
   sizes.height / 2,
   sizes.height / -2,
-  10,
-  10000
+  1,
+  6000
 );
 camera.position.set(200, 200, 200);
 scene.add(camera);
@@ -150,16 +150,8 @@ export const sceneInit = () => {
   canvasResizeHandler();
 };
 
-const floorGeometry = new THREE.BoxGeometry(300, 2, 300);
-const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xfaebd7 });
-
-export const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-
-floor.position.set(0, -1 - unitWidth / 2, 0);
-
 export const mainGroup = new Group();
 
-// scene.add(floor);
 scene.add(mainGroup);
 export const tick = () => {
   orbitControls.update();

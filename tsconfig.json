@@ -10,10 +10,10 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "noEmit": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noImplicitReturns": true,
     "baseUrl": "./",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "paths": {
       "@constants": ["src/constants"],
       "@env": ["src/env"],

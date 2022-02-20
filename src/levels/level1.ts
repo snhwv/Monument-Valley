@@ -37,6 +37,7 @@ export default class Level1 extends Level {
     movingPath.setAdaOn(initPath);
   }
   setSceneLook() {
+    scene.background = new Color(0xfeffbd);
     // 设置中间草地颜色
     const center_grass = getCompFromFlatedArrByName("center_grass");
     const material1 = new MeshBasicMaterial({ color: 0xc4d449 });

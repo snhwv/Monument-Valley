@@ -1,7 +1,7 @@
 import Component from "@components/lib/recordable";
 import Path from "@components/Path";
-import { Object3D } from "three";
-import { sceneInit } from "./initScene";
+import { Object3D, Vector3 } from "three";
+import { camera, mainGroup, orbitControls, sceneInit } from "./initScene";
 import { transformInit } from "./transformControl";
 
 export * from "./initScene";
@@ -22,5 +22,12 @@ const getCompFromFlatedArrByName = (name: string) => {
 };
 
 const Paths: Path[] = [];
+const clear = () => {
+  Paths.length = 0;
+  flatedComponents.length = 0;
+  camera.position.set(200, 200, 200);
+  mainGroup.clear();
+  orbitControls.target.copy(new Vector3());
+};
 
-export { init, flatedComponents, Paths, getCompFromFlatedArrByName };
+export { init, flatedComponents, Paths, getCompFromFlatedArrByName, clear };

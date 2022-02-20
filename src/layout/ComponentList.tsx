@@ -7,8 +7,6 @@ const ComponentList = () => {
   };
   return (
     <List
-      header={<div>Header</div>}
-      footer={<div>Footer</div>}
       bordered
       dataSource={Object.values(componentMap)}
       renderItem={(item) => (

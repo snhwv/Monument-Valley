@@ -6,9 +6,11 @@ export const store: {
   isRotable: boolean;
   isMoveable: boolean;
   isTransform: boolean;
+  isDev: boolean;
   rotationComponent: Group | null;
   moveComponent: Group | null;
 } = {
+  isDev: false,
   isShiftDown: false,
   isCtrlDown: false,
   isRotable: false,

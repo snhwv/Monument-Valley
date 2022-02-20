@@ -4,7 +4,7 @@ import { updateSceneTree } from "../../layout/SceneTree";
 import { Group, Matrix4, Vector3 } from "three";
 import Component from "@components/lib/recordable";
 
-export default class Level {
+export default abstract class Level {
   constructor() {
     Component.FOG_COLOR = undefined;
     camera.position.set(200, 200, 200);
@@ -30,7 +30,6 @@ export default class Level {
           // if (item.type === "Path") {
           //   item.userData.props[0] = { ...item.userData.props[0], isStatic: 0 };
           // }
-
           const component: Group = new (componentMap as any)[item.type](
             item.userData.props[0],
             item.userData.props[1],
@@ -46,4 +45,5 @@ export default class Level {
       updateSceneTree();
     }
   }
+  abstract init(): void;
 }

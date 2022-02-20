@@ -129,11 +129,11 @@ class Path extends Component {
 
     const material = new MeshLambertMaterial({
       color: isStatic ? 0xffff00 : 0x0000ff,
-      // transparent: true,
-      // opacity: 0,
+      transparent: true,
+      opacity: 0,
     });
 
-    // this.userData.connectMaterial = this.userData.connectMaterial || material;
+    this.userData.connectMaterial = this.userData.connectMaterial || material;
 
     const sphere = new Mesh(geometry, material);
 
@@ -171,14 +171,14 @@ class Path extends Component {
 
     const upInvert = obj?.upInvert;
 
-    const geometry = new SphereGeometry(unitWidth / 4, 32, 32);
-    // const geometry = new BoxGeometry(unitWidth, 4, unitWidth);
+    // const geometry = new SphereGeometry(unitWidth / 4, 32, 32);
+    const geometry = new BoxGeometry(unitWidth, 4, unitWidth);
     const material = new MeshLambertMaterial({
       color: isStatic ? 0xffff00 : 0x0000ff,
-      // transparent: true,
-      // opacity: 0,
+      transparent: true,
+      opacity: 0,
     });
-    // this.userData.mainMaterial = material;
+    this.userData.mainMaterial = material;
     const sphere = new Mesh(geometry, material);
     sphere.position.add(offset);
 
@@ -195,15 +195,15 @@ class Path extends Component {
     const dir = up;
     sphere.up.copy(up);
 
-    //normalize the direction vector (convert to vector of length 1)
     dir.normalize();
 
     const origin = new Vector3(0, 0, 0);
     const length = 40;
     const hex = 0xffff00;
 
+    // 编辑辅助线
     const arrowHelper = new ArrowHelper(dir, origin, length, hex);
-    sphere.add(arrowHelper);
+    // sphere.add(arrowHelper);
 
     this.add(sphere);
   }

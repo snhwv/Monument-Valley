@@ -1,4 +1,4 @@
-import { flatedComponents, mainGroup, Paths, transformControls } from "@env";
+import { flatedComponents, mainGroup, orbitControls, Paths, transformControls } from "@env";
 import { Button, Col, Row, TreeProps } from "antd";
 
 import { Tree } from "antd";
@@ -51,7 +51,7 @@ const SceneTree = () => {
   const [gData, setGData] = useState([...mainGroup.children]);
   const [expandedKeys, setExpandedKeys] = useState<any>([]);
   const [selectKeys, setSelectKeys] = useState<any>([]);
-  const [isDev, setIsDev] = useState<any>(true);
+  const [isDev, setIsDev] = useState<any>(false);
   updateSceneTree = () => {
     const treeData = generateTree(getTreeDataItem);
     setGData(treeData);
@@ -179,7 +179,8 @@ const SceneTree = () => {
     setIsDev(!isDev);
     store.isTransform = !isDev;
     transformControls.detach();
-    // disableTransformControl(!isDev);
+    orbitControls.enabled = !isDev;
+    store.isDev = !isDev;
   };
   return (
     <>

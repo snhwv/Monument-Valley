@@ -104,12 +104,11 @@ class MovingPath {
 
         const lookat = new Vector3().copy(nextPosition);
         ada.parent?.localToWorld(lookat);
-        const newUp = ((ada.parent as Path).userData.pathCenter as Mesh).up.clone();
 
+        const newUp = ((ada.parent as Path).userData.pathCenter as Mesh).up.clone();
         const q = new Quaternion().setFromRotationMatrix(
           ((ada.parent as Path).userData.pathCenter as Mesh).matrixWorld
         );
-
         newUp.applyQuaternion(q);
         ada.up.copy(newUp);
 

@@ -54,7 +54,7 @@ export const setMovePrevPoint: IpinterdownHander = ({
 
 export const moved: IpinterdownHander = ({ next }) => {
   store.isMoveable = false;
-  orbitControls.enabled = true;
+  orbitControls.enabled = store.isDev;
   (store.moveComponent as any)?.onMoved(
     store.moveComponent?.userData.movePlane.normal,
     totalMovement
