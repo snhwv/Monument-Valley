@@ -88,4 +88,5 @@ class Site extends Component {
   }
 }
 (Site as any).cnName = "站点";
+(Site as any).constName = "Site";
 export default Site;

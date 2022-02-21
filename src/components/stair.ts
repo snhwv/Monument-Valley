@@ -73,4 +73,5 @@ class Stair extends Component {
   }
 }
 (Stair as any).cnName = "楼梯";
+(Stair as any).constName = "Stair";
 export default Stair;

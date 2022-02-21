@@ -50,4 +50,5 @@ class Ladder extends Component {
   }
 }
 (Ladder as any).cnName = "爬梯";
+(Ladder as any).constName = "Ladder";
 export default Ladder;

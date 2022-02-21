@@ -150,7 +150,7 @@ const SceneTree = () => {
     // new Cube()
     const treeData = generateTree((object: any) => {
       return {
-        type: object?.constructor?.name,
+        type: object?.constructor?.constName,
         userData: { props: object.userData.props },
         matrix: object.matrix,
         children: [],

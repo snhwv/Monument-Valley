@@ -186,4 +186,5 @@ class Roof extends Component {
   }
 }
 (Roof as any).cnName = "屋顶";
+(Roof as any).constName = "Roof";
 export default Roof;

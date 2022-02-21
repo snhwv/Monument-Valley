@@ -48,4 +48,5 @@ class Cylinder extends Component {
   }
 }
 (Cylinder as any).cnName = "圆柱";
+(Cylinder as any).constName = "Cylinder";
 export default Cylinder;

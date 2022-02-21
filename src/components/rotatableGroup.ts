@@ -43,4 +43,5 @@ class RotatableGroup extends Rotable {
   }
 }
 (RotatableGroup as any).cnName = "旋转组";
+(RotatableGroup as any).constName = "RotatableGroup";
 export default RotatableGroup;

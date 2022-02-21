@@ -127,4 +127,5 @@ class Tree extends Component {
   }
 }
 (Tree as any).cnName = "树";
+(Tree as any).constName = "Tree";
 export default Tree;

@@ -63,4 +63,5 @@ class Pier extends Component {
   }
 }
 (Pier as any).cnName = "桥墩";
+(Pier as any).constName = "Pier";
 export default Pier;

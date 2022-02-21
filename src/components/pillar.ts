@@ -74,4 +74,5 @@ class Pillar extends Component {
   }
 }
 (Pillar as any).cnName = "支柱";
+(Pillar as any).constName = "Pillar";
 export default Pillar;

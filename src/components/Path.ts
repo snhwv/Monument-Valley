@@ -215,4 +215,5 @@ class Path extends Component {
   }
 }
 (Path as any).cnName = "路径";
+(Path as any).constName = "Path";
 export default Path;

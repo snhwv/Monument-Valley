@@ -22,4 +22,5 @@ class Cube extends Component {
   }
 }
 (Cube as any).cnName = "正方体";
+(Cube as any).constName = "Cube";
 export default Cube;

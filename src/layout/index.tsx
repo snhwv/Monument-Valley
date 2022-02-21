@@ -10,7 +10,7 @@ function Layout() {
       <Col span={4} className={"fullHeight"}>
         <Tabs defaultActiveKey="1" className={"fullHeight"}>
           <TabPane
-            tab="Tab 1"
+            tab="结构树"
             key="1"
             className={"fullHeight"}
             style={{ overflow: "auto" }}
@@ -18,7 +18,7 @@ function Layout() {
             <SceneTree></SceneTree>
           </TabPane>
           <TabPane
-            tab="Tab 2"
+            tab="组件列表"
             key="2"
             className={"fullHeight"}
             style={{ overflow: "auto" }}

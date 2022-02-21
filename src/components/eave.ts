@@ -148,4 +148,5 @@ class Eave extends Component {
   }
 }
 (Eave as any).cnName = "屋檐";
+(Eave as any).constName = "Eave";
 export default Eave;

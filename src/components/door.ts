@@ -130,4 +130,5 @@ class Door extends Component {
   }
 }
 (Door as any).cnName = "门窗";
+(Door as any).constName = "Door";
 export default Door;

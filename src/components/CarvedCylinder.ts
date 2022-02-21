@@ -131,4 +131,5 @@ class CarvedCylinder extends Component {
   }
 }
 (CarvedCylinder as any).cnName = "镂空圆柱";
+(CarvedCylinder as any).constName = "CarvedCylinder";
 export default CarvedCylinder;

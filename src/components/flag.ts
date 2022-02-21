@@ -96,4 +96,5 @@ class Flag extends Component {
   }
 }
 (Flag as any).cnName = "旗子";
+(Flag as any).constName = "Flag";
 export default Flag;

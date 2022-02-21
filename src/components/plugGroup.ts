@@ -148,4 +148,5 @@ class PlugGroup extends Activeable {
   }
 }
 (PlugGroup as any).cnName = "按钮组";
+(PlugGroup as any).constName = "PlugGroup";
 export default PlugGroup;

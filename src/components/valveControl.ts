@@ -282,4 +282,5 @@ class ValveControl extends Rotable {
   }
 }
 (ValveControl as any).cnName = "控制点";
+(ValveControl as any).constName = "ValveControl";
 export default ValveControl;

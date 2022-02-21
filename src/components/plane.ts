@@ -30,4 +30,5 @@ class Plane extends Component {
   }
 }
 (Plane as any).cnName = "桥板";
+(Plane as any).constName = "Plane";
 export default Plane;

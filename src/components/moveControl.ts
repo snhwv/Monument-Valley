@@ -160,4 +160,5 @@ class MoveControl extends Moveable {
   }
 }
 (MoveControl as any).cnName = "移动控制";
+(MoveControl as any).constName = "MoveControl";
 export default MoveControl;

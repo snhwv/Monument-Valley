@@ -66,4 +66,5 @@ class Altar extends Component {
   }
 }
 (Altar as any).cnName = "祭坛";
+(Altar as any).constName = "Altar";
 export default Altar;

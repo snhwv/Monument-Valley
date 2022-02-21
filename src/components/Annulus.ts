@@ -54,4 +54,5 @@ class Annulus extends Component {
   }
 }
 (Annulus as any).cnName = "圆柱环";
+(Annulus as any).constName = "Annulus";
 export default Annulus;

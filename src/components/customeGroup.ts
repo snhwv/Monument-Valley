@@ -26,4 +26,5 @@ class CustomeGroup extends Component {
   generateElement() {}
 }
 (CustomeGroup as any).cnName = "组";
+(CustomeGroup as any).constName = "CustomeGroup";
 export default CustomeGroup;

@@ -216,4 +216,5 @@ class CubeRotateControl extends Rotable {
   }
 }
 (CubeRotateControl as any).cnName = "长方体旋转控制";
+(CubeRotateControl as any).constName = "CubeRotateControl";
 export default CubeRotateControl;

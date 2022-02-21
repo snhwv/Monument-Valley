@@ -66,4 +66,5 @@ class Guardrail extends Component {
   }
 }
 (Guardrail as any).cnName = "护栏";
+(Guardrail as any).constName = "Guardrail";
 export default Guardrail;

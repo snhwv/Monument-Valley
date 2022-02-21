@@ -102,7 +102,7 @@ const pointermoveHandlerArr: IpinterdownHander[] = [setRotation, setMove];
 const pointerupHandlerArr: IpinterdownHander[] = [rotated, moved];
 
 const getComponentParent = (object: Object3D): any => {
-  if (componentTypes.includes(object?.constructor?.name)) {
+  if (componentTypes.includes((object?.constructor as any)?.constName)) {
     return object;
   } else if (object.parent) {
     return getComponentParent(object.parent);

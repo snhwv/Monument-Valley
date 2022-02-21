@@ -52,4 +52,5 @@ class Flower extends Component {
   }
 }
 (Flower as any).cnName = "花";
+(Flower as any).constName = "Flower";
 export default Flower;

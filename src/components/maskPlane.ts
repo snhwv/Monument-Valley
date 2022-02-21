@@ -48,4 +48,5 @@ class MaskPlane extends Component {
   }
 }
 (MaskPlane as any).cnName = "遮罩";
+(MaskPlane as any).constName = "MaskPlane";
 export default MaskPlane;

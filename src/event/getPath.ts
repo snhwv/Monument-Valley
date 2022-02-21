@@ -95,7 +95,7 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
 
   if (
     mainGroupIntersect &&
-    (mainGroupIntersect as Path).constructor.name === "Path" &&
+    ((mainGroupIntersect as Path).constructor as any).constName === "Path" &&
     visible
   ) {
     pathPointMap = new Map([...staticPathPointMap.entries()]);

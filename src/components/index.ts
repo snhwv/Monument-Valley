@@ -2,7 +2,7 @@ const componentMap: Record<string, any> = {};
 const modules = import.meta.globEager("./*.ts");
 Object.keys(modules).forEach((key) => {
   const mod = modules[key].default || {};
-  componentMap[mod.name] = mod;
+  componentMap[mod.constName] = mod;
 });
 
 const componentTypes = Object.keys(componentMap);

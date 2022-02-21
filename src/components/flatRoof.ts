@@ -150,4 +150,5 @@ class FlatRoof extends Component {
   }
 }
 (FlatRoof as any).cnName = "平屋顶";
+(FlatRoof as any).constName = "FlatRoof";
 export default FlatRoof;
