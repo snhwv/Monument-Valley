@@ -2,6 +2,7 @@ import { flatedComponents, mainGroup } from "@env";
 import { updateSceneTree } from "../../layout/SceneTree";
 import {
   Color,
+  DoubleSide,
   Group,
   MeshMatcapMaterial,
   TextureLoader,
@@ -84,6 +85,7 @@ abstract class Component extends Group {
     const material = new MeshMatcapMaterial({
       depthTest: this.getZIndex() ? false : true,
       matcap: texture,
+      side: DoubleSide
     });
     material.defines["SHOW_SHADOW"] = !!obj?.showShadow;
     material.defines["SHADOW_OFFSET"] = obj?.shadowOffset || 0.8;

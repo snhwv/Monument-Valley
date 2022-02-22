@@ -6,7 +6,13 @@ import {
   Quaternion,
   Vector3,
 } from "three";
-import { getCompFromFlatedArrByName, Paths, scene } from "@env";
+import {
+  camera,
+  getCompFromFlatedArrByName,
+  orbitControls,
+  Paths,
+  scene,
+} from "@env";
 import { animate } from "popmotion";
 import { ada, movingPath } from "@game";
 import Site from "@components/site";
@@ -31,8 +37,10 @@ export default class Level4 extends Level {
     this.initAda();
     this.setSceneLook();
 
+    camera.position.set(800, 800, 800);
     this.configAnimation();
     this.triggerAnimation();
+
   }
   initAda() {
     const initPath = Paths.find(
@@ -399,6 +407,21 @@ export default class Level4 extends Level {
       fall(bridge9, -1800);
       fall(bridge10, -2000);
       fall(bridge11, -2200);
+      const target3 = new Vector3(unitWidth * 50, unitWidth * 4, 0);
+      const oldCameraPosition = camera.position.clone();
+      animate({
+        from: new Vector3(),
+        to: target3,
+        duration: 1000,
+        elapsed: -2000,
+        onUpdate: (latest) => {
+          camera.position.copy(
+            new Vector3().copy(oldCameraPosition).add(latest)
+          );
+          orbitControls.target.copy(new Vector3().copy(latest));
+          orbitControls.update();
+        },
+      });
     };
   }
   trigger4Animation() {

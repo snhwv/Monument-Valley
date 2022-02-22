@@ -229,7 +229,7 @@ export default class Level3 extends Level {
 
       const target2 = new Vector3()
         .copy(trigger0MoveGroup2.position)
-        .add(new Vector3(0, unitWidth * 43, 0));
+        .add(new Vector3(0, unitWidth * 66, 0));
       animate({
         from: trigger0MoveGroup2.position,
         to: target2,
@@ -292,7 +292,7 @@ export default class Level3 extends Level {
         },
       });
 
-      const target3 = new Vector3(0, unitWidth * 14, 0);
+      const target3 = new Vector3(0, unitWidth * 20, 0);
       const oldCameraPosition = camera.position.clone();
       animate({
         from: new Vector3(),
@@ -303,8 +303,6 @@ export default class Level3 extends Level {
           camera.position.copy(
             new Vector3().copy(oldCameraPosition).add(latest)
           );
-          console.log(new Vector3().copy(oldCameraPosition).add(latest));
-          console.log(new Vector3().copy(latest));
           orbitControls.target.copy(new Vector3().copy(latest));
           orbitControls.update();
         },

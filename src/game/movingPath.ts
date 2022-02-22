@@ -8,7 +8,7 @@ import {
   Vector3,
 } from "three";
 import Path from "@components/Path";
-import { camera, Paths, scene } from "@env";
+import { camera, orbitControls, Paths, scene } from "@env";
 import { ada } from "@game";
 import { animate, keyframes, easeInOut, linear } from "popmotion";
 import Component from "@components/lib/recordable";
@@ -105,7 +105,9 @@ class MovingPath {
         const lookat = new Vector3().copy(nextPosition);
         ada.parent?.localToWorld(lookat);
 
-        const newUp = ((ada.parent as Path).userData.pathCenter as Mesh).up.clone();
+        const newUp = (
+          (ada.parent as Path).userData.pathCenter as Mesh
+        ).up.clone();
         const q = new Quaternion().setFromRotationMatrix(
           ((ada.parent as Path).userData.pathCenter as Mesh).matrixWorld
         );
@@ -158,7 +160,10 @@ class MovingPath {
       return true;
     }
 
-    const projectPlaneNormal = new Vector3().copy(camera.position).normalize();
+    const projectPlaneNormal = new Vector3()
+      .copy(camera.position)
+      .sub(orbitControls.target)
+      .normalize();
 
     const pathPoint0 = (
       path0.userData.connectMap.get(path1) as Vector3
