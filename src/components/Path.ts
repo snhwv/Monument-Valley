@@ -135,7 +135,7 @@ class Path extends Component {
 
     this.userData.connectMaterial = this.userData.connectMaterial || material;
 
-    const sphere = new Mesh(geometry, material);
+    const sphere = new Mesh(geometry, this.userData.connectMaterial);
 
     sphere.position.add(offset).add(new Vector3(0, 0, 0));
 

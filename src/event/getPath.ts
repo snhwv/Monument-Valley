@@ -50,7 +50,6 @@ export const generateStaticMap = () => {
       }
     });
   });
-  // connectPath(PathArrList);
 
   staticPathPointMap.forEach((pathList: Path[], key: string) => {
     pathList.forEach((path: Path) => {
@@ -68,17 +67,17 @@ export const generateStaticMap = () => {
   });
 };
 
-const connectPath = (PathArrList: Path[][]) => {
-  PathArrList.forEach((pathArr) => {
-    pathArr.forEach((path: Path) => {
-      // 不能这样使用，因为同节点会存在PathArrList不同的子数组中，前面设置过的会被重置
-      // path.userData.connectPointList = new Set([...pathArr])
-      pathArr.forEach((path1: Path) => {
-        (path.userData.connectPointList as Set<Path>).add(path1);
-      });
-    });
-  });
-};
+// const connectPath = (PathArrList: Path[][]) => {
+//   PathArrList.forEach((pathArr) => {
+//     pathArr.forEach((path: Path) => {
+//       // 不能这样使用，因为同节点会存在PathArrList不同的子数组中，前面设置过的会被重置
+//       // path.userData.connectPointList = new Set([...pathArr])
+//       pathArr.forEach((path1: Path) => {
+//         (path.userData.connectPointList as Set<Path>).add(path1);
+//       });
+//     });
+//   });
+// };
 
 const isVisible = (obj: Object3D | null) => {
   let visible = true;
@@ -100,8 +99,6 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
   ) {
     pathPointMap = new Map([...staticPathPointMap.entries()]);
 
-    const dynamicPointArrList: Path[][] = [];
-
     const filteredPaths = Paths.filter((item) => {
       return !item.userData.isStatic && isVisible(item);
     });
@@ -119,16 +116,13 @@ export const setPaths: IpinterdownHander = ({ mainGroupIntersect, next }) => {
           .toString();
         if (!pathPointMap.has(key)) {
           const mapv = [item];
-          dynamicPointArrList.push(mapv);
           pathPointMap.set(key, mapv);
         } else {
           const mapv = pathPointMap.get(key);
-          dynamicPointArrList.push(mapv);
           mapv.push(item);
         }
       });
     });
-    // connectPath(dynamicPointArrList);
 
     pathPointMap.forEach((pathList: Path[], key: string) => {
       pathList.forEach((path: Path) => {
